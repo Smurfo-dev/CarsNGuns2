@@ -1,0 +1,252 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "LaserRifle.h"
+#include "Components/AudioComponent.h"
+#include "PlayerVehicleBase.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Components/PoseableMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+ALaserRifle::ALaserRifle()
+{
+	//Create Audio Component(s)
+	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
+}
+
+void ALaserRifle::BeginPlay()
+{
+	Super::BeginPlay();
+
+	InitVFX();
+	InitAudio();
+}
+
+void ALaserRifle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	MoveTowardTarget(DeltaTime, 25.0f);
+
+	//UE_LOG(LogTemp, Warning, TEXT("Current Heat Level: %f"), CurrentHeat);
+}
+
+void ALaserRifle::Fire()
+{
+	Super::Fire();
+
+	if(bCanFire && CurrentHeat < MaxHeat && !bIsOverheated)
+	{
+		PerformHitScan();
+
+		CurrentHeat += HeatPerTick;
+		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
+
+		if(CurrentHeat >= MaxHeat)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CurrentHeat = Overheat"));
+			bIsOverheated = true;
+			bCanFire = false;
+			GetWorld()->GetTimerManager().ClearTimer(PassiveCooldownTimerHandle); // Stop passive cooling
+			GetWorld()->GetTimerManager().ClearTimer(CooldownDelayTimerHandle); //Stop Cooldown Delay
+			GetWorld()->GetTimerManager().SetTimer(OverheatTimerHandle, this, &ALaserRifle::CoolDown, CooldownTime, false);
+		}
+		else
+		{
+			// Reset the cooldown delay timer (cooling starts only after 0.5s of not firing)
+			GetWorld()->GetTimerManager().ClearTimer(CooldownDelayTimerHandle);
+			GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
+		}
+		
+		if(!FiringAudioComponent->IsPlaying() || IsWindingDown)
+		{
+			FiringAudioComponent->Activate(true);
+			IsWindingDown = false;
+		}
+
+		bCanFire = false;
+
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ALaserRifle::ResetFire, 1*FireRate, false);
+	}
+}
+
+void ALaserRifle::StopFire()
+{
+	Super::StopFire();
+
+	if(FiringAudioComponent->IsPlaying())
+	{
+		FiringAudioComponent->SetTriggerParameter(TEXT("WindDown"));
+		IsWindingDown = true;
+	}
+}
+
+void ALaserRifle::CoolDown()
+{
+	CurrentHeat = 0.0f;
+	bIsOverheated = false;
+	bCanFire = true;
+
+	// Restart passive cooling after overheat ends
+	GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
+}
+
+void ALaserRifle::StartPassiveCooldown()
+{
+	CooldownTick();
+	GetWorld()->GetTimerManager().SetTimer(PassiveCooldownTimerHandle, this, &ALaserRifle::CooldownTick, PassiveHeatCooldownTickRate, true);
+}
+
+void ALaserRifle::CooldownTick()
+{
+	if (CurrentHeat > 0)
+	{
+		CurrentHeat -= HeatCooldownRate;
+		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
+	}
+
+	if (CurrentHeat <= 0)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(PassiveCooldownTimerHandle); // Stop cooling when fully cooled
+	}
+}
+
+void ALaserRifle::PerformHitScan()
+{
+	if(PlayerController)
+	{
+		FVector PlayerViewpointLoc;
+		FRotator PlayerViewpointRot;
+		PlayerController->GetPlayerViewPoint(PlayerViewpointLoc, PlayerViewpointRot);
+
+		//Collision Query Params
+		FHitResult HitResult;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		Params.AddIgnoredActor(GetOwner());
+		PerformGunTrace(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WeaponMesh->GetSocketRotation(TEXT("ProjectileSpawnPoint")), HitResult, Params, PlayerViewpointRot.Vector());
+	}
+}
+
+void ALaserRifle::PerformGunTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection)
+{
+	FVector AimDirection = BarrelRotation.Vector();
+	
+	const FVector TraceEnd = BarrelLocation + AimDirection*MaxRange;
+
+	if(GetWorld()->LineTraceSingleByChannel(HitResult, BarrelLocation, TraceEnd, ECC_Visibility, Params))
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if(HitActor)
+		{
+			float Distance = FVector::Dist(BarrelLocation, HitResult.ImpactPoint);
+			float AppliedDamage = (1-Distance/10000)*Damage; //Damage Drop Off things
+			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageType);
+		}
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 12, FColor::Red, false, 1.0f);
+		
+	}
+	else
+	{
+		//Hitting nothing
+	}
+}
+
+void ALaserRifle::MoveTowardTarget(float DeltaTime, float InterpSpeed)
+{
+	if(PlayerReference)
+	{
+		if(!PlayerReference->GetCurrentCameraLockSetting())
+		{
+			if(PlayerController)
+			{
+				FVector2D MousePosition;
+				PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+				FVector WorldLocation;
+				FVector WorldDirection;
+
+				if(PlayerController->DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection))
+				{
+					FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
+			
+					FHitResult HitResult;
+					FCollisionQueryParams Params;
+					Params.AddIgnoredActor(this); //Ignore Weapon
+					Params.AddIgnoredActor(GetOwner()); //Ignore Weapon holder
+
+					bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
+		
+					FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
+					if(bHit)
+					{
+						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
+						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+					}
+
+					else
+					{
+						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), TraceEnd);
+						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+					}
+				}
+			}
+		}
+		else if(PlayerReference->GetCurrentCameraLockSetting())
+		{
+			if(PlayerController)
+			{
+				FVector WorldLocation;
+				FVector WorldDirection;
+
+				if(PlayerController->DeprojectScreenPositionToWorld(PlayerReference->GetCurrentTargetScreenPosition().X, PlayerReference->GetCurrentTargetScreenPosition().Y, WorldLocation, WorldDirection))
+				{
+					FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
+			
+					FHitResult HitResult;
+					FCollisionQueryParams Params;
+					Params.AddIgnoredActor(this); //Ignore Weapon
+					Params.AddIgnoredActor(GetOwner()); //Ignore Weapon holder
+
+					bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
+		
+					FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
+					if(bHit)
+					{
+						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
+						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+					}
+
+					else
+					{
+						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WorldLocation);
+						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+					}
+				}
+		
+		
+			}
+		}
+	}
+}
+
+void ALaserRifle::InitVFX() const
+{
+	
+}
+
+void ALaserRifle::InitAudio() const
+{
+	if(FiringAudioComponent)
+	{
+		FiringAudioComponent->SetActive(true);
+		FiringAudioComponent->Stop();
+	}
+}
