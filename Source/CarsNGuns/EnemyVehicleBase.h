@@ -22,5 +22,8 @@ private:
 
 	UFUNCTION()
 	void DestroyActor();
+
+	UPROPERTY(EditAnywhere, Category="Debug")
+	class USceneCaptureComponent2D* PiPCamera;
 	
 };

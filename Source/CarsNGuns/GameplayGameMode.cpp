@@ -39,7 +39,7 @@ void AGameplayGameMode::SetupPlayer()
 		SelectedPlayerPawnClass = DefaultPawnClass;
 		//Prioriterar class vald i gamemode blueprint
 		if(!SelectedPlayerPawnClass && GameInstance->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
-			{
+		{
 			UE_LOG(LogTemp, Warning, TEXT("Starting with selected player pawn class"));
 			SelectedPlayerPawnClass = GameInstance->GetSelectedPlayerPawnClass(); //If no default is chosen, select from game instance
 			
@@ -48,7 +48,7 @@ void AGameplayGameMode::SetupPlayer()
 				APawn* PawnToSpawn = GetWorld()->SpawnActor<APawn>(SelectedPlayerPawnClass, PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());
 				if(PawnToSpawn && PlayerController) PlayerController->Possess(PawnToSpawn);
 			}
-			}
+		}
 		
 		if(SelectedPlayerPawnClass)
 		{

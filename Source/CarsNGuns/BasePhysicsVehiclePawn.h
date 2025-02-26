@@ -252,6 +252,13 @@ public:
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bDebugForces = true;
 
+	//Debug text for AI
+	UPROPERTY(EditAnywhere, Category="Debug")
+	bool bDebugAI = false;
+
+	UPROPERTY(EditAnywhere, Category="Debug")
+	TSubclassOf<UUserWidget> PiPWidgetClass;
+
 	//Debug engine and gearbox values
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bDebugEngine = true;

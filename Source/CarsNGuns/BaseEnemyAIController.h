@@ -53,8 +53,13 @@ private:
 	UPROPERTY()
 	AActor* PlayerReference = nullptr;
 
-	UPROPERTY(EditAnywhere, Category=AI)
-	float TrackingRadius = 1000.0f; //Distance AI will try to follow player at
+	UPROPERTY(EditAnywhere, Category = AI)
+	float BrakingRadius = 600.0f; //Distance where AI will break to not overtake player
+
+	UPROPERTY(EditAnywhere, Category = AI)
+	float FollowRadius = 2000.0f; //Distance AI will try to follow player at
+
+	void InitializeReferences();
 
 	void SetState(EAIState NewState);
 	

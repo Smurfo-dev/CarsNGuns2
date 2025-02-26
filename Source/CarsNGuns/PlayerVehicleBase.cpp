@@ -12,6 +12,7 @@
 #include "Components/SceneComponent.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
+#include "Blueprint/UserWidget.h"
 
 APlayerVehicleBase::APlayerVehicleBase()
 {
@@ -68,6 +69,15 @@ void APlayerVehicleBase::BeginPlay()
 	PlayerController->bShowMouseCursor = true;
 	PlayerController->bEnableClickEvents = true;
 	PlayerController->bEnableMouseOverEvents = true;
+
+	if (bDebugAI)
+	{
+		if (PiPWidgetClass)
+		{
+			UUserWidget* PiPWidget = CreateWidget<UUserWidget>(GetWorld(), PiPWidgetClass);
+			if (PiPWidget) PiPWidget->AddToViewport();
+		}
+	}
 }
 
 // Called to bind functionality to input

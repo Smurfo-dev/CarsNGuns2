@@ -13,13 +13,20 @@ void AGunnerAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	FVector TextLocation = EnemyVehicleReference->GetActorLocation() + FVector(0, 0, 200.0f); // 200 units above the enemy
-	FString DebugText = TEXT("Gunner AI");
-	FColor TextColor = FColor::Red;
-	float Duration = 0.0f; // 0 means persistent until next frame
+	if (EnemyVehicleReference)
+	{
+		if (EnemyVehicleReference->bDebugAI)
+		{
+			FVector TextLocation = EnemyVehicleReference->GetActorLocation() + FVector(0, 0, 200.0f); // 200 units above the enemy
+			FString DebugText = TEXT("GUNNER AI");
+			FColor TextColor = FColor::Red;
+			float Duration = 0.0f; // 0 means persistent until next frame
 
-	// Draw the debug text
-	DrawDebugString(GetWorld(), TextLocation, DebugText, nullptr, TextColor, Duration, false, 5.0f);
+			// Draw the debug text
+			DrawDebugString(GetWorld(), TextLocation, DebugText, nullptr, TextColor, Duration, false, 5.0f);
+		}
+	}
+	
 }
 
 void AGunnerAIController::Follow()

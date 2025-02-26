@@ -5,6 +5,8 @@
 #include "BaseWeapon.h"
 #include "DefaultGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 
 AEnemyVehicleBase::AEnemyVehicleBase()
 {
@@ -19,6 +21,27 @@ AEnemyVehicleBase::AEnemyVehicleBase()
 	{
 		AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	}
+	
+	PiPCamera = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("PiPCamera"));
+	PiPCamera->SetupAttachment(RootComponent);
+	PiPCamera->SetRelativeLocation(FVector(-500.0f, 0.0f, 300.0f));
+	PiPCamera->SetRelativeRotation(FRotator(-10.0f, 0.0f, 0.0f));
+	PiPCamera->CaptureSource = SCS_FinalColorHDR; // or SCS_FinalColorHDR
+	PiPCamera->FOVAngle = 90.0f; // Set to a wide angle like 90 degrees
+	PiPCamera->bCaptureEveryFrame = true;
+
+
+	static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> RenderTargetAsset(TEXT("/Game/Textures/PiPRenderTarget"));
+	if (RenderTargetAsset.Succeeded())
+	{
+		PiPCamera->TextureTarget = RenderTargetAsset.Object;
+		UE_LOG(LogTemp, Warning, TEXT("Render Target Initialized Successfully"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load Render Target!"));
+	}
+
 }
 
 void AEnemyVehicleBase::OnDeath()

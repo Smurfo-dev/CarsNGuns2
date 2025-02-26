@@ -79,8 +79,6 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 			SecondaryWeapon->PlayerReference = this;
 		}
 	}
-	
-	
 
 	CurrentSteeringInput = 0.0f;
 	
