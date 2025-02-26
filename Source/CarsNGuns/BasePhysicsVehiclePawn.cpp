@@ -60,23 +60,27 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 	
 	//Attach chosen weapon classes to player vehicle
 	//Weapon ID must be the same as corresponding socket names
-	/*
-	if(PrimaryWeaponClass)
+
+	if (bAutoEquipWeapons)
 	{
-		PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(PrimaryWeaponClass);
-		PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
-		PrimaryWeapon->SetOwner(this);
-		PrimaryWeapon->PlayerReference = this;
+		if(PrimaryWeaponClass)
+		{
+			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(PrimaryWeaponClass);
+			PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
+			PrimaryWeapon->SetOwner(this);
+			PrimaryWeapon->PlayerReference = this;
+		}
+	
+		if(SecondaryWeaponClass)
+		{
+			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(SecondaryWeaponClass);
+			SecondaryWeapon->AttachToComponent(VehicleMeshComponent, FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
+			SecondaryWeapon->SetOwner(this);
+			SecondaryWeapon->PlayerReference = this;
+		}
 	}
 	
-	if(SecondaryWeaponClass)
-	{
-		SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(SecondaryWeaponClass);
-		SecondaryWeapon->AttachToComponent(VehicleMeshComponent, FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
-		SecondaryWeapon->SetOwner(this);
-		SecondaryWeapon->PlayerReference = this;
-	}
-	*/
+	
 
 	CurrentSteeringInput = 0.0f;
 	

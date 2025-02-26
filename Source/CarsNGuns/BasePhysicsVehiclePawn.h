@@ -264,6 +264,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bPlaySound = true;
 
+	UPROPERTY(EditAnywhere, Category="Weapons")
+	bool bAutoEquipWeapons = false;
+
 	//Scale of death explosion visual effect
 	UPROPERTY(EditAnywhere, Category="VFX")
 	int DeathExplosionScaleFactor = 10;

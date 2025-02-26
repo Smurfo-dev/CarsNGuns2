@@ -12,10 +12,10 @@
 
 enum class EAIState
 {
-	Follow,
-	Chase,
-	Torpedo,
-	Shooting
+	Follow UMETA(DisplayName = "Follow"),
+	Chase UMETA(DisplayName = "Chase"),
+	Torpedo UMETA(DisplayName = "Torpedo"),
+	Shooting UMETA(DisplayName = "Shooting")
 };
 
 UCLASS()
@@ -40,15 +40,18 @@ protected:
 	virtual void Torpedo();
 
 	virtual void Shooting();
-
-private:
-	EAIState CurrentState;
 	
-	UPROPERTY()
-	AActor* PlayerReference = nullptr;
+	EAIState CurrentState;
 
 	UPROPERTY()
 	class AEnemyVehicleBase* EnemyVehicleReference = nullptr;
+
+private:
+
+	FString GetEnemyStateAsString() const;
+	
+	UPROPERTY()
+	AActor* PlayerReference = nullptr;
 
 	UPROPERTY(EditAnywhere, Category=AI)
 	float TrackingRadius = 1000.0f; //Distance AI will try to follow player at

@@ -25,6 +25,9 @@ void ABaseEnemyAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	FString StateText = FString::Printf(TEXT("State: %s"), *GetEnemyStateAsString());
+	DrawDebugString(GetWorld(), EnemyVehicleReference->GetActorLocation() + FVector(0, 0, 100.0f), StateText, nullptr, FColor::Blue, 0.0f, false, 4.0f);
+
 	switch (CurrentState)
 	{
 	case EAIState::Follow:
@@ -69,12 +72,28 @@ void ABaseEnemyAIController::Follow()
 			UE_LOG(LogTemp, Warning, TEXT("Angle to Player: %f"), AngleToPLayer);
 
 			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToPlayer);
-			float SteeringInput = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
-			FMath::Clamp(SteeringInput*=AngleToPLayer/2, -1, 1);
+			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
 
-			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SteeringInput);
+			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
+			if (AngleToPLayer < DeadZoneThreshold)
+			{
+				EnemyVehicleReference->SetSteeringInput(0);
+				UE_LOG(LogTemp, Warning, TEXT("Angle Deadzone Reached"));
+				return;
+			}
+
+
+			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
+
+			static float PreviousSteeringInput = 0.0f;
+			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
 			
-			EnemyVehicleReference->SetSteeringInput(SteeringInput);
+			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
+			PreviousSteeringInput = SmoothedSteeringInput;
+
+			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SmoothedSteeringInput);
+			
+			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
 
 			if(DistanceToPlayer > TrackingRadius)
 			{
@@ -104,4 +123,16 @@ void ABaseEnemyAIController::Torpedo()
 void ABaseEnemyAIController::Shooting()
 {
 	
+}
+
+FString ABaseEnemyAIController::GetEnemyStateAsString() const
+{
+	switch (CurrentState)
+	{
+	case EAIState::Follow: return TEXT("Follow");
+	case EAIState::Chase: return TEXT("Chase");
+	case EAIState::Torpedo: return TEXT("Torpedo");
+	case EAIState::Shooting: return TEXT("Shooting");
+	default: return TEXT("Unknown");
+	}
 }
