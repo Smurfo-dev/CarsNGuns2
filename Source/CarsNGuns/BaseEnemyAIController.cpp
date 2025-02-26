@@ -186,7 +186,7 @@ void ABaseEnemyAIController::Chase()
 
 			if (DistanceToPlayer < FollowRadius) SetState(EAIState::Follow);
 
-			EnemyVehicleReference->SetThrottleInput(10);
+			EnemyVehicleReference->SetThrottleInput(5);
 			EnemyVehicleReference->SetBrakingInput(0);
 		}
 	}
