@@ -308,6 +308,12 @@ public:
 	UFUNCTION()
 	void SetHandbrakeInput(bool NewInput);
 
+	UPROPERTY()
+	bool bIsDead = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	bool IsDead() const { return bIsDead; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -393,9 +399,6 @@ protected:
 	bool bHandbrake = false;
 
 	UPROPERTY()
-	bool bIsDead = false;
-
-	UPROPERTY()
 	FTimerHandle DestroyTimerHandle;
 
 	UPROPERTY()
@@ -427,6 +430,10 @@ public:
 	bool GetCurrentCameraLockSetting() const;
 
 	void AttachWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass);
+
+	ABaseWeapon* GetPrimaryWeapon() const {return PrimaryWeapon;}
+	
+	ABaseWeapon* GetSecondaryWeapon() const {return SecondaryWeapon;}
 
 private:
 

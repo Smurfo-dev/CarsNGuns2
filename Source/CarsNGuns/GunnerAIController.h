@@ -19,8 +19,11 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void Follow() override;
-
 	virtual void Shooting() override;
+
+	virtual void TransitionFromFollow() override;
+
+private:
+	bool bIsFiring = false;
 	
 };

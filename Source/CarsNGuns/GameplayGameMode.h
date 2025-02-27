@@ -52,5 +52,8 @@ private:
 
 	UFUNCTION()
 	void OnWeaponSelectionMenuClosed();
+
+	UFUNCTION()
+	void SetupInputAfterDelay();
 	
 };

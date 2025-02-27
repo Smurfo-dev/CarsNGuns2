@@ -171,7 +171,7 @@ private:
 	void CameraModeToggle();
 
 	UPROPERTY()
-	APlayerController* PlayerController;
+	class AMyPlayerController* PlayerController;
 	
 	FTimerHandle UpdateTargetTimerHandle;
 

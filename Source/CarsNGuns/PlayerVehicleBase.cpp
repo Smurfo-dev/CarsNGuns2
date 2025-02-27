@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "BaseWeapon.h"
 #include "DefaultGameInstance.h"
+#include "MyPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneComponent.h"
@@ -59,7 +60,7 @@ void APlayerVehicleBase::BeginPlay()
 	Super::BeginPlay();
 
 	//Set Playercontroller reference
-	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
 	ParameterCollection = LoadObject<UMaterialParameterCollection>(nullptr, TEXT("/Game/Materials/OcclusionMask/MPC_Occlusion"));
 	ParameterCollectionInstance = GetWorld()->GetParameterCollectionInstance(ParameterCollection);
@@ -422,6 +423,7 @@ void APlayerVehicleBase::OnDeath()
 		CollisionBoxPrimitive->AddImpulse(RandomImpulse, NAME_None, true);
 		CollisionBoxPrimitive->AddAngularImpulseInDegrees(RandomAngularImpulse, NAME_None, true);
 		bIsDead = true;
+		PlayerController->HandlePlayerDeath();
 		GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &APlayerVehicleBase::DestroyActor, 3.0f, false); //Kill after time
 	}
 }

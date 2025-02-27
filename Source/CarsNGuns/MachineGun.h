@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseWeapon.h"
-#include "PlayerVehicleBase.h"
 #include "GameFramework/Actor.h"
 #include "MachineGun.generated.h"
 

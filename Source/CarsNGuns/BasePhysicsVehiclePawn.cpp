@@ -68,7 +68,7 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(PrimaryWeaponClass);
 			PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
 			PrimaryWeapon->SetOwner(this);
-			PrimaryWeapon->PlayerReference = this;
+			PrimaryWeapon->OwnerReference = this;
 		}
 	
 		if(SecondaryWeaponClass)
@@ -76,7 +76,7 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(SecondaryWeaponClass);
 			SecondaryWeapon->AttachToComponent(VehicleMeshComponent, FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
 			SecondaryWeapon->SetOwner(this);
-			SecondaryWeapon->PlayerReference = this;
+			SecondaryWeapon->OwnerReference = this;
 		}
 	}
 
@@ -835,7 +835,7 @@ void ABasePhysicsVehiclePawn::AttachWeaponToVehicle(const TSubclassOf<ABaseWeapo
 		PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
 		PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
 		PrimaryWeapon->SetOwner(this);
-		PrimaryWeapon->PlayerReference = this;
+		PrimaryWeapon->OwnerReference = this;
 	}
 	
 }

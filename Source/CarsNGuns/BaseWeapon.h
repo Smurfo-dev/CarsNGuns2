@@ -23,7 +23,7 @@ public:
 	virtual void StopFire();
 
 	UPROPERTY()
-	class ABasePhysicsVehiclePawn* PlayerReference;
+	class ABasePhysicsVehiclePawn* OwnerReference;
 
 protected:
 	// Called when the game starts or when spawned

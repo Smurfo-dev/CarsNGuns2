@@ -19,8 +19,8 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void Follow() override;
-
 	virtual void Torpedo() override;
+
+	virtual void TransitionFromFollow() override;
 	
 };

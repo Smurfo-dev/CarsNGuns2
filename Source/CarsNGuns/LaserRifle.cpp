@@ -154,9 +154,9 @@ void ALaserRifle::PerformGunTrace(const FVector& BarrelLocation, const FRotator&
 
 void ALaserRifle::MoveTowardTarget(float DeltaTime, float InterpSpeed)
 {
-	if(PlayerReference)
+	if(OwnerReference)
 	{
-		if(!PlayerReference->GetCurrentCameraLockSetting())
+		if(!OwnerReference->GetCurrentCameraLockSetting())
 		{
 			if(PlayerController)
 			{
@@ -195,14 +195,14 @@ void ALaserRifle::MoveTowardTarget(float DeltaTime, float InterpSpeed)
 				}
 			}
 		}
-		else if(PlayerReference->GetCurrentCameraLockSetting())
+		else if(OwnerReference->GetCurrentCameraLockSetting())
 		{
 			if(PlayerController)
 			{
 				FVector WorldLocation;
 				FVector WorldDirection;
 
-				if(PlayerController->DeprojectScreenPositionToWorld(PlayerReference->GetCurrentTargetScreenPosition().X, PlayerReference->GetCurrentTargetScreenPosition().Y, WorldLocation, WorldDirection))
+				if(PlayerController->DeprojectScreenPositionToWorld(OwnerReference->GetCurrentTargetScreenPosition().X, OwnerReference->GetCurrentTargetScreenPosition().Y, WorldLocation, WorldDirection))
 				{
 					FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
 			

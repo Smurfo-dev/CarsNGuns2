@@ -73,7 +73,8 @@ void AEnemyVehicleBase::OnDeath()
 
 void AEnemyVehicleBase::DestroyActor()
 {
-	PrimaryWeapon->Destroy();
-	SecondaryWeapon->Destroy();
+	if (PrimaryWeapon) PrimaryWeapon->Destroy();
+	if (SecondaryWeapon) SecondaryWeapon->Destroy();
+		
 	Destroy();
 }

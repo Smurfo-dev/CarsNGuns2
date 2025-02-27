@@ -27,8 +27,13 @@ void AGameplayGameMode::BeginPlay()
 	SetupPlayer();
 
 	StartTime = GetWorld()->GetTimeSeconds();
+	
+	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 
-	GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGameplayGameMode::SetupInputAfterDelay, 0.1f, false);
+
+	
 }
 
 void AGameplayGameMode::SetupPlayer()
@@ -62,8 +67,6 @@ void AGameplayGameMode::SetupPlayer()
 					Subsystem->AddMappingContext(VehicleMappingContext, 1);  // Adjust the priority as needed
 					UE_LOG(LogTemp, Warning, TEXT("Input Mapping Context added in GameMode."));
 				}
-				PlayerController->SetInputMode(FInputModeGameOnly());
-				PlayerController->bShowMouseCursor = false;
 			}
 		}
 		GameInstance->PopulateEnemies();
@@ -117,6 +120,16 @@ void AGameplayGameMode::OnWeaponSelectionMenuClosed()
 		PlayerController->bShowMouseCursor = false;
 		SetTimerActive(true);
 	}
+}
+
+void AGameplayGameMode::SetupInputAfterDelay()
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+    if (PlayerController)
+    {
+        PlayerController->SetInputMode(FInputModeGameOnly());
+        PlayerController->bShowMouseCursor = false;  // or true depending on your needs
+    }
 }
 
 float AGameplayGameMode::GetLevelTime() const

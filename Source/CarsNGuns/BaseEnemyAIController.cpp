@@ -3,6 +3,7 @@
 
 #include "BaseEnemyAIController.h"
 #include "EnemyVehicleBase.h"
+#include "PlayerVehicleBase.h"
 #include "Kismet/GameplayStatics.h"
 
 ABaseEnemyAIController::ABaseEnemyAIController()
@@ -20,7 +21,7 @@ void ABaseEnemyAIController::BeginPlay()
 void ABaseEnemyAIController::InitializeReferences()
 {
 	// Ensure player and enemy vehicle are set
-	PlayerReference = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	PlayerReference = Cast<APlayerVehicleBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (PlayerReference)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Reference correctly found"));
@@ -45,33 +46,59 @@ void ABaseEnemyAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (EnemyVehicleReference)
+	if(EnemyVehicleReference && EnemyVehicleReference->bDebugAI)
 	{
-		if (EnemyVehicleReference->bDebugAI)
-		{
-			FString StateText = FString::Printf(TEXT("State: %s"), *GetEnemyStateAsString());
-			DrawDebugString(GetWorld(), EnemyVehicleReference->GetActorLocation() + FVector(0, 0, 100.0f), StateText, nullptr, FColor::Blue, 0.0f, false, 4.0f);
+		FString StateText = FString::Printf(TEXT("State: %s"), *GetEnemyStateAsString());
+		DrawDebugString(GetWorld(), EnemyVehicleReference->GetActorLocation() + FVector(0, 0, 100.0f), StateText, nullptr, FColor::Blue, 0.0f, false, 4.0f);
 
-			DrawDebugSphere(GetWorld(), PlayerReference->GetActorLocation(), BrakingRadius, 32, FColor::Red, false, -1.0f, 0, 2.0f);
+		DrawDebugSphere(GetWorld(), PlayerReference->GetActorLocation(), BrakingRadius, 32, FColor::Red, false, -1.0f, 0, 2.0f);
 
-			// Draw Follow Radius (Green)
-			DrawDebugSphere(GetWorld(), PlayerReference->GetActorLocation(), FollowRadius, 32, FColor::Green, false, -1.0f, 0, 2.0f);
-		}
+		// Draw Follow Radius (Green)
+		DrawDebugSphere(GetWorld(), PlayerReference->GetActorLocation(), FollowRadius, 32, FColor::Green, false, -1.0f, 0, 2.0f);
+
+		//UE_LOG(LogTemp, Warning, TEXT("Follow State Time Elapsed: %f"), FollowStateTimeElapsed);
+	}
+
+	if(EnemyVehicleReference)
+	{
+		if (EnemyVehicleReference->bIsDead) SetState(EAIState::Dead);
+	}
+
+	if(!PlayerReference || PlayerReference->bIsDead)
+	{
+		SetState(EAIState::Idle);
 	}
 	
 	switch (CurrentState)
 	{
 	case EAIState::Follow:
 		Follow();
+		FollowStateTimeElapsed += DeltaSeconds;
+
+		if (FollowStateTimeElapsed >= FollowStateDuration)
+		{
+			TransitionFromFollow();
+		}
 		break;
 	case EAIState::Chase:
 		Chase();
+		FollowStateTimeElapsed = 0.0f;
 		break;
 	case EAIState::Torpedo:
 		Torpedo();
+		FollowStateTimeElapsed = 0.0f;
 		break;
 	case EAIState::Shooting:
 		Shooting();
+		FollowStateTimeElapsed = 0.0f;
+		break;
+	case EAIState::Idle:
+		Idle();
+		FollowStateTimeElapsed = 0.0f;
+		break;
+	case EAIState::Dead:
+		Dead();
+		FollowStateTimeElapsed = 0.0f;
 		break;
 	}
 	
@@ -91,7 +118,7 @@ void ABaseEnemyAIController::Follow()
 
 		FVector DirectionToPlayer = (PlayerLocation - EnemyLocation).GetSafeNormal();
 		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
-		UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
+		//UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
 
 		UPrimitiveComponent* PhysicsComponent = Cast<UPrimitiveComponent>(GetPawn()->GetRootComponent());
 		
@@ -127,14 +154,16 @@ void ABaseEnemyAIController::Follow()
 				EnemyVehicleReference->SetThrottleInput(0);
 				EnemyVehicleReference->SetBrakingInput(1);
 
-				UE_LOG(LogTemp, Warning, TEXT("Braking"));
+				//UE_LOG(LogTemp, Warning, TEXT("Braking"));
 			}
 			else if(DistanceToPlayer > BrakingRadius && DistanceToPlayer < FollowRadius)
 			{
-				EnemyVehicleReference->SetThrottleInput(1);
+				float NormalizedDistance = FMath::Clamp(DistanceToPlayer / FollowRadius, 0.0f, 1.0f);
+				float ClampedThrottleInput = FMath::Lerp(0.25f, 1.0f, NormalizedDistance);
+				EnemyVehicleReference->SetThrottleInput(ClampedThrottleInput);
 				EnemyVehicleReference->SetBrakingInput(0);
 
-				UE_LOG(LogTemp, Warning, TEXT("following"));
+				//UE_LOG(LogTemp, Warning, TEXT("following"));
 			}
 			else if (DistanceToPlayer > FollowRadius)
 			{
@@ -154,7 +183,7 @@ void ABaseEnemyAIController::Chase()
 
 		FVector DirectionToPlayer = (PlayerLocation - EnemyLocation).GetSafeNormal();
 		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
-		UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
+		//UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
 
 		UPrimitiveComponent* PhysicsComponent = Cast<UPrimitiveComponent>(GetPawn()->GetRootComponent());
 		
@@ -192,14 +221,30 @@ void ABaseEnemyAIController::Chase()
 	}
 }
 
+void ABaseEnemyAIController::Idle()
+{
+	//Do Nothing
+	if (PlayerReference && !PlayerReference->bIsDead) SetState(EAIState::Chase);
+}
+
+void ABaseEnemyAIController::Dead()
+{
+	//Just be dead
+}
+
 void ABaseEnemyAIController::Torpedo()
 {
-	
+	//Overridden by children
 }
 
 void ABaseEnemyAIController::Shooting()
 {
-	
+	//Overridden by children
+}
+
+void ABaseEnemyAIController::TransitionFromFollow()
+{
+	//Overridden by children
 }
 
 FString ABaseEnemyAIController::GetEnemyStateAsString() const
@@ -210,6 +255,8 @@ FString ABaseEnemyAIController::GetEnemyStateAsString() const
 	case EAIState::Chase: return TEXT("Chase");
 	case EAIState::Torpedo: return TEXT("Torpedo");
 	case EAIState::Shooting: return TEXT("Shooting");
+	case EAIState::Dead: return TEXT("Dead");
+	case EAIState::Idle: return TEXT("Idle");
 	default: return TEXT("Unknown");
 	}
 }

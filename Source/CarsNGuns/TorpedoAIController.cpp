@@ -28,17 +28,17 @@ void ATorpedoAIController::Tick(float DeltaSeconds)
 		}
 	}
 }
-
-void ATorpedoAIController::Follow()
-{
-	Super::Follow();
-
-	//edit follow
-}
-
 void ATorpedoAIController::Torpedo()
 {
 	Super::Torpedo();
 
+	Follow();
 	//Torpedo Code
+}
+
+void ATorpedoAIController::TransitionFromFollow()
+{
+	Super::TransitionFromFollow();
+
+	SetState(EAIState::Torpedo);
 }

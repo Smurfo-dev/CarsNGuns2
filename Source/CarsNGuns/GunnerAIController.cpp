@@ -2,6 +2,8 @@
 
 
 #include "GunnerAIController.h"
+
+#include "BaseWeapon.h"
 #include "EnemyVehicleBase.h"
 
 void AGunnerAIController::BeginPlay()
@@ -12,6 +14,12 @@ void AGunnerAIController::BeginPlay()
 void AGunnerAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (CurrentState != EAIState::Shooting && bIsFiring)
+	{
+		EnemyVehicleReference->GetPrimaryWeapon()->StopFire();
+		bIsFiring = false;
+	}
 
 	if (EnemyVehicleReference)
 	{
@@ -29,16 +37,19 @@ void AGunnerAIController::Tick(float DeltaSeconds)
 	
 }
 
-void AGunnerAIController::Follow()
-{
-	Super::Follow();
-
-	//Edit follow to transition to shooting
-}
-
 void AGunnerAIController::Shooting()
 {
 	Super::Shooting();
 
-	//shooting code
+	Follow();
+
+	EnemyVehicleReference->GetPrimaryWeapon()->Fire();
+	bIsFiring = true;
+}
+
+void AGunnerAIController::TransitionFromFollow()
+{
+	Super::TransitionFromFollow();
+
+	SetState(EAIState::Shooting);
 }
