@@ -22,6 +22,15 @@ public:
 	virtual void Fire() override;
 
 	virtual void StopFire() override;
+
+	UPROPERTY(Category="VFX", EditDefaultsOnly, BlueprintReadOnly)
+	class UNiagaraComponent* LaserBeamNiagaraComponent;
+
+	UPROPERTY(Category="VFX", EditAnywhere)
+	class UNiagaraSystem* LaserBeamNiagaraSystem;
+
+	UPROPERTY(Category="VFX", EditAnywhere)
+	UNiagaraSystem* LaserBeamImpactNiagaraSystem;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -60,7 +69,11 @@ protected:
 private:
 	void PerformHitScan();
 
+	void PerformBeamScan();
+
 	void PerformGunTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection);
+
+	void PerformBeamTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection);
 
 	void MoveTowardTarget(float DeltaTime, float InterpSpeed);
 
@@ -80,6 +93,8 @@ private:
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float Damage = 30.0f; //Damage Per Tick
 
-	bool IsWindingDown = false;
+	bool bIsWindingDown = false;
+
+	float LastSpawnTime = 0.0f;
 	
 };

@@ -4,6 +4,8 @@
 #include "LaserRifle.h"
 
 #include "AIController.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "PlayerVehicleBase.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -14,6 +16,9 @@ ALaserRifle::ALaserRifle()
 {
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
+
+	LaserBeamNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserBeamNiagaraComponent"));
+	LaserBeamNiagaraComponent->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("ProjectileSpawnPoint"));
 }
 
 void ALaserRifle::BeginPlay()
@@ -40,6 +45,7 @@ void ALaserRifle::Fire()
 	if(bCanFire && CurrentHeat < MaxHeat && !bIsOverheated)
 	{
 		PerformHitScan();
+		PerformBeamScan();
 
 		CurrentHeat += HeatPerTick;
 		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
@@ -49,6 +55,7 @@ void ALaserRifle::Fire()
 			UE_LOG(LogTemp, Warning, TEXT("CurrentHeat = Overheat"));
 			bIsOverheated = true;
 			bCanFire = false;
+			StopFire();
 			GetWorld()->GetTimerManager().ClearTimer(PassiveCooldownTimerHandle); // Stop passive cooling
 			GetWorld()->GetTimerManager().ClearTimer(CooldownDelayTimerHandle); //Stop Cooldown Delay
 			GetWorld()->GetTimerManager().SetTimer(OverheatTimerHandle, this, &ALaserRifle::CoolDown, CooldownTime, false);
@@ -60,15 +67,19 @@ void ALaserRifle::Fire()
 			GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
 		}
 		
-		if(!FiringAudioComponent->IsPlaying() || IsWindingDown)
+		if(!FiringAudioComponent->IsPlaying() || bIsWindingDown)
 		{
 			FiringAudioComponent->Activate(true);
-			IsWindingDown = false;
+			bIsWindingDown = false;
 		}
 
 		bCanFire = false;
 
 		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ALaserRifle::ResetFire, 1*FireRate, false);
+	}
+	else if (CurrentHeat < MaxHeat && !bIsOverheated)
+	{
+		PerformBeamScan();
 	}
 }
 
@@ -79,8 +90,9 @@ void ALaserRifle::StopFire()
 	if(FiringAudioComponent->IsPlaying())
 	{
 		FiringAudioComponent->SetTriggerParameter(TEXT("WindDown"));
-		IsWindingDown = true;
+		bIsWindingDown = true;
 	}
+	LaserBeamNiagaraComponent->Deactivate();
 }
 
 void ALaserRifle::CoolDown()
@@ -88,6 +100,8 @@ void ALaserRifle::CoolDown()
 	CurrentHeat = 0.0f;
 	bIsOverheated = false;
 	bCanFire = true;
+
+	LaserBeamNiagaraComponent->Deactivate();
 
 	// Restart passive cooling after overheat ends
 	GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
@@ -133,6 +147,26 @@ void ALaserRifle::PerformHitScan()
 	PerformGunTrace(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WeaponMesh->GetSocketRotation(TEXT("ProjectileSpawnPoint")), HitResult, Params, ViewRotation.Vector());
 }
 
+void ALaserRifle::PerformBeamScan()
+{
+	FVector ViewLocation;
+	FRotator ViewRotation;
+	if(PlayerController)
+	{
+		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	}
+	else
+	{
+		ViewRotation = GetOwner()->GetActorRotation();
+	}
+	//Collision Query Params
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(GetOwner());
+	PerformBeamTrace(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WeaponMesh->GetSocketRotation(TEXT("ProjectileSpawnPoint")), HitResult, Params, ViewRotation.Vector());
+}
+
 void ALaserRifle::PerformGunTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection)
 {
 	FVector AimDirection = BarrelRotation.Vector();
@@ -148,13 +182,35 @@ void ALaserRifle::PerformGunTrace(const FVector& BarrelLocation, const FRotator&
 			float AppliedDamage = (1-Distance/10000)*Damage; //Damage Drop Off things
 			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageType);
 		}
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 12, FColor::Red, false, 1.0f);
-		
+		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 12, FColor::Red, false, 1.0f);
 	}
 	else
 	{
 		//Hitting nothing
 	}
+}
+
+void ALaserRifle::PerformBeamTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult,
+	const FCollisionQueryParams& Params, const FVector& HitFromDirection)
+{
+	FVector AimDirection = BarrelRotation.Vector();
+	
+	const FVector TraceEnd = BarrelLocation + AimDirection*MaxRange;
+
+	if(GetWorld()->LineTraceSingleByChannel(HitResult, BarrelLocation, TraceEnd, ECC_Visibility, Params))
+	{
+		LaserBeamNiagaraComponent->SetVariablePosition(TEXT("LaserEnd"), HitResult.ImpactPoint);
+		LaserBeamNiagaraComponent->Activate();
+
+		
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaserBeamImpactNiagaraSystem, HitResult.Location);
+	}
+	else
+	{
+		LaserBeamNiagaraComponent->SetVariablePosition(TEXT("LaserEnd"), TraceEnd);
+		LaserBeamNiagaraComponent->Activate();
+	}
+	
 }
 
 void ALaserRifle::MoveTowardTarget(float DeltaTime, float InterpSpeed)
@@ -273,7 +329,11 @@ void ALaserRifle::MoveTowardTarget(float DeltaTime, float InterpSpeed)
 
 void ALaserRifle::InitVFX() const
 {
-	
+	if(LaserBeamNiagaraComponent)
+	{
+		LaserBeamNiagaraComponent->SetAsset(LaserBeamNiagaraSystem);
+		LaserBeamNiagaraComponent->Deactivate();
+	}
 }
 
 void ALaserRifle::InitAudio() const
