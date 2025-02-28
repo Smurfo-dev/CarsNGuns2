@@ -223,10 +223,8 @@ void APlayerVehicleBase::HandleZoom(const FInputActionValue& Value)
 
 void APlayerVehicleBase::FirePrimary(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("FirePrimary Action Triggered!"));
 	if(PrimaryWeapon)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Primary Weapon Exists!"));
 		if(Value.Get<bool>())
 		{
 			PrimaryWeapon->Fire();
@@ -235,9 +233,6 @@ void APlayerVehicleBase::FirePrimary(const FInputActionValue& Value)
 		{
 			PrimaryWeapon->StopFire();
 		}
-	}
-	else{
-		UE_LOG(LogTemp, Log, TEXT("No Primary Weapon?"));
 	}
 }
 

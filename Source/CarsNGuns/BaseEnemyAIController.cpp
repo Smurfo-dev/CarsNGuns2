@@ -131,24 +131,6 @@ void ABaseEnemyAIController::Follow()
 			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToPlayer);
 			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
 
-			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
-			if (AngleToPLayer < DeadZoneThreshold)
-			{
-				EnemyVehicleReference->SetSteeringInput(0);
-				return;
-			}
-
-
-			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
-
-			static float PreviousSteeringInput = 0.0f;
-			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
-			
-			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
-			PreviousSteeringInput = SmoothedSteeringInput;
-			
-			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
-
 			if(DistanceToPlayer < BrakingRadius)
 			{
 				EnemyVehicleReference->SetThrottleInput(0);
@@ -169,6 +151,24 @@ void ABaseEnemyAIController::Follow()
 			{
 				SetState(EAIState::Chase);
 			}
+
+			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
+			if (AngleToPLayer < DeadZoneThreshold)
+			{
+				EnemyVehicleReference->SetSteeringInput(0);
+				return;
+			}
+
+
+			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
+
+			static float PreviousSteeringInput = 0.0f;
+			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
+			
+			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
+			PreviousSteeringInput = SmoothedSteeringInput;
+			
+			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
 			
 		}
 	}

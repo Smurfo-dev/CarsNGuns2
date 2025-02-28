@@ -2,6 +2,8 @@
 
 
 #include "GrenadeLauncher.h"
+
+#include "AIController.h"
 #include "BaseProjectile.h"
 #include "GrenadeProjectile.h"
 #include "PlayerVehicleBase.h"
@@ -92,91 +94,121 @@ void AGrenadeLauncher::LaunchGrenade()
 
 void AGrenadeLauncher::MoveTowardTarget(float DeltaTime, float InterpSpeed)
 {
-	if(OwnerReference)
-	{
-		if(!OwnerReference->GetCurrentCameraLockSetting())
-		{
-			if(PlayerController)
-			{
-				FVector2D MousePosition;
-				PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
-				FVector WorldLocation;
-				FVector WorldDirection;
+    if (OwnerReference)
+    {
+        if (AController* Controller = OwnerReference->GetController())
+        {
+            if (Controller->IsA<APlayerController>())
+            {
+                if (!OwnerReference->GetCurrentCameraLockSetting())
+                {
+                    if (PlayerController)
+                    {
+                        FVector2D MousePosition;
+                        PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+                        FVector WorldLocation;
+                        FVector WorldDirection;
 
-				if(PlayerController->DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection))
-				{
-					FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
-			
-					FHitResult HitResult;
-					FCollisionQueryParams Params;
-					Params.AddIgnoredActor(this); //Ignore Weapon
-					Params.AddIgnoredActor(GetOwner()); //Ignore Weapon holder
+                        if (PlayerController->DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection))
+                        {
+                            FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
 
-					bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
-		
-					FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
-					if(bHit)
-					{
-						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
-						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
-						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
-						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
-					}
+                            FHitResult HitResult;
+                            FCollisionQueryParams Params;
+                            Params.AddIgnoredActor(this); // Ignore Weapon
+                            Params.AddIgnoredActor(GetOwner()); // Ignore Weapon holder
 
-					else
-					{
-						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), TraceEnd);
-						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
-						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
-						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
-					}
-					TargetPosition = HitResult.Location;
-				}
-			}
-		}
-		else if(OwnerReference->GetCurrentCameraLockSetting())
-		{
-			if(PlayerController)
-			{
-				FVector WorldLocation;
-				FVector WorldDirection;
+                            bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
 
-				if(PlayerController->DeprojectScreenPositionToWorld(OwnerReference->GetCurrentTargetScreenPosition().X, OwnerReference->GetCurrentTargetScreenPosition().Y, WorldLocation, WorldDirection))
-				{
-					FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
-			
-					FHitResult HitResult;
-					FCollisionQueryParams Params;
-					Params.AddIgnoredActor(this); //Ignore Weapon
-					Params.AddIgnoredActor(GetOwner()); //Ignore Weapon holder
+                            FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
 
-					bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
-		
-					FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
-					if(bHit)
-					{
-						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
-						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
-						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
-						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
-					}
+                            if (bHit)
+                            {
+                                FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+                                    WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
+                                LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+                                FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+                                WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+                            }
+                            else
+                            {
+                                FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+                                    WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), TraceEnd);
+                                LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+                                FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+                                WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+                            }
 
-					else
-					{
-						FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WorldLocation);
-						LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
-						FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
-						WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
-					}
+                            TargetPosition = HitResult.Location;
+                        }
+                    }
+                }
+                else if (OwnerReference->GetCurrentCameraLockSetting())
+                {
+                    if (PlayerController)
+                    {
+                        FVector WorldLocation;
+                        FVector WorldDirection;
 
-					TargetPosition = HitResult.Location;
-				}
-		
-		
-			}
-		}
-	}
+                        if (PlayerController->DeprojectScreenPositionToWorld(
+                                OwnerReference->GetCurrentTargetScreenPosition().X,
+                                OwnerReference->GetCurrentTargetScreenPosition().Y,
+                                WorldLocation,
+                                WorldDirection))
+                        {
+                            FVector TraceEnd = WorldLocation + WorldDirection * 10000.0f;
+
+                            FHitResult HitResult;
+                            FCollisionQueryParams Params;
+                            Params.AddIgnoredActor(this); // Ignore Weapon
+                            Params.AddIgnoredActor(GetOwner()); // Ignore Weapon holder
+
+                            bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility, Params);
+
+                            FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
+
+                            if (bHit)
+                            {
+                                FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+                                    WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), HitResult.ImpactPoint);
+                                LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+                                FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+                                WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+                            }
+                            else
+                            {
+                                FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+                                    WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WorldLocation);
+                                LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+                                FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+                                WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+                            }
+
+                            TargetPosition = HitResult.Location;
+                        }
+                    }
+                }
+            }
+        	else if (Controller->IsA<AAIController>())
+        	{
+        		FRotator CurrentRotation = WeaponMesh->GetBoneRotationByName(TEXT("GunRotator"), EBoneSpaces::WorldSpace);
+        		ABasePhysicsVehiclePawn* PlayerVehiclePawn = Cast<ABasePhysicsVehiclePawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+        		if (PlayerVehiclePawn && !PlayerVehiclePawn->bIsDead)
+        		{
+        			FVector Playerlocation = PlayerVehiclePawn->GetActorLocation();
+        			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(
+									WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), Playerlocation);
+        			LookAtRotation = ClampTargetRotation(LookAtRotation, GetOwner(), 360.0f, 20.0f);
+        			FRotator TargetRotation = FMath::RInterpTo(CurrentRotation, LookAtRotation, DeltaTime, InterpSpeed);
+        			WeaponMesh->SetBoneRotationByName(TEXT("GunRotator"), TargetRotation, EBoneSpaces::WorldSpace);
+        			
+        			TargetPosition = Playerlocation;
+        		}
+        	}
+        }
+    }
 }
+
 
 void AGrenadeLauncher::InitVFX() const
 {
