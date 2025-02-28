@@ -43,8 +43,11 @@ void AGunnerAIController::Shooting()
 
 	Follow();
 
-	EnemyVehicleReference->GetPrimaryWeapon()->Fire();
-	bIsFiring = true;
+	if (EnemyVehicleReference->GetPrimaryWeapon())
+	{
+		EnemyVehicleReference->GetPrimaryWeapon()->Fire();
+		bIsFiring = true;
+	}
 }
 
 void AGunnerAIController::TransitionFromFollow()
