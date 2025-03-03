@@ -5,6 +5,7 @@
 
 #include "BaseWeapon.h"
 #include "HealthComponent.h"
+#include "MyPlayerController.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -63,21 +64,8 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 
 	if (bAutoEquipWeapons)
 	{
-		if(PrimaryWeaponClass)
-		{
-			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(PrimaryWeaponClass);
-			PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
-			PrimaryWeapon->SetOwner(this);
-			PrimaryWeapon->OwnerReference = this;
-		}
-	
-		if(SecondaryWeaponClass)
-		{
-			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(SecondaryWeaponClass);
-			SecondaryWeapon->AttachToComponent(VehicleMeshComponent, FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
-			SecondaryWeapon->SetOwner(this);
-			SecondaryWeapon->OwnerReference = this;
-		}
+		if (PrimaryWeaponClass) AttachPrimaryWeaponToVehicle(PrimaryWeaponClass);
+		if (SecondaryWeaponClass) AttachSecondaryWeaponToVehicle(SecondaryWeaponClass);
 	}
 
 	CurrentSteeringInput = 0.0f;
@@ -825,7 +813,7 @@ bool ABasePhysicsVehiclePawn::GetCurrentCameraLockSetting() const
 	return bCameraLock;
 }
 
-void ABasePhysicsVehiclePawn::AttachWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass)
+void ABasePhysicsVehiclePawn::AttachPrimaryWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass)
 {
 	//Attach chosen weapon classes to player vehicle
 	//Weapon ID must be the same as corresponding socket names
@@ -836,6 +824,34 @@ void ABasePhysicsVehiclePawn::AttachWeaponToVehicle(const TSubclassOf<ABaseWeapo
 		PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
 		PrimaryWeapon->SetOwner(this);
 		PrimaryWeapon->OwnerReference = this;
+	}
+	if (Controller)
+	{
+		if (Controller->IsA<AMyPlayerController>()) //if the controller is a player
+		{
+			Cast<AMyPlayerController>(Controller)->UpdateWeaponIcons();
+		}
+	}
+	
+	
+}
+
+void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass)
+{
+	if(WeaponClass)
+	{
+		SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+		SecondaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
+		SecondaryWeapon->SetOwner(this);
+		SecondaryWeapon->OwnerReference = this;
+	}
+
+	if (Controller)
+	{
+		if (Controller->IsA<AMyPlayerController>()) //if the controller is a player
+		{
+			Cast<AMyPlayerController>(Controller)->UpdateWeaponIcons();
+		}
 	}
 	
 }

@@ -41,6 +41,7 @@ void AMyPlayerController::BeginPlay()
 		{
 			CurrentHUDWidget->AddToViewport();
 			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+			//UpdateWeaponIcons(CurrentHUDWidget); //Call this when equipping weapons instead
 		}
 	}
 }
@@ -49,4 +50,10 @@ void AMyPlayerController::HandlePlayerDeath()
 {
 	if (CurrentCrosshairWidget) CurrentCrosshairWidget->RemoveFromParent();
 	if (CurrentHUDWidget) CurrentHUDWidget->RemoveFromParent();
+}
+
+void AMyPlayerController::UpdateWeaponIcons()
+{
+	UE_LOG(LogTemp, Log, TEXT("Trying to update weapon icons"))
+	if (CurrentHUDWidget) CurrentHUDWidget->SetWeaponIcons();
 }

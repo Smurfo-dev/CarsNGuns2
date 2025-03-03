@@ -43,7 +43,7 @@ void UWeaponSelectionMenu::OnWeapon1Selected()
 {
 	if(PlayerPawn)
 	{
-		PlayerPawn->AttachWeaponToVehicle(SelectedWeapon1);
+		PlayerPawn->AttachPrimaryWeaponToVehicle(SelectedWeapon1);
 	}
 	CloseMenu();
 }
@@ -52,7 +52,7 @@ void UWeaponSelectionMenu::OnWeapon2Selected()
 {
 	if(PlayerPawn)
 	{
-		PlayerPawn->AttachWeaponToVehicle(SelectedWeapon2);
+		PlayerPawn->AttachSecondaryWeaponToVehicle(SelectedWeapon2);
 	}
 	CloseMenu();
 }

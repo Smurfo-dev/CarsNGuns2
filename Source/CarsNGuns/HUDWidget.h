@@ -19,5 +19,17 @@ public:
 	// This is the reference variable you want to set in C++
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "UI")
 	ABasePhysicsVehiclePawn* PlayerReference;
+
+	UFUNCTION(BlueprintCallable, Category="Weapons")
+	void SetWeaponIcons();
+
+protected:
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* PrimaryWeaponIcon; 
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* SecondaryWeaponIcon; 
 	
 };

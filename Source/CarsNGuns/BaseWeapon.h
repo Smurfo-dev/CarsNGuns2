@@ -25,9 +25,15 @@ public:
 	UPROPERTY()
 	class ABasePhysicsVehiclePawn* OwnerReference;
 
+	UFUNCTION(BlueprintCallable, Category="UI")
+	UTexture2D* GetWeaponIcon() const {return WeaponIcon;};
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category=UI)
+	UTexture2D* WeaponIcon;
 
 	UPROPERTY()
 	APlayerController* PlayerController;

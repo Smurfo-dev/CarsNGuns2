@@ -429,7 +429,9 @@ public:
 
 	bool GetCurrentCameraLockSetting() const;
 
-	void AttachWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass);
+	void AttachPrimaryWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass);
+
+	void AttachSecondaryWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass);
 
 	ABaseWeapon* GetPrimaryWeapon() const {return PrimaryWeapon;}
 	

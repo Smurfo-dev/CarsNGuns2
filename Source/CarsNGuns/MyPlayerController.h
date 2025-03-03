@@ -21,6 +21,9 @@ public:
 	UFUNCTION()
 	void HandlePlayerDeath();
 
+	UFUNCTION()
+	void UpdateWeaponIcons();
+
 protected:
 	virtual void BeginPlay() override;
 
