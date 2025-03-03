@@ -6,6 +6,7 @@
 #include "BasePhysicsVehiclePawn.h"
 #include "HUDWidget.h"
 #include "CrosshairWidget.h"
+#include "DebugMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
 AMyPlayerController::AMyPlayerController()
@@ -42,6 +43,37 @@ void AMyPlayerController::BeginPlay()
 			CurrentHUDWidget->AddToViewport();
 			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
 			//UpdateWeaponIcons(CurrentHUDWidget); //Call this when equipping weapons instead
+		}
+	}
+}
+
+void AMyPlayerController::ToggleDebugMenu()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Opening Debug Menu"))
+	if (!CurrentDebugMenuWidget && DebugMenuWidgetClass)
+	{
+		CurrentDebugMenuWidget = CreateWidget<UDebugMenuWidget>(this, DebugMenuWidgetClass);
+	}
+
+	if (CurrentDebugMenuWidget)
+	{
+		if (CurrentDebugMenuWidget->IsInViewport())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Removing Debug Menu From Viewport"))
+			CurrentDebugMenuWidget->RemoveFromParent();
+			SetShowMouseCursor(false);
+			FInputModeGameOnly InputMode;
+			SetInputMode(InputMode);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Adding Debug Menu To Viewport"))
+			CurrentDebugMenuWidget->AddToViewport();
+			CurrentDebugMenuWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+			CurrentDebugMenuWidget->PopulateWeaponDropDowns();
+			SetShowMouseCursor(true);
+			FInputModeGameAndUI InputMode;
+			SetInputMode(InputMode);
 		}
 	}
 }

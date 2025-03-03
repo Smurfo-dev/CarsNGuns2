@@ -37,9 +37,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> WeaponSelectionMenuClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
-	TArray<TSubclassOf<class ABaseWeapon>> AvailableWeapons;
-
 	float StartTime;  // Stores the world time when the timer starts
 	float PausedTime; // Tracks the time when paused
 	bool bIsTimerActive;

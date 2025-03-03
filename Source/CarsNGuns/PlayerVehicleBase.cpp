@@ -109,6 +109,7 @@ void APlayerVehicleBase::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		//Debug Actions
 		EnhancedInputComponent->BindAction(CarFlipAction, ETriggerEvent::Completed, this, &APlayerVehicleBase::FlipCar);
+		EnhancedInputComponent->BindAction(DebugMenuAction, ETriggerEvent::Started, this, &APlayerVehicleBase::ToggleDebugMenu);
 	}
 
 }
@@ -431,5 +432,13 @@ void APlayerVehicleBase::DestroyActor()
 	//Somehow disable player dependent widgets;
 	
 	Destroy();
+}
+
+void APlayerVehicleBase::ToggleDebugMenu()
+{
+	if (Controller)
+	{
+		Cast<AMyPlayerController>(Controller)->ToggleDebugMenu();
+	}
 }
 

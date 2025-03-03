@@ -24,6 +24,9 @@ public:
 	UFUNCTION()
 	void UpdateWeaponIcons();
 
+	UFUNCTION()
+	void ToggleDebugMenu();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,6 +36,12 @@ private:
 
 	UPROPERTY()
 	UCrosshairWidget* CurrentCrosshairWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UDebugMenuWidget> DebugMenuWidgetClass;
+
+	UPROPERTY()
+	UDebugMenuWidget* CurrentDebugMenuWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UHUDWidget> HUDWidgetClass;

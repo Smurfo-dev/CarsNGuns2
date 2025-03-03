@@ -75,36 +75,42 @@ void AGameplayGameMode::SetupPlayer()
 
 void AGameplayGameMode::ShowWeaponSelectionMenu()
 {
-	//Spawn Weapon Selection Menu
-	if(WeaponSelectionMenuClass && AvailableWeapons.Num() > 1)
+
+	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance)
 	{
-		int32 Index1 = FMath::RandRange(0, AvailableWeapons.Num() -1 );
-		int32 Index2;
-		do
+		//Spawn Weapon Selection Menu
+		if(WeaponSelectionMenuClass && GameInstance->AvailableWeapons.Num() > 1)
 		{
-			Index2 = FMath::RandRange(0, AvailableWeapons.Num() -1 );
-		} while (Index1 == Index2);
+			int32 Index1 = FMath::RandRange(0, GameInstance->AvailableWeapons.Num() -1 );
+			int32 Index2;
+			do
+			{
+				Index2 = FMath::RandRange(0, GameInstance->AvailableWeapons.Num() -1 );
+			} while (Index1 == Index2);
 
 		
-		UWeaponSelectionMenu* WeaponSelectionMenu = CreateWidget<UWeaponSelectionMenu>(GetWorld(), WeaponSelectionMenuClass);
-		if (WeaponSelectionMenu)
-		{
-			WeaponSelectionMenu->AddToViewport();
-			WeaponSelectionMenu->InitializeMenu(AvailableWeapons[Index1], AvailableWeapons[Index2]);
-			
-			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
+			UWeaponSelectionMenu* WeaponSelectionMenu = CreateWidget<UWeaponSelectionMenu>(GetWorld(), WeaponSelectionMenuClass);
+			if (WeaponSelectionMenu)
 			{
-				UGameplayStatics::SetGamePaused(GetWorld(), true);
-				const FInputModeUIOnly InputMode;
-				PlayerController->SetInputMode(InputMode);
-				PlayerController->bShowMouseCursor = true;
+				WeaponSelectionMenu->AddToViewport();
+				WeaponSelectionMenu->InitializeMenu(GameInstance->AvailableWeapons[Index1], GameInstance->AvailableWeapons[Index2]);
+			
+				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
+				{
+					UGameplayStatics::SetGamePaused(GetWorld(), true);
+					const FInputModeUIOnly InputMode;
+					PlayerController->SetInputMode(InputMode);
+					PlayerController->bShowMouseCursor = true;
 				
-				SetTimerActive(false);
-			}
+					SetTimerActive(false);
+				}
 
-			WeaponSelectionMenu->OnMenuClosed.AddDynamic(this, &AGameplayGameMode::OnWeaponSelectionMenuClosed);
+				WeaponSelectionMenu->OnMenuClosed.AddDynamic(this, &AGameplayGameMode::OnWeaponSelectionMenuClosed);
+			}
 		}
 	}
+	
 }
 
 void AGameplayGameMode::OnWeaponSelectionMenuClosed()

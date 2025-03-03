@@ -22,6 +22,9 @@ public:
 
 	virtual void StopFire();
 
+	UFUNCTION()
+	FString GetWeaponID();
+
 	UPROPERTY()
 	class ABasePhysicsVehiclePawn* OwnerReference;
 
@@ -34,6 +37,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category=UI)
 	UTexture2D* WeaponIcon;
+
+	UPROPERTY(EditDefaultsOnly, Category="Info")
+	FString WeaponName = FString("Default");
 
 	UPROPERTY()
 	APlayerController* PlayerController;

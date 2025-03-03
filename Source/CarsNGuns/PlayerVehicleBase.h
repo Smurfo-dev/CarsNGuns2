@@ -145,6 +145,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* CarFlipAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* DebugMenuAction;
+
 private:
 
 	//Input functions
@@ -196,6 +199,9 @@ private:
 	
 	UFUNCTION()
 	void UpdateCurrentTargetScreenPosition();
+
+	UFUNCTION()
+	void ToggleDebugMenu();
 
 	UFUNCTION()
 	void UpdatePlayerScreenPosition();

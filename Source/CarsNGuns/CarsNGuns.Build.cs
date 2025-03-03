@@ -8,7 +8,7 @@ public class CarsNGuns : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "CinematicCamera", "PhysicsCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "GeometryCollectionEngine", "CinematicCamera", "PhysicsCore", "SlateCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Niagara", "AIModule" });
 

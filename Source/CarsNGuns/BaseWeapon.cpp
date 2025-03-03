@@ -46,6 +46,11 @@ void ABaseWeapon::StopFire()
 	
 }
 
+FString ABaseWeapon::GetWeaponID()
+{
+	return WeaponName;
+}
+
 
 void ABaseWeapon::ResetFire()
 {

@@ -24,6 +24,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<ABasePhysicsVehiclePawn> SelectedPlayerPawnClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons")
+	TArray<TSubclassOf<class ABaseWeapon>> AvailableWeapons;
+
 	UFUNCTION(BlueprintCallable)
 	void SetSelectedPlayerPawnClass(TSubclassOf<ABasePhysicsVehiclePawn> PawnClass)
 	{

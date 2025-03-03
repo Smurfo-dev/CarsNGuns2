@@ -820,10 +820,25 @@ void ABasePhysicsVehiclePawn::AttachPrimaryWeaponToVehicle(const TSubclassOf<ABa
 	
 	if(WeaponClass)
 	{
-		PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
-		PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
-		PrimaryWeapon->SetOwner(this);
-		PrimaryWeapon->OwnerReference = this;
+		if (!PrimaryWeapon)
+		{
+			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+			PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
+			PrimaryWeapon->SetOwner(this);
+			PrimaryWeapon->OwnerReference = this;
+		}
+		else if (PrimaryWeapon)
+		{
+			PrimaryWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			PrimaryWeapon->Destroy();
+			
+			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+			PrimaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, PrimaryWeaponID); //Connect to corresponding reference joint
+			PrimaryWeapon->SetOwner(this);
+			PrimaryWeapon->OwnerReference = this;
+		}
+		
+		
 	}
 	if (Controller)
 	{
@@ -840,10 +855,24 @@ void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<A
 {
 	if(WeaponClass)
 	{
-		SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
-		SecondaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
-		SecondaryWeapon->SetOwner(this);
-		SecondaryWeapon->OwnerReference = this;
+		if (!SecondaryWeapon)
+		{
+			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+			SecondaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
+			SecondaryWeapon->SetOwner(this);
+			SecondaryWeapon->OwnerReference = this;
+		}
+		else if (SecondaryWeapon)
+		{
+			SecondaryWeapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			SecondaryWeapon->Destroy();
+
+			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+			SecondaryWeapon->AttachToComponent(VehicleMeshComponent,FAttachmentTransformRules::KeepRelativeTransform, SecondaryWeaponID); //Connect to corresponding reference joint
+			SecondaryWeapon->SetOwner(this);
+			SecondaryWeapon->OwnerReference = this;
+		}
+		
 	}
 
 	if (Controller)
