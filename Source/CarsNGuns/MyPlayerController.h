@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CrosshairWidget.h"
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
@@ -27,9 +26,15 @@ protected:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<class UCrosshairWidget> HUDWidgetClass;
+	TSubclassOf<class UCrosshairWidget> CrosshairWidgetClass;
 
 	UPROPERTY()
-	UCrosshairWidget* CurrentHUDWidget;
+	UCrosshairWidget* CurrentCrosshairWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UHUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	UHUDWidget* CurrentHUDWidget;
 	
 };

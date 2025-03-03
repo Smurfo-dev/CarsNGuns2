@@ -5,6 +5,7 @@
 
 #include "BasePhysicsVehiclePawn.h"
 #include "HUDWidget.h"
+#include "CrosshairWidget.h"
 #include "Blueprint/UserWidget.h"
 
 AMyPlayerController::AMyPlayerController()
@@ -23,9 +24,19 @@ void AMyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (CrosshairWidgetClass)
+	{
+		CurrentCrosshairWidget = CreateWidget<UCrosshairWidget>(this, CrosshairWidgetClass);
+		if (CurrentCrosshairWidget)
+		{
+			CurrentCrosshairWidget->AddToViewport();
+			CurrentCrosshairWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+		}
+	}
+
 	if (HUDWidgetClass)
 	{
-		CurrentHUDWidget = CreateWidget<UCrosshairWidget>(this, HUDWidgetClass);
+		CurrentHUDWidget = CreateWidget<UHUDWidget>(this, HUDWidgetClass);
 		if (CurrentHUDWidget)
 		{
 			CurrentHUDWidget->AddToViewport();
@@ -36,5 +47,6 @@ void AMyPlayerController::BeginPlay()
 
 void AMyPlayerController::HandlePlayerDeath()
 {
+	if (CurrentCrosshairWidget) CurrentCrosshairWidget->RemoveFromParent();
 	if (CurrentHUDWidget) CurrentHUDWidget->RemoveFromParent();
 }
