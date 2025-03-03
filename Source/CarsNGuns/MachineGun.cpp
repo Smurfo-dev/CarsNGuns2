@@ -195,7 +195,7 @@ void AMachineGun::PerformGunTrace(const FVector& BarrelLocation, const FRotator&
 			//Bullethole VFX
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BulletHoleDebrisNiagaraSystem, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
 		}
-		DrawDebugLine(GetWorld(), BarrelLocation, HitResult.ImpactPoint, FColor::Green, false, 0.5f, 0, 1.0f);
+		//DrawDebugLine(GetWorld(), BarrelLocation, HitResult.ImpactPoint, FColor::Green, false, 0.5f, 0, 1.0f);
 	}
 	else //If nothing is hit
 	{

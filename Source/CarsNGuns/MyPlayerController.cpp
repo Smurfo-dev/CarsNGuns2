@@ -25,7 +25,7 @@ void AMyPlayerController::BeginPlay()
 
 	if (HUDWidgetClass)
 	{
-		CurrentHUDWidget = CreateWidget<UHUDWidget>(this, HUDWidgetClass);
+		CurrentHUDWidget = CreateWidget<UCrosshairWidget>(this, HUDWidgetClass);
 		if (CurrentHUDWidget)
 		{
 			CurrentHUDWidget->AddToViewport();
