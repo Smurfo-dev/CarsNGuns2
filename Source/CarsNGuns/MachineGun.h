@@ -26,6 +26,8 @@ public:
 
 	virtual void StopFire() override;
 
+	virtual float GetResourceBarValue() const override;
+
 	UPROPERTY(EditAnywhere, Category="VFX")
 	UMaterialInterface* BulletHoleDecalMaterial;
 
@@ -81,13 +83,13 @@ private:
 	float Damage = 30.0f; //Damage amount per bullet
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	int32 MaxAmmo = 100;
+	float MaxAmmo = 100;
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	int32 CurrentAmmo;
+	float CurrentAmmo;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Statistics")
-	int32 AmmoPerShot = 1; // Ammo consumed per shot
+	float AmmoPerShot = 1; // Ammo consumed per shot
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Statistics")
 	float ReloadTime = 2.0f; // Time to reload

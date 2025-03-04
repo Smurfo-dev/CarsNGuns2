@@ -17,6 +17,8 @@ class CARSNGUNS_API AGrenadeLauncher : public ABaseWeapon
 public:
 	AGrenadeLauncher();
 
+	virtual float GetResourceBarValue() const override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Fire() override;

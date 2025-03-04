@@ -19,6 +19,11 @@ AGrenadeLauncher::AGrenadeLauncher()
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
 
+float AGrenadeLauncher::GetResourceBarValue() const
+{
+	return Super::GetResourceBarValue();
+}
+
 void AGrenadeLauncher::BeginPlay()
 {
 	Super::BeginPlay();

@@ -17,6 +17,11 @@ ARocketLauncher::ARocketLauncher()
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
 
+float ARocketLauncher::GetResourceBarValue() const
+{
+	return Super::GetResourceBarValue();
+}
+
 void ARocketLauncher::BeginPlay()
 {
 	Super::BeginPlay();

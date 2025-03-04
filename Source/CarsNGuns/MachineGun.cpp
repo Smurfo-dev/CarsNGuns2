@@ -114,6 +114,11 @@ void AMachineGun::StopFire()
 	}
 }
 
+float AMachineGun::GetResourceBarValue() const
+{
+	return CurrentAmmo/MaxAmmo;
+}
+
 
 void AMachineGun::PerformHitScan()
 {

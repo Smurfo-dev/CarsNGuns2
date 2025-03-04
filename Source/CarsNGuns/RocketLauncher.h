@@ -18,6 +18,8 @@ public:
 	// Sets default values for this actor's properties
 	ARocketLauncher();
 
+	virtual float GetResourceBarValue() const override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
