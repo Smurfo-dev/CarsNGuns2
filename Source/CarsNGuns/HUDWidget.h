@@ -23,6 +23,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapons")
 	void SetWeaponIcons();
 
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -30,6 +32,31 @@ protected:
 	class UImage* PrimaryWeaponIcon; 
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* SecondaryWeaponIcon; 
+	UImage* SecondaryWeaponIcon;
+
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar* PrimaryProgress;
+
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* SecondaryProgress;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* PrimaryCircularProgress;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* SecondaryCircularProgress;
+
+private:
+	UPROPERTY()
+	FString EquippedPrimaryID = "Default";
+
+	UPROPERTY()
+	FString EquippedSecondaryID = "Default";
+
+	float CalculateProgress(FString WeaponID, int32 WeaponIndex); //index 0 or 1 for primary or secondary
+	
+	void SetBarVisibilityPrimary(FString EquipID);
+
+	void SetBarVisibilitySecondary(FString EquipID);
 	
 };

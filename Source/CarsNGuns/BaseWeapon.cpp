@@ -46,6 +46,11 @@ void ABaseWeapon::StopFire()
 	
 }
 
+float ABaseWeapon::GetResourceBarValue() const
+{
+	return 0;
+}
+
 FString ABaseWeapon::GetWeaponID()
 {
 	return WeaponName;

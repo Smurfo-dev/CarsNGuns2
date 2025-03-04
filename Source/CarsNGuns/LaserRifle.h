@@ -23,6 +23,8 @@ public:
 
 	virtual void StopFire() override;
 
+	virtual float GetResourceBarValue() const override;
+
 	UPROPERTY(Category="VFX", EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraComponent* LaserBeamNiagaraComponent;
 

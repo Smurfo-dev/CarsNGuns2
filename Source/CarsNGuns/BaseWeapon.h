@@ -21,6 +21,9 @@ public:
 	virtual void Fire();
 
 	virtual void StopFire();
+	
+	UFUNCTION()
+	virtual float GetResourceBarValue() const;
 
 	UFUNCTION()
 	FString GetWeaponID();

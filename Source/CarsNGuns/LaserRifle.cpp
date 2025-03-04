@@ -47,6 +47,8 @@ void ALaserRifle::Fire()
 		PerformHitScan();
 		PerformBeamScan();
 
+		GetWorld()->GetTimerManager().ClearTimer(PassiveCooldownTimerHandle);
+
 		CurrentHeat += HeatPerTick;
 		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
 
@@ -93,6 +95,11 @@ void ALaserRifle::StopFire()
 		bIsWindingDown = true;
 	}
 	LaserBeamNiagaraComponent->Deactivate();
+}
+
+float ALaserRifle::GetResourceBarValue() const
+{
+	return CurrentHeat/MaxHeat;
 }
 
 void ALaserRifle::CoolDown()
