@@ -9,9 +9,6 @@
 void UDebugMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	if (PrimaryWeaponDropDown) PrimaryWeaponDropDown->OnSelectionChanged.AddDynamic(this, &UDebugMenuWidget::OnPrimaryWeaponSelected);
-	if (SecondaryWeaponDropDown) SecondaryWeaponDropDown->OnSelectionChanged.AddDynamic(this, &UDebugMenuWidget::OnSecondaryWeaponSelected);
 }
 
 void UDebugMenuWidget::OnPrimaryWeaponSelected(FString SelectedItem, ESelectInfo::Type SelectionType)
@@ -42,6 +39,20 @@ void UDebugMenuWidget::PopulateWeaponDropDowns()
 {
 	if (UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(GetGameInstance()))
 	{
+
+		if (PrimaryWeaponDropDown)
+		{
+			PrimaryWeaponDropDown->OnSelectionChanged.Clear();
+			PrimaryWeaponDropDown->OnSelectionChanged.AddDynamic(this, &UDebugMenuWidget::OnPrimaryWeaponSelected);
+		}
+		if (SecondaryWeaponDropDown)
+		{
+			SecondaryWeaponDropDown->OnSelectionChanged.Clear();
+			SecondaryWeaponDropDown->OnSelectionChanged.AddDynamic(this, &UDebugMenuWidget::OnSecondaryWeaponSelected);
+		}
+
+		PrimaryWeaponDropDown->ClearSelection();
+		SecondaryWeaponDropDown->ClearSelection();
 		PrimaryWeaponDropDown->ClearOptions();
 		SecondaryWeaponDropDown->ClearOptions();
 
@@ -59,27 +70,7 @@ void UDebugMenuWidget::PopulateWeaponDropDowns()
 			PrimaryWeaponDropDown->AddOption(WeaponName);
 			SecondaryWeaponDropDown->AddOption(WeaponName);
 		}
-
-		SetInitialWeaponSelection(GameInstance, WeaponNames);
 		
 	}
 	
-}
-
-void UDebugMenuWidget::SetInitialWeaponSelection(UDefaultGameInstance* GameInstance, const TArray<FString>& WeaponNames)
-{
-	if (PlayerReference)
-	{
-		if (ABaseWeapon* PrimaryWeapon = PlayerReference->GetPrimaryWeapon())
-		{
-			int32 PrimaryWeaponIndex = WeaponNames.IndexOfByKey(PrimaryWeapon->GetWeaponID());
-			if (PrimaryWeaponIndex != INDEX_NONE) PrimaryWeaponDropDown->SetSelectedIndex(PrimaryWeaponIndex);
-		}
-
-		if (ABaseWeapon* SecondaryWeapon = PlayerReference->GetSecondaryWeapon())
-		{
-			int32 SecondaryWeaponIndex = WeaponNames.IndexOfByKey(SecondaryWeapon->GetWeaponID());
-			if (SecondaryWeaponIndex != INDEX_NONE) SecondaryWeaponDropDown->SetSelectedIndex(SecondaryWeaponIndex);
-		}
-	}
 }

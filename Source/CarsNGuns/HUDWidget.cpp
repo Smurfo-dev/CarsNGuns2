@@ -10,6 +10,11 @@
 void UHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	PrimaryProgress->SetVisibility(ESlateVisibility::Hidden);
+	PrimaryCircularProgress->SetVisibility(ESlateVisibility::Hidden);
+	SecondaryProgress->SetVisibility(ESlateVisibility::Hidden);
+	SecondaryCircularProgress->SetVisibility(ESlateVisibility::Hidden);
 	
 }
 
@@ -86,7 +91,6 @@ void UHUDWidget::SetBarVisibilitySecondary(FString EquipID)
 	}
 	else
 	{
-		
 		SecondaryProgress->SetVisibility(ESlateVisibility::Hidden);
 		SecondaryCircularProgress->SetVisibility(ESlateVisibility::Hidden);
 	}

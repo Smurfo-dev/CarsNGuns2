@@ -34,8 +34,5 @@ public:
 
 	UFUNCTION()
 	void PopulateWeaponDropDowns();
-
-	UFUNCTION()
-	void SetInitialWeaponSelection(class UDefaultGameInstance* GameInstance, const TArray<FString>& WeaponNames);
 	
 };

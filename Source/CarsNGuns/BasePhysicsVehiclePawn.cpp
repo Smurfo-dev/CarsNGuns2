@@ -820,6 +820,7 @@ void ABasePhysicsVehiclePawn::AttachPrimaryWeaponToVehicle(const TSubclassOf<ABa
 	
 	if(WeaponClass)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Attaching Primary Weapon"))
 		if (!PrimaryWeapon)
 		{
 			PrimaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
@@ -853,8 +854,10 @@ void ABasePhysicsVehiclePawn::AttachPrimaryWeaponToVehicle(const TSubclassOf<ABa
 
 void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<ABaseWeapon>& WeaponClass)
 {
+	
 	if(WeaponClass)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Attaching Secondary Weapon"))
 		if (!SecondaryWeapon)
 		{
 			SecondaryWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);

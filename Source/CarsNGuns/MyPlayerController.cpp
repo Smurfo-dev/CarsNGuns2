@@ -88,6 +88,5 @@ void AMyPlayerController::HandlePlayerDeath()
 
 void AMyPlayerController::UpdateWeaponIcons()
 {
-	UE_LOG(LogTemp, Log, TEXT("Trying to update weapon icons"))
 	if (CurrentHUDWidget) CurrentHUDWidget->SetWeaponIcons();
 }
