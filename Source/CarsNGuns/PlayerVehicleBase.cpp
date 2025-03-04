@@ -426,8 +426,9 @@ void APlayerVehicleBase::OnDeath()
 
 void APlayerVehicleBase::DestroyActor()
 {
-	PrimaryWeapon->Destroy();
-	SecondaryWeapon->Destroy();
+	if (PrimaryWeapon) PrimaryWeapon->Destroy();
+	if (SecondaryWeapon) SecondaryWeapon->Destroy();
+	
 
 	//Somehow disable player dependent widgets;
 	

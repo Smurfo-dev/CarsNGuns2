@@ -82,6 +82,8 @@ void AMyPlayerController::HandlePlayerDeath()
 {
 	if (CurrentCrosshairWidget) CurrentCrosshairWidget->RemoveFromParent();
 	if (CurrentHUDWidget) CurrentHUDWidget->RemoveFromParent();
+	if (CurrentDebugMenuWidget) CurrentDebugMenuWidget->RemoveFromParent();
+	
 }
 
 void AMyPlayerController::UpdateWeaponIcons()

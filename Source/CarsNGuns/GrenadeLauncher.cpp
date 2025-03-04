@@ -19,11 +19,6 @@ AGrenadeLauncher::AGrenadeLauncher()
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
 
-float AGrenadeLauncher::GetResourceBarValue() const
-{
-	return Super::GetResourceBarValue();
-}
-
 void AGrenadeLauncher::BeginPlay()
 {
 	Super::BeginPlay();
@@ -37,6 +32,18 @@ void AGrenadeLauncher::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	MoveTowardTarget(DeltaTime, 25.0f);
+
+	if (ElapsedTimeSinceLastShot < FireRate)
+	{
+		// Increment the elapsed time
+		ElapsedTimeSinceLastShot += DeltaTime;
+
+		// Update the progress bar (value from 0 to 1)
+		CurrentProgressBarValue = ElapsedTimeSinceLastShot / FireRate;
+
+		// Ensure the value doesn't exceed 1
+		CurrentProgressBarValue = FMath::Clamp(CurrentProgressBarValue, 0.0f, 1.0f);
+	}
 }
 
 void AGrenadeLauncher::Fire()
@@ -47,6 +54,9 @@ void AGrenadeLauncher::Fire()
 	{
 		LaunchGrenade();
 		FiringAudioComponent->Activate(true); //play rocket firing sound
+
+		ElapsedTimeSinceLastShot = 0.0f;  // Reset the elapsed time for the next shot
+		CurrentProgressBarValue = 0.0f;
 
 		bCanFire = false;
 
@@ -227,5 +237,10 @@ void AGrenadeLauncher::InitAudio() const
 		FiringAudioComponent->SetActive(true);
 		FiringAudioComponent->Stop();
 	}
+}
+
+float AGrenadeLauncher::GetResourceBarValue() const
+{
+	return CurrentProgressBarValue;
 }
 

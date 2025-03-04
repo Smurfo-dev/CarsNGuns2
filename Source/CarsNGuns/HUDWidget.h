@@ -46,6 +46,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UImage* SecondaryCircularProgress;
 
+	UPROPERTY(EditDefaultsOnly, Category=Materials)
+	UMaterialInstanceDynamic* PrimaryMaterialInstance;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Materials)
+	UMaterialInstanceDynamic* SecondaryMaterialInstance;
+
 private:
 	UPROPERTY()
 	FString EquippedPrimaryID = "Default";
@@ -58,5 +64,9 @@ private:
 	void SetBarVisibilityPrimary(FString EquipID);
 
 	void SetBarVisibilitySecondary(FString EquipID);
+
+	void SetupCircularProgressBars();
+
+	void UpdateCircularProgressBar(UMaterialInstanceDynamic* MaterialInstance, float ProgressValue);
 	
 };

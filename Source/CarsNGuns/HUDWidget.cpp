@@ -17,13 +17,31 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (PlayerReference->GetPrimaryWeapon())
+	if (PlayerReference)
 	{
-		PrimaryProgress->SetPercent(CalculateProgress(EquippedPrimaryID, 0));
-	}
-	if (PlayerReference->GetSecondaryWeapon())
-	{
-		SecondaryProgress->SetPercent(CalculateProgress(EquippedSecondaryID, 1));
+		if (PlayerReference->GetPrimaryWeapon())
+		{
+			if (EquippedPrimaryID == "Machine Gun" || EquippedPrimaryID == "Laser Rifle")
+			{
+				PrimaryProgress->SetPercent(CalculateProgress(EquippedPrimaryID, 0));
+			}
+			else if (EquippedPrimaryID == "Rocket Launcher" || EquippedPrimaryID == "Grenade Launcher")
+			{
+				UpdateCircularProgressBar(PrimaryMaterialInstance, CalculateProgress(EquippedPrimaryID, 0));
+			}
+		
+		}
+		if (PlayerReference->GetSecondaryWeapon())
+		{
+			if (EquippedSecondaryID == "Machine Gun" || EquippedSecondaryID == "Laser Rifle")
+			{
+				SecondaryProgress->SetPercent(CalculateProgress(EquippedSecondaryID, 1));
+			}
+			else if (EquippedSecondaryID == "Rocket Launcher" || EquippedSecondaryID == "Grenade Launcher")
+			{
+				UpdateCircularProgressBar(SecondaryMaterialInstance, CalculateProgress(EquippedSecondaryID, 1));
+			}
+		}
 	}
 }
 
@@ -68,6 +86,7 @@ void UHUDWidget::SetBarVisibilitySecondary(FString EquipID)
 	}
 	else
 	{
+		
 		SecondaryProgress->SetVisibility(ESlateVisibility::Hidden);
 		SecondaryCircularProgress->SetVisibility(ESlateVisibility::Hidden);
 	}
@@ -90,8 +109,45 @@ void UHUDWidget::SetWeaponIcons()
 
 	if (PlayerReference->GetPrimaryWeapon()) EquippedPrimaryID = PlayerReference->GetPrimaryWeapon()->GetWeaponID();
 	if (PlayerReference->GetSecondaryWeapon()) EquippedSecondaryID = PlayerReference->GetSecondaryWeapon()->GetWeaponID();
-	
 
 	SetBarVisibilityPrimary(EquippedPrimaryID);
 	SetBarVisibilitySecondary(EquippedSecondaryID);
+
+	SetupCircularProgressBars();
 }
+
+void UHUDWidget::SetupCircularProgressBars()
+{
+	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("Material'/Game/Materials/UI/M_CircularProgress.M_CircularProgress'"));
+	if (BaseMaterial)
+	{
+		if (PrimaryCircularProgress)
+		{
+			PrimaryMaterialInstance = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+        
+			// Apply the dynamic material to the UImage
+			PrimaryCircularProgress->SetBrushFromMaterial(PrimaryMaterialInstance);
+		
+		}
+
+		if (SecondaryCircularProgress)
+		{
+			SecondaryMaterialInstance = UMaterialInstanceDynamic::Create(BaseMaterial, this);
+
+			// Apply the dynamic material to the UImage
+			SecondaryCircularProgress->SetBrushFromMaterial(SecondaryMaterialInstance);
+		
+		}
+	}
+	
+}
+
+void UHUDWidget::UpdateCircularProgressBar(UMaterialInstanceDynamic* MaterialInstance, float ProgressValue)
+{
+	if (MaterialInstance)
+	{
+		// Set the scalar parameter (e.g., ProgressValue) to control the progress in the material
+		MaterialInstance->SetScalarParameterValue("Progress", ProgressValue);
+	}
+}
+

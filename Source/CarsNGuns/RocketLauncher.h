@@ -44,4 +44,8 @@ private:
 	void InitVFX() const;
 
 	void InitAudio() const;
+
+	float ElapsedTimeSinceLastShot = 1.0f; // Time that has passed since the last shot
+	
+	float CurrentProgressBarValue = 1.0f;  // Current value of the progress bar (0 to 1)
 };
