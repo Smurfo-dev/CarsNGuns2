@@ -256,9 +256,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bDebugAI = false;
 
-	UPROPERTY(EditAnywhere, Category="Debug")
-	TSubclassOf<UUserWidget> PiPWidgetClass;
-
 	//Debug engine and gearbox values
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bDebugEngine = true;

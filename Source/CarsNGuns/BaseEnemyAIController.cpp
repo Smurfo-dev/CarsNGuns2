@@ -158,8 +158,7 @@ void ABaseEnemyAIController::Follow()
 				EnemyVehicleReference->SetSteeringInput(0);
 				return;
 			}
-
-
+			
 			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
 
 			static float PreviousSteeringInput = 0.0f;
@@ -167,6 +166,8 @@ void ABaseEnemyAIController::Follow()
 			
 			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
 			PreviousSteeringInput = SmoothedSteeringInput;
+
+			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SmoothedSteeringInput);
 			
 			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
 			
