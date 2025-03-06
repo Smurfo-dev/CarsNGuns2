@@ -52,6 +52,12 @@ void ALaserRifle::Fire()
 		CurrentHeat += HeatPerTick;
 		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
 
+		if(!FiringAudioComponent->IsPlaying() || bIsWindingDown)
+		{
+			FiringAudioComponent->Activate(true);
+			bIsWindingDown = false;
+		}
+
 		if(CurrentHeat >= MaxHeat)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("CurrentHeat = Overheat"));
@@ -67,12 +73,6 @@ void ALaserRifle::Fire()
 			// Reset the cooldown delay timer (cooling starts only after 0.5s of not firing)
 			GetWorld()->GetTimerManager().ClearTimer(CooldownDelayTimerHandle);
 			GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
-		}
-		
-		if(!FiringAudioComponent->IsPlaying() || bIsWindingDown)
-		{
-			FiringAudioComponent->Activate(true);
-			bIsWindingDown = false;
 		}
 
 		bCanFire = false;
