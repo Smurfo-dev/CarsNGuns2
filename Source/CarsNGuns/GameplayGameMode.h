@@ -16,12 +16,6 @@ class CARSNGUNS_API AGameplayGameMode : public AGameModeBase
 
 public:
 	AGameplayGameMode();
-	
-	//Returns current Level Timer
-	UFUNCTION(BlueprintCallable, Category = "Timer")
-	float GetLevelTime() const;
-
-	void SetTimerActive(bool bActive);
 
 protected:
 	virtual void BeginPlay() override;
@@ -36,10 +30,6 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> WeaponSelectionMenuClass;
-
-	float StartTime;  // Stores the world time when the timer starts
-	float PausedTime; // Tracks the time when paused
-	bool bIsTimerActive;
 
 	UFUNCTION()
 	void ShowWeaponSelectionMenu();

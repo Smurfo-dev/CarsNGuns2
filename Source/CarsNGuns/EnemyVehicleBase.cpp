@@ -3,10 +3,9 @@
 
 #include "EnemyVehicleBase.h"
 #include "BaseWeapon.h"
-#include "DefaultGameInstance.h"
+#include "DefaultGameState.h"
 #include "Kismet/GameplayStatics.h"
-#include "Components/SceneCaptureComponent2D.h"
-#include "Engine/TextureRenderTarget2D.h"
+#include "EnemyManager.h"
 
 AEnemyVehicleBase::AEnemyVehicleBase()
 {
@@ -40,10 +39,10 @@ void AEnemyVehicleBase::OnDeath()
 		bIsDead = true;
 
 		//Remove from enemy manager
-		UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		if (GameInstance && GameInstance->GetEnemyManager())
+		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+		if (DefaultGameState && DefaultGameState->GetEnemyManager())
 		{
-			GameInstance->GetEnemyManager()->RemoveEnemy(this);
+			DefaultGameState->GetEnemyManager()->RemoveEnemy(this);
 		}
 		
 		GetWorldTimerManager().SetTimer(DestroyTimerHandle, this, &AEnemyVehicleBase::DestroyActor, 3.0f, false); //Kill after time

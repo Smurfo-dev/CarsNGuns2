@@ -5,6 +5,7 @@
 
 #include "BasePhysicsVehiclePawn.h"
 #include "DefaultGameInstance.h"
+#include "DefaultGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "WeaponSelectionMenu.h"
@@ -15,9 +16,7 @@ class UEnhancedInputLocalPlayerSubsystem;
 
 AGameplayGameMode::AGameplayGameMode()
 {
-	StartTime = 0.0f;
-	PausedTime = 0.0f;
-	bIsTimerActive = true;
+	GameStateClass = ADefaultGameState::StaticClass();
 }
 
 void AGameplayGameMode::BeginPlay()
@@ -25,8 +24,6 @@ void AGameplayGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	SetupPlayer();
-
-	StartTime = GetWorld()->GetTimeSeconds();
 	
 	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 
@@ -38,15 +35,15 @@ void AGameplayGameMode::BeginPlay()
 
 void AGameplayGameMode::SetupPlayer()
 {
-	if(UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	if(ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>())
 	{
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 		SelectedPlayerPawnClass = DefaultPawnClass;
 		//Prioriterar class vald i gamemode blueprint
-		if(!SelectedPlayerPawnClass && GameInstance->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
+		if(!SelectedPlayerPawnClass && DefaultGameState->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Starting with selected player pawn class"));
-			SelectedPlayerPawnClass = GameInstance->GetSelectedPlayerPawnClass(); //If no default is chosen, select from game instance
+			SelectedPlayerPawnClass = DefaultGameState->GetSelectedPlayerPawnClass(); //If no default is chosen, select from game instance
 			
 			if(AActor* PlayerStart = UGameplayStatics::GetActorOfClass(this, APlayerStart::StaticClass()))
 			{
@@ -69,7 +66,7 @@ void AGameplayGameMode::SetupPlayer()
 				}
 			}
 		}
-		GameInstance->PopulateEnemies();
+		DefaultGameState->PopulateEnemies();
 	}
 }
 
@@ -103,7 +100,7 @@ void AGameplayGameMode::ShowWeaponSelectionMenu()
 					PlayerController->SetInputMode(InputMode);
 					PlayerController->bShowMouseCursor = true;
 				
-					SetTimerActive(false);
+					//SET WORLD TIMER Pause
 				}
 
 				WeaponSelectionMenu->OnMenuClosed.AddDynamic(this, &AGameplayGameMode::OnWeaponSelectionMenuClosed);
@@ -124,7 +121,7 @@ void AGameplayGameMode::OnWeaponSelectionMenuClosed()
 		FInputModeGameOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 		PlayerController->bShowMouseCursor = false;
-		SetTimerActive(true);
+		//SET WORLD TIMER ACTIVE
 	}
 }
 
@@ -136,19 +133,4 @@ void AGameplayGameMode::SetupInputAfterDelay()
         PlayerController->SetInputMode(FInputModeGameOnly());
         PlayerController->bShowMouseCursor = false;  // or true depending on your needs
     }
-}
-
-float AGameplayGameMode::GetLevelTime() const
-{
-	if(bIsTimerActive) return GetWorld()->GetTimeSeconds() - StartTime;
-
-	return PausedTime;
-}
-
-void AGameplayGameMode::SetTimerActive(bool bActive)
-{
-	if(bActive && !bIsTimerActive) StartTime += GetWorld()->GetTimeSeconds() - PausedTime;
-	else if(!bActive && bIsTimerActive) PausedTime = GetWorld()->GetTimeSeconds() - StartTime;
-
-	bIsTimerActive = bActive;
 }

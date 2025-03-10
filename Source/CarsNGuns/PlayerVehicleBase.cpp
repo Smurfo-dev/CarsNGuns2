@@ -6,14 +6,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "BaseWeapon.h"
-#include "DefaultGameInstance.h"
+#include "EnemyManager.h"
+#include "DefaultGameState.h"
 #include "MyPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneComponent.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
-#include "Blueprint/UserWidget.h"
 
 APlayerVehicleBase::APlayerVehicleBase()
 {
@@ -278,10 +278,10 @@ void APlayerVehicleBase::UpdateTarget()
 {
 	if(PlayerController)
 	{
-		UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		if(GameInstance)
+		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+		if(DefaultGameState)
 		{
-			if(GameInstance->GetEnemyManager()->GetEnemies().Num() == 0)
+			if(DefaultGameState->GetEnemyManager()->GetEnemies().Num() == 0)
 			{
 				CurrentTarget = nullptr;
 				return;
@@ -293,7 +293,7 @@ void APlayerVehicleBase::UpdateTarget()
 				AActor* NearestTarget = nullptr;
 				float MinScreenDistanceSquared = FLT_MAX;
 
-				for(AActor* Enemy : GameInstance->GetEnemyManager()->GetEnemies())
+				for(AActor* Enemy : DefaultGameState->GetEnemyManager()->GetEnemies())
 				{
 					if(!Enemy || !IsInView(Enemy->GetActorLocation())) continue;
 					FVector2D EnemyScreenPosition;

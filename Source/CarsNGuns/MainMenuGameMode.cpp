@@ -4,6 +4,7 @@
 #include "MainMenuGameMode.h"
 
 #include "DefaultGameInstance.h"
+#include "DefaultGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
@@ -14,6 +15,8 @@
 AMainMenuGameMode::AMainMenuGameMode() : MainMenuWidget(nullptr), ChooseVehicleWidget(nullptr), CinematicCamera(nullptr) //initialize with nullptrs 
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	GameStateClass = ADefaultGameState::StaticClass();
 }
 
 void AMainMenuGameMode::BeginPlay()
@@ -136,9 +139,9 @@ void AMainMenuGameMode::OnExitGamePressed()
 
 void AMainMenuGameMode::OnPlayPressed()
 {
-	if(UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(this)))
+	if(ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>())
 	{
-		GameInstance->SetSelectedPlayerPawnClass(AvailableVehicleClasses[VehicleIndex]);
+		DefaultGameState->SetSelectedPlayerPawnClass(AvailableVehicleClasses[VehicleIndex]);
 	}
 
 	ChooseVehicleWidget->RemoveFromParent();
