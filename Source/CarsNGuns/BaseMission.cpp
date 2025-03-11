@@ -1,34 +1,35 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MissionManager.h"
+#include "BaseMission.h"
 
 // Sets default values
-AMissionManager::AMissionManager()
+ABaseMission::ABaseMission()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-void AMissionManager::StartEvent(TSubclassOf<class ABaseMission> MissionType, FVector Location)
+void ABaseMission::StartEvent()
 {
 	
 }
 
-void AMissionManager::EndEvent(ABaseMission* Mission)
+void ABaseMission::EndEvent(bool bSuccess)
 {
 	
 }
 
 // Called when the game starts or when spawned
-void AMissionManager::BeginPlay()
+void ABaseMission::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AMissionManager::Tick(float DeltaTime)
+void ABaseMission::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

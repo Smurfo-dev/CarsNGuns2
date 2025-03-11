@@ -41,6 +41,7 @@ public:
 	void PauseTimer();
 	void ResumeTimer();
 	void StopTimer();
+	
 	float GetElapsedTime() const;
 
 

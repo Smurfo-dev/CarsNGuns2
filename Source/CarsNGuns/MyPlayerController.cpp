@@ -42,6 +42,7 @@ void AMyPlayerController::BeginPlay()
 		{
 			CurrentHUDWidget->AddToViewport();
 			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+			
 			//UpdateWeaponIcons(CurrentHUDWidget); //Call this when equipping weapons instead
 		}
 	}

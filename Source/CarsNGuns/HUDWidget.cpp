@@ -4,7 +4,6 @@
 #include "HUDWidget.h"
 #include "BaseWeapon.h"
 #include "BasePhysicsVehiclePawn.h"
-#include "DefaultGameInstance.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 
@@ -24,7 +23,10 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
-	UE_LOG(LogTemp, Warning, TEXT("World Timer: %f seconds"), DefaultGameInstance->GetElapsedTime());
+	if (DefaultGameInstance)
+	{
+		WorldTimer->SetText(FText::AsNumber(FMath::RoundToInt(DefaultGameInstance->GetElapsedTime())));
+	}
 
 	if (PlayerReference)
 	{
@@ -158,4 +160,3 @@ void UHUDWidget::UpdateCircularProgressBar(UMaterialInstanceDynamic* MaterialIns
 		MaterialInstance->SetScalarParameterValue("Progress", ProgressValue);
 	}
 }
-

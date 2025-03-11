@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
+#include "DefaultGameInstance.h"
 #include "HUDWidget.generated.h"
 
 class ABasePhysicsVehiclePawn;
@@ -45,6 +47,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* SecondaryCircularProgress;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WorldTimer;
 
 	UPROPERTY(EditDefaultsOnly, Category=Materials)
 	UMaterialInstanceDynamic* PrimaryMaterialInstance;
