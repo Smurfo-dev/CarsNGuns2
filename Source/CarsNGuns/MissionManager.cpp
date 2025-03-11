@@ -10,7 +10,7 @@ AMissionManager::AMissionManager()
 
 }
 
-void AMissionManager::StartEvent(TSubclassOf<class ABaseMission> MissionType, FVector Location)
+void AMissionManager::StartEvent(TSubclassOf<ABaseMission> MissionType, FVector Location)
 {
 	
 }
