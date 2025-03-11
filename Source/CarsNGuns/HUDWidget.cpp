@@ -21,11 +21,10 @@ void UHUDWidget::NativeConstruct()
 void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-
-	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
+	
 	if (DefaultGameInstance)
 	{
-		WorldTimer->SetText(FText::AsNumber(FMath::RoundToInt(DefaultGameInstance->GetElapsedTime())));
+		WorldTimer->SetText(FText::Join(FText::FromString(TEXT(" ")), FText::FromString("World Timer : "), FText::AsNumber(FMath::RoundToInt(DefaultGameInstance->GetElapsedTime()))));
 	}
 
 	if (PlayerReference)

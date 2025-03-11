@@ -22,6 +22,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "UI")
 	ABasePhysicsVehiclePawn* PlayerReference;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "UI")
+	UDefaultGameInstance* DefaultGameInstance;
+
 	UFUNCTION(BlueprintCallable, Category="Weapons")
 	void SetWeaponIcons();
 

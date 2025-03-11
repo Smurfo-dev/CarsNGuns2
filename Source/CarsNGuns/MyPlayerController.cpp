@@ -40,8 +40,10 @@ void AMyPlayerController::BeginPlay()
 		CurrentHUDWidget = CreateWidget<UHUDWidget>(this, HUDWidgetClass);
 		if (CurrentHUDWidget)
 		{
+			UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 			CurrentHUDWidget->AddToViewport();
 			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+			CurrentHUDWidget->DefaultGameInstance = DefaultGameInstance;
 			
 			//UpdateWeaponIcons(CurrentHUDWidget); //Call this when equipping weapons instead
 		}
