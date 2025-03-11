@@ -139,9 +139,9 @@ void AMainMenuGameMode::OnExitGamePressed()
 
 void AMainMenuGameMode::OnPlayPressed()
 {
-	if(ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>())
+	if(UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>())
 	{
-		DefaultGameState->SetSelectedPlayerPawnClass(AvailableVehicleClasses[VehicleIndex]);
+		DefaultGameInstance->SetSelectedPlayerPawnClass(AvailableVehicleClasses[VehicleIndex]);
 	}
 
 	ChooseVehicleWidget->RemoveFromParent();

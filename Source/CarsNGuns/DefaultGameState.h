@@ -16,29 +16,17 @@ class CARSNGUNS_API ADefaultGameState : public AGameStateBase
 	GENERATED_BODY()
 
 public:
+	ADefaultGameState();
+	
 	UFUNCTION(BlueprintCallable)
 	class UEnemyManager* GetEnemyManager() const { return EnemyManager; }
-	
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<class ABasePhysicsVehiclePawn> SelectedPlayerPawnClass;
-
-	UFUNCTION(BlueprintCallable)
-	void SetSelectedPlayerPawnClass(TSubclassOf<ABasePhysicsVehiclePawn> PawnClass)
-	{
-		SelectedPlayerPawnClass = PawnClass;
-		UE_LOG(LogTemp, Warning, TEXT("Selected pawn class stored: %s"), *PawnClass->GetName());
-	}
-
-	UFUNCTION(BlueprintCallable)
-	TSubclassOf<ABasePhysicsVehiclePawn> GetSelectedPlayerPawnClass() const
-	{
-		return SelectedPlayerPawnClass;
-	}
 
 	void PopulateEnemies() const;
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY()

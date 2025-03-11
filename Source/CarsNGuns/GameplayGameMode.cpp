@@ -30,20 +30,24 @@ void AGameplayGameMode::BeginPlay()
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGameplayGameMode::SetupInputAfterDelay, 0.1f, false);
 
+	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
+	DefaultGameInstance->StartTimer();
+
 	
 }
 
 void AGameplayGameMode::SetupPlayer()
 {
-	if(ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>())
+	
+	if(UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>())
 	{
 		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 		SelectedPlayerPawnClass = DefaultPawnClass;
 		//Prioriterar class vald i gamemode blueprint
-		if(!SelectedPlayerPawnClass && DefaultGameState->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
+		if(!SelectedPlayerPawnClass && DefaultGameInstance->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Starting with selected player pawn class"));
-			SelectedPlayerPawnClass = DefaultGameState->GetSelectedPlayerPawnClass(); //If no default is chosen, select from game instance
+			SelectedPlayerPawnClass = DefaultGameInstance->GetSelectedPlayerPawnClass(); //If no default is chosen, select from game instance
 			
 			if(AActor* PlayerStart = UGameplayStatics::GetActorOfClass(this, APlayerStart::StaticClass()))
 			{
@@ -66,6 +70,7 @@ void AGameplayGameMode::SetupPlayer()
 				}
 			}
 		}
+		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
 		DefaultGameState->PopulateEnemies();
 	}
 }
@@ -73,17 +78,17 @@ void AGameplayGameMode::SetupPlayer()
 void AGameplayGameMode::ShowWeaponSelectionMenu()
 {
 
-	UDefaultGameInstance* GameInstance = Cast<UDefaultGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (GameInstance)
+	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
+	if (DefaultGameInstance)
 	{
 		//Spawn Weapon Selection Menu
-		if(WeaponSelectionMenuClass && GameInstance->AvailableWeapons.Num() > 1)
+		if(WeaponSelectionMenuClass && DefaultGameInstance->AvailableWeapons.Num() > 1)
 		{
-			int32 Index1 = FMath::RandRange(0, GameInstance->AvailableWeapons.Num() -1 );
+			int32 Index1 = FMath::RandRange(0, DefaultGameInstance->AvailableWeapons.Num() -1 );
 			int32 Index2;
 			do
 			{
-				Index2 = FMath::RandRange(0, GameInstance->AvailableWeapons.Num() -1 );
+				Index2 = FMath::RandRange(0, DefaultGameInstance->AvailableWeapons.Num() -1 );
 			} while (Index1 == Index2);
 
 		
@@ -91,7 +96,7 @@ void AGameplayGameMode::ShowWeaponSelectionMenu()
 			if (WeaponSelectionMenu)
 			{
 				WeaponSelectionMenu->AddToViewport();
-				WeaponSelectionMenu->InitializeMenu(GameInstance->AvailableWeapons[Index1], GameInstance->AvailableWeapons[Index2]);
+				WeaponSelectionMenu->InitializeMenu(DefaultGameInstance->AvailableWeapons[Index1], DefaultGameInstance->AvailableWeapons[Index2]);
 			
 				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0))
 				{
@@ -99,8 +104,7 @@ void AGameplayGameMode::ShowWeaponSelectionMenu()
 					const FInputModeUIOnly InputMode;
 					PlayerController->SetInputMode(InputMode);
 					PlayerController->bShowMouseCursor = true;
-				
-					//SET WORLD TIMER Pause
+					DefaultGameInstance->PauseTimer();
 				}
 
 				WeaponSelectionMenu->OnMenuClosed.AddDynamic(this, &AGameplayGameMode::OnWeaponSelectionMenuClosed);
@@ -121,7 +125,8 @@ void AGameplayGameMode::OnWeaponSelectionMenuClosed()
 		FInputModeGameOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 		PlayerController->bShowMouseCursor = false;
-		//SET WORLD TIMER ACTIVE
+		UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
+		DefaultGameInstance->ResumeTimer();
 	}
 }
 

@@ -7,12 +7,22 @@
 #include "EnemyManager.h"
 #include "Kismet/GameplayStatics.h"
 
+ADefaultGameState::ADefaultGameState()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
 void ADefaultGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Create and initialize the EnemyManager.
 	EnemyManager = NewObject<UEnemyManager>(this);
+}
+
+void ADefaultGameState::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void ADefaultGameState::PopulateEnemies() const
@@ -32,3 +42,4 @@ void ADefaultGameState::PopulateEnemies() const
 		}
 	}
 }
+
