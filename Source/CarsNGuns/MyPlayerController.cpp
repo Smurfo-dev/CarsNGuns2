@@ -79,28 +79,6 @@ void AMyPlayerController::ToggleDebugMenu()
 	}
 }
 
-void AMyPlayerController::ToggleMissionInfoMenu()
-{
-	if (!CurrentMissionInfoWidget && MissionInfoMenuWidgetClass)
-	{
-		CurrentMissionInfoWidget = CreateWidget<UMissionInfoWidget>(this, MissionInfoMenuWidgetClass);
-	}
-
-	if (CurrentMissionInfoWidget)
-	{
-		if (CurrentMissionInfoWidget->IsInViewport())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Removing Mission Info Menu From Viewport"))
-			CurrentMissionInfoWidget->RemoveFromParent();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Adding Mission Info Menu To Viewport"))
-			CurrentMissionInfoWidget->AddToViewport();
-		}
-	}
-}
-
 void AMyPlayerController::HandlePlayerDeath()
 {
 	if (CurrentCrosshairWidget) CurrentCrosshairWidget->RemoveFromParent();

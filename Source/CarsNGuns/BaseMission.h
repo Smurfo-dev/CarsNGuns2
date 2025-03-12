@@ -50,6 +50,12 @@ public:
 		return MissionState;
 	}
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UMissionInfoWidget> MissionInfoMenuWidgetClass;
+
+	UPROPERTY()
+	UMissionInfoWidget* CurrentMissionInfoWidget;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -75,5 +81,11 @@ private:
 
 	UPROPERTY()
 	class AMyPlayerController* PlayerController;
+
+	UFUNCTION()
+	void ShowMissionInfo();
+
+	UFUNCTION()
+	void HideMissionInfo();
 
 };

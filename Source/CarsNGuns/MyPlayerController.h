@@ -27,9 +27,6 @@ public:
 	UFUNCTION()
 	void ToggleDebugMenu();
 
-	UFUNCTION()
-	void ToggleMissionInfoMenu();
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -45,12 +42,6 @@ private:
 
 	UPROPERTY()
 	UDebugMenuWidget* CurrentDebugMenuWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<class UMissionInfoWidget> MissionInfoMenuWidgetClass;
-
-	UPROPERTY()
-	UMissionInfoWidget* CurrentMissionInfoWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UHUDWidget> HUDWidgetClass;

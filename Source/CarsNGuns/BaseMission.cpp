@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "MyPlayerController.h"
 #include "MissionMarkerWidget.h"
+#include "MissionInfoWidget.h"
 #include "PlayerVehicleBase.h"
 #include "Components/Image.h"
 #include "Components/SphereComponent.h"
@@ -89,7 +90,9 @@ void ABaseMission::OnPlayerEnterMissionArea(UPrimitiveComponent* OverlappedCompo
 		MissionMarkerWidget->SetVisibility(ESlateVisibility::Hidden);
 
 		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(this);
-		if (PlayerController) PlayerController->ToggleMissionInfoMenu();
+		
+		ShowMissionInfo();
+			
 	}
 }
 
@@ -102,7 +105,9 @@ void ABaseMission::OnPlayerExitMissionArea(UPrimitiveComponent* OverlappedCompon
 		MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
 
 		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(nullptr);
-		if (PlayerController) PlayerController->ToggleMissionInfoMenu();
+
+		HideMissionInfo();
+		
 	}
 }
 
@@ -127,6 +132,7 @@ void ABaseMission::OnMissionStateChanged(const EMissionState NewState)
 void ABaseMission::StartEvent()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Starting Event!")));
+	HideMissionInfo();
 }
 
 void ABaseMission::EndEvent(bool bSuccess)
@@ -134,4 +140,32 @@ void ABaseMission::EndEvent(bool bSuccess)
 
 	
 }
+
+void ABaseMission::ShowMissionInfo()
+{
+	if (!CurrentMissionInfoWidget && MissionInfoMenuWidgetClass)
+	{
+		CurrentMissionInfoWidget = CreateWidget<UMissionInfoWidget>(GetWorld(), MissionInfoMenuWidgetClass);
+		UE_LOG(LogTemp, Warning, TEXT("Creating Widget"))
+	}
+	if (CurrentMissionInfoWidget && !CurrentMissionInfoWidget->IsInViewport())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Mission Info Menu To Viewport"))
+		CurrentMissionInfoWidget->AddToViewport();
+	}
+}
+
+void ABaseMission::HideMissionInfo()
+{
+	if (CurrentMissionInfoWidget)
+	{
+		if (CurrentMissionInfoWidget->IsInViewport())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Removing Mission Info Menu From Viewport"))
+			CurrentMissionInfoWidget->RemoveFromParent();
+		}
+	}
+}
+
+
 
