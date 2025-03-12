@@ -5,6 +5,7 @@
 
 #include "BasePhysicsVehiclePawn.h"
 #include "Components/WidgetComponent.h"
+#include "MyPlayerController.h"
 #include "MissionMarkerWidget.h"
 #include "PlayerVehicleBase.h"
 #include "Components/Image.h"
@@ -36,8 +37,6 @@ ABaseMission::ABaseMission()
 	MissionMarkerWidgetComponent->SetupAttachment(RootComponent);
 
 	MissionMarkerWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	
-
 }
 
 // Called when the game starts or when spawned
@@ -57,7 +56,8 @@ void ABaseMission::BeginPlay()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Mission Marker Mission Reference Set"))
 				MissionMarkerWidget->MissionReference = this;
-				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+				PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+				if (PlayerController)
 				{
 					if (ABasePhysicsVehiclePawn* PlayerVehicle = Cast<ABasePhysicsVehiclePawn>(PlayerController->GetPawn()))
 					{
@@ -86,6 +86,10 @@ void ABaseMission::OnPlayerEnterMissionArea(UPrimitiveComponent* OverlappedCompo
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Player Entered Mission Area"));
 		MissionTriggerMesh->SetVisibility(false);
+		MissionMarkerWidget->SetVisibility(ESlateVisibility::Hidden);
+
+		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(this);
+		if (PlayerController) PlayerController->ToggleMissionInfoMenu();
 	}
 }
 
@@ -95,14 +99,34 @@ void ABaseMission::OnPlayerExitMissionArea(UPrimitiveComponent* OverlappedCompon
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Left Mission Area"));
 		MissionTriggerMesh->SetVisibility(true);
+		MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
+
+		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(nullptr);
+		if (PlayerController) PlayerController->ToggleMissionInfoMenu();
+	}
+}
+
+void ABaseMission::OnMissionStateChanged(const EMissionState NewState)
+{
+	switch (NewState)
+	{
+		case EMissionState::Active:
+			SetActorHiddenInGame(false);
+			break;
+		case EMissionState::Inactive:
+			SetActorHiddenInGame(true);
+			break;
+		case EMissionState::Completed:
+			break;
+		case EMissionState::Failed:
+			break;
 	}
 }
 
 
-
 void ABaseMission::StartEvent()
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Starting Event!")));
 }
 
 void ABaseMission::EndEvent(bool bSuccess)

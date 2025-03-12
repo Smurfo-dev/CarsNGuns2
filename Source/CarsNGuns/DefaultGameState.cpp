@@ -3,8 +3,10 @@
 
 #include "DefaultGameState.h"
 
+#include "BaseMission.h"
 #include "EnemyVehicleBase.h"
 #include "EnemyManager.h"
+#include "MissionManager.h"
 #include "Kismet/GameplayStatics.h"
 
 ADefaultGameState::ADefaultGameState()
@@ -40,6 +42,34 @@ void ADefaultGameState::PopulateEnemies() const
 			UE_LOG(LogTemp, Warning, TEXT("Found enemy: %s, Class: %s"), *Enemy->GetName(), *Enemy->GetClass()->GetName());
 			EnemyManager->AddEnemy(Enemy);
 		}
+	}
+}
+
+void ADefaultGameState::InitializeMissionManager()
+{
+	if (AActor* FoundManager = UGameplayStatics::GetActorOfClass(GetWorld(), AMissionManager::StaticClass()))
+	{
+		MissionManager = Cast<AMissionManager>(FoundManager);
+		TArray<AActor*> FoundMissions;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseMission::StaticClass(), FoundMissions);
+		
+		UE_LOG(LogTemp, Warning, TEXT("MissionManager Found and Bound"));
+		for (const auto Mission : FoundMissions)
+		{
+			if (ABaseMission* MissionToAdd = Cast<ABaseMission>(Mission))
+			{
+				MissionManager->AddMission(MissionToAdd);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Failed to cast Mission To Base Mission"));
+			}
+			
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MissionManager Doesn't Exist in world"));
 	}
 }
 

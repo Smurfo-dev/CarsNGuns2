@@ -16,10 +16,17 @@ public:
 	AMissionManager();
 
 	UFUNCTION(BlueprintCallable)
-	void StartEvent(TSubclassOf<class ABaseMission> MissionType, FVector Location);
+	void StartEvent(class ABaseMission* Mission);
 
 	UFUNCTION(BlueprintCallable)
 	void EndEvent(ABaseMission* Mission);
+
+	void AddMission(ABaseMission* Mission);
+
+	TArray<ABaseMission*> GetMissions()
+	{
+		return Missions;
+	}
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +35,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	TArray<ABaseMission*> ActiveMissions;
+	UPROPERTY(VisibleAnywhere)
+	TArray<ABaseMission*> Missions;
 
 };

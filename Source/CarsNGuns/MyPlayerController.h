@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseMission.h"
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
@@ -29,16 +28,7 @@ public:
 	void ToggleDebugMenu();
 
 	UFUNCTION()
-	void SetCurrentMission(ABaseMission* Mission)
-	{
-		CurrentMission = Mission;
-	}
-	
-	UFUNCTION()
-	ABaseMission* GetCurrentMission() const
-	{
-		return CurrentMission;
-	}
+	void ToggleMissionInfoMenu();
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,12 +47,15 @@ private:
 	UDebugMenuWidget* CurrentDebugMenuWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UMissionInfoWidget> MissionInfoMenuWidgetClass;
+
+	UPROPERTY()
+	UMissionInfoWidget* CurrentMissionInfoWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UHUDWidget> HUDWidgetClass;
 
 	UPROPERTY()
 	UHUDWidget* CurrentHUDWidget;
-
-	UPROPERTY()
-	ABaseMission* CurrentMission;
 	
 };

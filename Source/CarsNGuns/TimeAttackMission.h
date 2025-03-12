@@ -26,7 +26,7 @@ private:
 	float TimeLimit;
 
 	UPROPERTY(EditAnywhere, Category="Mission Details")
-	TArray<AActor*> Checkpoints;
+	TArray<class ACheckpoint*> Checkpoints;
 
 	int CurrentCheckpointIndex = 0;
 	

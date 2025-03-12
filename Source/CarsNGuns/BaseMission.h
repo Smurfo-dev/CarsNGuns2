@@ -39,6 +39,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Marker")
 	UStaticMeshComponent* MissionTriggerMesh;
 
+	void SetMissionState(const EMissionState NewState)
+	{
+		MissionState = NewState;
+		OnMissionStateChanged(NewState);
+	}
+
+	EMissionState GetMissionState() const
+	{
+		return MissionState;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -58,5 +69,11 @@ private:
 
 	UFUNCTION()
 	void OnPlayerExitMissionArea(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnMissionStateChanged(EMissionState NewState);
+
+	UPROPERTY()
+	class AMyPlayerController* PlayerController;
 
 };

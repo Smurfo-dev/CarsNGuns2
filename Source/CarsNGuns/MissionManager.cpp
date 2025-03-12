@@ -3,6 +3,8 @@
 
 #include "MissionManager.h"
 
+#include "BaseMission.h"
+
 // Sets default values
 AMissionManager::AMissionManager()
 {
@@ -10,15 +12,26 @@ AMissionManager::AMissionManager()
 
 }
 
-void AMissionManager::StartEvent(TSubclassOf<ABaseMission> MissionType, FVector Location)
+void AMissionManager::StartEvent(ABaseMission* Mission)
 {
-	
+	Mission->StartEvent();
 }
 
 void AMissionManager::EndEvent(ABaseMission* Mission)
 {
-	
+	Mission->EndEvent(true);
 }
+
+void AMissionManager::AddMission(ABaseMission* Mission)
+{
+	if (Mission && !Missions.Contains(Mission))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Enemy"));
+		Missions.Add(Mission);
+		Mission->SetMissionState(EMissionState::Active);
+	}
+}
+
 
 // Called when the game starts or when spawned
 void AMissionManager::BeginPlay()

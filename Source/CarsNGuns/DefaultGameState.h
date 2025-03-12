@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "BasePhysicsVehiclePawn.h"
 #include "DefaultGameState.generated.h"
 
 /**
@@ -20,8 +19,18 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	class UEnemyManager* GetEnemyManager() const { return EnemyManager; }
+	
+	UFUNCTION(BlueprintCallable)
+	class AMissionManager* GetMissionManager() const { return MissionManager; }
 
 	void PopulateEnemies() const;
+
+	void InitializeMissionManager();
+
+	void SetPlayerController(class AMyPlayerController* Controller)
+	{
+		PlayerController = Controller;	
+	}
 
 protected:
 	virtual void BeginPlay() override;
@@ -31,5 +40,11 @@ protected:
 private:
 	UPROPERTY()
 	UEnemyManager* EnemyManager;
+
+	UPROPERTY()
+	AMissionManager* MissionManager;
+
+	UPROPERTY()
+	AMyPlayerController* PlayerController;
 	
 };

@@ -10,6 +10,7 @@
 #include "Blueprint/UserWidget.h"
 #include "WeaponSelectionMenu.h"
 #include "EnhancedInputSubsystems.h"
+#include "MyPlayerController.h"
 #include "GameFramework/PlayerStart.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
@@ -41,7 +42,7 @@ void AGameplayGameMode::SetupPlayer()
 	
 	if(UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>())
 	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		AMyPlayerController* PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		SelectedPlayerPawnClass = DefaultPawnClass;
 		//Prioriterar class vald i gamemode blueprint
 		if(!SelectedPlayerPawnClass && DefaultGameInstance->GetSelectedPlayerPawnClass()) //Prevents crashing vid start av nivå utan default pawn och klass satt i game instance
@@ -71,7 +72,9 @@ void AGameplayGameMode::SetupPlayer()
 			}
 		}
 		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+		DefaultGameState->SetPlayerController(PlayerController);
 		DefaultGameState->PopulateEnemies();
+		DefaultGameState->InitializeMissionManager();
 	}
 }
 

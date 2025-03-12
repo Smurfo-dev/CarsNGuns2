@@ -6,9 +6,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "BaseWeapon.h"
+#include "DefaultGameInstance.h"
 #include "EnemyManager.h"
 #include "DefaultGameState.h"
 #include "MyPlayerController.h"
+#include "DefaultGameInstance.h"
+#include "MissionManager.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneComponent.h"
@@ -101,6 +104,7 @@ void APlayerVehicleBase::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		//Debug Actions
 		EnhancedInputComponent->BindAction(CarFlipAction, ETriggerEvent::Completed, this, &APlayerVehicleBase::FlipCar);
 		EnhancedInputComponent->BindAction(DebugMenuAction, ETriggerEvent::Started, this, &APlayerVehicleBase::ToggleDebugMenu);
+		EnhancedInputComponent->BindAction(MissionAcceptAction, ETriggerEvent::Started, this, &APlayerVehicleBase::AcceptMissionPrompt);
 	}
 
 }
@@ -428,9 +432,20 @@ void APlayerVehicleBase::DestroyActor()
 
 void APlayerVehicleBase::ToggleDebugMenu()
 {
-	if (Controller)
+	if (PlayerController)
 	{
-		Cast<AMyPlayerController>(Controller)->ToggleDebugMenu();
+		PlayerController->ToggleDebugMenu();
+	}
+}
+
+void APlayerVehicleBase::AcceptMissionPrompt()
+{
+	if (ActiveMissionZone)
+	{
+		if (ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>())
+		{
+			DefaultGameState->GetMissionManager()->StartEvent(ActiveMissionZone);
+		}
 	}
 }
 

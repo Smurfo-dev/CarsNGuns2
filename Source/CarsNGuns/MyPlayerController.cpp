@@ -6,6 +6,7 @@
 #include "BasePhysicsVehiclePawn.h"
 #include "HUDWidget.h"
 #include "CrosshairWidget.h"
+#include "MissionInfoWidget.h"
 #include "DebugMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
@@ -74,6 +75,28 @@ void AMyPlayerController::ToggleDebugMenu()
 			SetShowMouseCursor(true);
 			FInputModeGameAndUI InputMode;
 			SetInputMode(InputMode);
+		}
+	}
+}
+
+void AMyPlayerController::ToggleMissionInfoMenu()
+{
+	if (!CurrentMissionInfoWidget && MissionInfoMenuWidgetClass)
+	{
+		CurrentMissionInfoWidget = CreateWidget<UMissionInfoWidget>(this, MissionInfoMenuWidgetClass);
+	}
+
+	if (CurrentMissionInfoWidget)
+	{
+		if (CurrentMissionInfoWidget->IsInViewport())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Removing Mission Info Menu From Viewport"))
+			CurrentMissionInfoWidget->RemoveFromParent();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Adding Mission Info Menu To Viewport"))
+			CurrentMissionInfoWidget->AddToViewport();
 		}
 	}
 }

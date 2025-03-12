@@ -13,6 +13,8 @@ ATimeAttackMission::ATimeAttackMission()
 void ATimeAttackMission::StartEvent()
 {
 	Super::StartEvent();
+
+	
 }
 
 void ATimeAttackMission::EndEvent(bool bSuccess)

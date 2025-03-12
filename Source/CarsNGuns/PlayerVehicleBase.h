@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseMission.h"
 #include "BasePhysicsVehiclePawn.h"
 #include "PlayerVehicleBase.generated.h"
 
@@ -28,8 +29,21 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	void SetActiveMissionZone(ABaseMission* MissionToActivate)
+	{
+		ActiveMissionZone = MissionToActivate;
+		if (ActiveMissionZone != nullptr)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Active Mission Set To: %s"), *MissionToActivate->GetName()));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Active Mission is nullptr")));
+		}
+	}
+	
 	//Camera sensitivity for manual targeting
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Input)
 	float CameraSensitivity = 1;
@@ -148,6 +162,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* DebugMenuAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* MissionAcceptAction;
+
 private:
 
 	//Input functions
@@ -182,6 +199,9 @@ private:
 	UMaterialParameterCollection* ParameterCollection;
 
 	UPROPERTY()
+	ABaseMission* ActiveMissionZone;
+
+	UPROPERTY()
 	UMaterialParameterCollectionInstance* ParameterCollectionInstance;
 
 	//Returns true if TargetLocation is within camera bounds
@@ -202,6 +222,9 @@ private:
 
 	UFUNCTION()
 	void ToggleDebugMenu();
+
+	UFUNCTION()
+	void AcceptMissionPrompt();
 
 	UFUNCTION()
 	void UpdatePlayerScreenPosition();
