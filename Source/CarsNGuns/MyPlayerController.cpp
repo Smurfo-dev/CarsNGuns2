@@ -44,15 +44,12 @@ void AMyPlayerController::BeginPlay()
 			CurrentHUDWidget->AddToViewport();
 			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
 			CurrentHUDWidget->DefaultGameInstance = DefaultGameInstance;
-			
-			//UpdateWeaponIcons(CurrentHUDWidget); //Call this when equipping weapons instead
 		}
 	}
 }
 
 void AMyPlayerController::ToggleDebugMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Opening Debug Menu"))
 	if (!CurrentDebugMenuWidget && DebugMenuWidgetClass)
 	{
 		CurrentDebugMenuWidget = CreateWidget<UDebugMenuWidget>(this, DebugMenuWidgetClass);

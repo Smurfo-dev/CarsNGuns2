@@ -27,11 +27,20 @@ public:
 	virtual void StartEvent();
 	virtual void EndEvent(bool bSuccess);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Marker")
+	FLinearColor MarkerColor = FLinearColor::White;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UWidgetComponent* MissionMarkerWidgetComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	EMissionState MissionState;
+
+	UPROPERTY()
+	class UMissionMarkerWidget* MissionMarkerWidget;
 
 public:	
 	// Called every frame

@@ -5,7 +5,10 @@
 
 ATimeAttackMission::ATimeAttackMission()
 {
+	
 }
+
+
 
 void ATimeAttackMission::StartEvent()
 {
