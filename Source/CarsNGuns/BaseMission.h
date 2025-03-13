@@ -27,6 +27,8 @@ public:
 	virtual void StartEvent();
 	virtual void EndEvent(bool bSuccess);
 
+	virtual void ActivateCheckpoint();
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Marker")
 	FLinearColor MarkerColor = FLinearColor::White;
 
@@ -56,6 +58,24 @@ public:
 	UPROPERTY()
 	UMissionInfoWidget* CurrentMissionInfoWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Info")
+	FString MissionID = "Default Name";
+
+	FString GetMissionStateAsString(EMissionState State) const
+	{
+		switch (State)
+		{
+		case EMissionState::Inactive:  return TEXT("Inactive");
+		case EMissionState::Active:    return TEXT("Active");
+		case EMissionState::Completed: return TEXT("Completed");
+		case EMissionState::Failed:    return TEXT("Failed");
+		default: return TEXT("Unknown");
+		}
+	}
+
+	UFUNCTION(BlueprintCallable, Category="Mission Info")
+	void PrintMissionInfo();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -64,6 +84,9 @@ protected:
 
 	UPROPERTY()
 	class UMissionMarkerWidget* MissionMarkerWidget;
+
+	UPROPERTY()
+	class ADefaultGameState* DefaultGameState;
 
 public:	
 	// Called every frame
@@ -87,5 +110,11 @@ private:
 
 	UFUNCTION()
 	void HideMissionInfo();
+
+	UFUNCTION()
+	void DisableMission();
+
+	UFUNCTION()
+	void EnableMission();
 
 };

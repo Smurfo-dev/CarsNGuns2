@@ -12,27 +12,6 @@ AMissionManager::AMissionManager()
 
 }
 
-void AMissionManager::StartEvent(ABaseMission* Mission)
-{
-	Mission->StartEvent();
-}
-
-void AMissionManager::EndEvent(ABaseMission* Mission)
-{
-	Mission->EndEvent(true);
-}
-
-void AMissionManager::AddMission(ABaseMission* Mission)
-{
-	if (Mission && !Missions.Contains(Mission))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding Enemy"));
-		Missions.Add(Mission);
-		Mission->SetMissionState(EMissionState::Active);
-	}
-}
-
-
 // Called when the game starts or when spawned
 void AMissionManager::BeginPlay()
 {
@@ -45,5 +24,33 @@ void AMissionManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMissionManager::StartEvent(ABaseMission* Mission)
+{
+	for (auto M : Missions)
+	{
+		if (M->GetMissionState() == EMissionState::Active) M->SetMissionState(EMissionState::Inactive);
+	}
+	Mission->StartEvent();
+}
+
+void AMissionManager::EndEvent(ABaseMission* Mission)
+{
+	Mission->EndEvent(true);
+	for (auto M : Missions)
+	{
+		if (M->GetMissionState() == EMissionState::Inactive) M->SetMissionState(EMissionState::Active);
+	}
+}
+
+void AMissionManager::AddMission(ABaseMission* Mission)
+{
+	if (Mission && !Missions.Contains(Mission))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Mission"));
+		Missions.Add(Mission);
+		Mission->SetMissionState(EMissionState::Active);
+	}
 }
 

@@ -23,6 +23,7 @@ public:
 
 	void AddMission(ABaseMission* Mission);
 
+	UFUNCTION(BlueprintCallable)
 	TArray<ABaseMission*> GetMissions()
 	{
 		return Missions;

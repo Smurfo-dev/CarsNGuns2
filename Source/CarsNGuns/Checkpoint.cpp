@@ -3,6 +3,7 @@
 
 #include "Checkpoint.h"
 #include "Components/SphereComponent.h"
+#include "BaseMission.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -11,8 +12,8 @@ ACheckpoint::ACheckpoint()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CheckpointTriggerZone = CreateDefaultSubobject<USphereComponent>(TEXT("CheckpointTriggerZone"));
-	CheckpointTriggerZone->InitSphereRadius(1000.0f);
-	CheckpointTriggerZone->SetGenerateOverlapEvents(true);
+	CheckpointTriggerZone->InitSphereRadius(200.0f);
+	CheckpointTriggerZone->SetGenerateOverlapEvents(false);
 	CheckpointTriggerZone->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CheckpointTriggerZone->SetCollisionObjectType(ECC_WorldDynamic);
 	CheckpointTriggerZone->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -31,6 +32,8 @@ ACheckpoint::ACheckpoint()
 void ACheckpoint::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CheckpointTriggerZone->OnComponentBeginOverlap.AddDynamic(this, &ACheckpoint::OnPlayerEnterCheckpoint);
 	
 }
 
@@ -41,14 +44,28 @@ void ACheckpoint::Tick(float DeltaTime)
 
 }
 
-void ACheckpoint::OnPlayerExitMissionArea(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ACheckpoint::EnableCheckpoint()
 {
-	
+	if (CheckpointTriggerMesh && CheckpointTriggerZone)
+	{
+		CheckpointTriggerMesh->SetVisibility(true);
+		CheckpointTriggerZone->SetGenerateOverlapEvents(true);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Enabling Checkpoint!")));	
+	}
 }
 
-void ACheckpoint::OnPlayerEnterMissionArea(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ACheckpoint::DisableCheckpoint()
 {
-	
+	if (CheckpointTriggerMesh && CheckpointTriggerZone)
+	{
+		CheckpointTriggerMesh->SetVisibility(false);
+		CheckpointTriggerZone->SetGenerateOverlapEvents(false);
+	}
+}
+
+void ACheckpoint::OnPlayerEnterCheckpoint(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	MissionReference->ActivateCheckpoint();
 }
 
 

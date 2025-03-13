@@ -8,6 +8,8 @@
 #include "MyPlayerController.h"
 #include "MissionMarkerWidget.h"
 #include "MissionInfoWidget.h"
+#include "DefaultGameState.h"
+#include "MissionManager.h"
 #include "PlayerVehicleBase.h"
 #include "Components/Image.h"
 #include "Components/SphereComponent.h"
@@ -48,6 +50,8 @@ void ABaseMission::BeginPlay()
 	MissionTriggerZone->OnComponentBeginOverlap.AddDynamic(this, &ABaseMission::OnPlayerEnterMissionArea);
 	MissionTriggerZone->OnComponentEndOverlap.AddDynamic(this, &ABaseMission::OnPlayerExitMissionArea);
 
+	DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+
 	if (MissionMarkerWidgetComponent)
 	{
 		if (UUserWidget* WidgetInstance = MissionMarkerWidgetComponent->GetWidget())
@@ -74,6 +78,11 @@ void ABaseMission::BeginPlay()
 	}
 }
 
+void ABaseMission::ActivateCheckpoint()
+{
+	//Override when needed
+}
+
 // Called every frame
 void ABaseMission::Tick(float DeltaTime)
 {
@@ -86,8 +95,11 @@ void ABaseMission::OnPlayerEnterMissionArea(UPrimitiveComponent* OverlappedCompo
 	if (OtherActor->IsA<APlayerVehicleBase>())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Player Entered Mission Area"));
-		MissionTriggerMesh->SetVisibility(false);
-		MissionMarkerWidget->SetVisibility(ESlateVisibility::Hidden);
+		if (MissionState == EMissionState::Active)
+		{
+			MissionTriggerMesh->SetVisibility(false);
+			MissionMarkerWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 
 		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(this);
 		
@@ -101,8 +113,12 @@ void ABaseMission::OnPlayerExitMissionArea(UPrimitiveComponent* OverlappedCompon
 	if (OtherActor->IsA<APlayerVehicleBase>())
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Left Mission Area"));
-		MissionTriggerMesh->SetVisibility(true);
-		MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
+		if (MissionState == EMissionState::Active)
+		{
+			MissionTriggerMesh->SetVisibility(true);
+			MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+		
 
 		Cast<APlayerVehicleBase>(OtherActor)->SetActiveMissionZone(nullptr);
 
@@ -116,14 +132,16 @@ void ABaseMission::OnMissionStateChanged(const EMissionState NewState)
 	switch (NewState)
 	{
 		case EMissionState::Active:
-			SetActorHiddenInGame(false);
+			EnableMission();
 			break;
 		case EMissionState::Inactive:
-			SetActorHiddenInGame(true);
+			DisableMission();
 			break;
 		case EMissionState::Completed:
+			DisableMission();
 			break;
 		case EMissionState::Failed:
+			MissionMarkerWidget->MarkerImage->SetBrushTintColor(EStyleColor::Black);
 			break;
 	}
 }
@@ -137,8 +155,11 @@ void ABaseMission::StartEvent()
 
 void ABaseMission::EndEvent(bool bSuccess)
 {
-
-	
+	if (bSuccess)
+	{
+		SetMissionState(EMissionState::Completed);
+	}
+	else SetMissionState(EMissionState::Failed);
 }
 
 void ABaseMission::ShowMissionInfo()
@@ -167,5 +188,28 @@ void ABaseMission::HideMissionInfo()
 	}
 }
 
+void ABaseMission::DisableMission()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Disabling Mission: "))+ MissionID);
+	MissionTriggerZone->SetVisibility(false);
+	MissionTriggerZone->SetGenerateOverlapEvents(false);
+	MissionTriggerMesh->SetVisibility(false);
+	MissionMarkerWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void ABaseMission::EnableMission()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Enabling Mission: "))+ MissionID);
+	MissionTriggerZone->SetVisibility(true);
+	MissionTriggerZone->SetGenerateOverlapEvents(true);
+	MissionTriggerMesh->SetVisibility(true);
+	MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void ABaseMission::PrintMissionInfo()
+{
+	FString MissionText = FString::Printf(TEXT("%s: %s"), *MissionID, *GetMissionStateAsString(MissionState));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, MissionText);
+}
 
 

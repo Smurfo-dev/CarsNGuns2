@@ -21,9 +21,11 @@ public:
 
 	virtual void EndEvent(bool bSuccess) override;
 
+	virtual void ActivateCheckpoint() override;
+
 private:
 	UPROPERTY(EditAnywhere, Category="Mission Details")
-	float TimeLimit;
+	float TimeLimit = 60.0f;
 
 	UPROPERTY(EditAnywhere, Category="Mission Details")
 	TArray<class ACheckpoint*> Checkpoints;
