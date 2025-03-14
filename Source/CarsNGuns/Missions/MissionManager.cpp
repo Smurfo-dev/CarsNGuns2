@@ -35,9 +35,9 @@ void AMissionManager::StartEvent(ABaseMission* Mission)
 	Mission->StartEvent();
 }
 
-void AMissionManager::EndEvent(ABaseMission* Mission)
+void AMissionManager::EndEvent(ABaseMission* Mission, bool bSuccess)
 {
-	Mission->EndEvent(true);
+	Mission->EndEvent(bSuccess);
 	for (auto M : Missions)
 	{
 		if (M->GetMissionState() == EMissionState::Inactive) M->SetMissionState(EMissionState::Active);

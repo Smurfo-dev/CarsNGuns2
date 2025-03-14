@@ -88,9 +88,20 @@ protected:
 	UPROPERTY()
 	class ADefaultGameState* DefaultGameState;
 
+	UPROPERTY()
+	class UDefaultGameInstance* DefaultGameInstance;
+
+	UPROPERTY(VisibleAnywhere)
+	float MissionStartTime = 0.0f;
+
+	UPROPERTY()
+	bool bMissionStarted = false;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	float GetMissionTime();
 
 private:
 	UFUNCTION()

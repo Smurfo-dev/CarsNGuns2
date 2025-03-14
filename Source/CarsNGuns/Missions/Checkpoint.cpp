@@ -50,7 +50,6 @@ void ACheckpoint::EnableCheckpoint()
 	{
 		CheckpointTriggerMesh->SetVisibility(true);
 		CheckpointTriggerZone->SetGenerateOverlapEvents(true);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Enabling Checkpoint!")));	
 	}
 }
 

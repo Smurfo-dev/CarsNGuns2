@@ -6,6 +6,7 @@
 #include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
 #include "Components/WidgetComponent.h"
 #include "CarsNGuns/Player/MyPlayerController.h"
+#include "CarsNGuns/Systems/DefaultGameInstance.h"
 #include "CarsNGuns/Widgets/MissionMarkerWidget.h"
 #include "CarsNGuns/Widgets/MissionInfoWidget.h"
 #include "CarsNGuns/Systems/DefaultGameState.h"
@@ -50,6 +51,7 @@ void ABaseMission::BeginPlay()
 	MissionTriggerZone->OnComponentEndOverlap.AddDynamic(this, &ABaseMission::OnPlayerExitMissionArea);
 
 	DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+	DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 
 	if (MissionMarkerWidgetComponent)
 	{
@@ -87,6 +89,8 @@ void ABaseMission::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bMissionStarted) GEngine->AddOnScreenDebugMessage(-1, -1, FColor::Yellow, FString::Printf(TEXT("Mission Time: %.2f"), GetMissionTime()));
+	
 }
 
 void ABaseMission::OnPlayerEnterMissionArea(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -150,6 +154,8 @@ void ABaseMission::StartEvent()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Starting Event!")));
 	HideMissionInfo();
+	MissionStartTime = DefaultGameInstance->GetElapsedTime();
+	bMissionStarted = true;
 }
 
 void ABaseMission::EndEvent(bool bSuccess)
@@ -159,6 +165,8 @@ void ABaseMission::EndEvent(bool bSuccess)
 		SetMissionState(EMissionState::Completed);
 	}
 	else SetMissionState(EMissionState::Failed);
+
+	bMissionStarted = false;
 }
 
 void ABaseMission::ShowMissionInfo()
@@ -208,7 +216,12 @@ void ABaseMission::EnableMission()
 void ABaseMission::PrintMissionInfo()
 {
 	FString MissionText = FString::Printf(TEXT("%s: %s"), *MissionID, *GetMissionStateAsString(MissionState));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, MissionText);
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, MissionText);
+}
+
+float ABaseMission::GetMissionTime()
+{
+	return GetWorld()->GetTimeSeconds() - MissionStartTime;
 }
 
 

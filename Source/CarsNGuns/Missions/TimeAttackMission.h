@@ -23,6 +23,10 @@ public:
 
 	virtual void ActivateCheckpoint() override;
 
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
 private:
 	UPROPERTY(EditAnywhere, Category="Mission Details")
 	float TimeLimit = 60.0f;

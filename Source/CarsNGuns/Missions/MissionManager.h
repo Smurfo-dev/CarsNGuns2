@@ -19,7 +19,7 @@ public:
 	void StartEvent(class ABaseMission* Mission);
 
 	UFUNCTION(BlueprintCallable)
-	void EndEvent(ABaseMission* Mission);
+	void EndEvent(ABaseMission* Mission, bool bSuccess);
 
 	void AddMission(ABaseMission* Mission);
 

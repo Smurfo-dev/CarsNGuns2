@@ -33,8 +33,6 @@ void AGameplayGameMode::BeginPlay()
 
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 	DefaultGameInstance->StartTimer();
-
-	
 }
 
 void AGameplayGameMode::SetupPlayer()
