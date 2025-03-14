@@ -49,7 +49,6 @@ void AMissionManager::AddMission(ABaseMission* Mission)
 {
 	if (Mission && !Missions.Contains(Mission))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding Mission"));
 		Missions.Add(Mission);
 		Mission->SetMissionState(EMissionState::Active);
 	}
@@ -59,7 +58,6 @@ void AMissionManager::SetPlayerVehicleReference(ABasePhysicsVehiclePawn* PlayerV
 {
 	if (PlayerVehicle)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Mission Manager Player Vehicle Reference Set"));
 		PlayerVehicleReference = PlayerVehicle;
 	}
 }

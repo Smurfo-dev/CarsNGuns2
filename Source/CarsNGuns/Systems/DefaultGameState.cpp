@@ -39,7 +39,7 @@ void ADefaultGameState::PopulateEnemies()
 		//Clear enemy list initially
 		EnemyManager->ClearEnemies();
 		
-		UE_LOG(LogTemp, Warning, TEXT("EnemyManager Exists"));
+		UE_LOG(LogTemp, Warning, TEXT("EnemyManager Created"));
 		TArray<AActor*> FoundEnemies;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyVehicleBase::StaticClass(), FoundEnemies);
 		for(AActor* Enemy : FoundEnemies)
@@ -63,7 +63,7 @@ void ADefaultGameState::InitializeMissionManager(ABasePhysicsVehiclePawn* Player
 		TArray<AActor*> FoundMissions;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseMission::StaticClass(), FoundMissions);
 		
-		UE_LOG(LogTemp, Warning, TEXT("MissionManager Spawned and Bound"));
+		UE_LOG(LogTemp, Warning, TEXT("MissionManager Created"));
 		UE_LOG(LogTemp, Warning, TEXT("Amount Of Found Missions: %d"), FoundMissions.Num());
 		for (const auto Mission : FoundMissions)
 		{

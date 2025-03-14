@@ -60,14 +60,12 @@ void ABaseMission::BeginPlay()
 			MissionMarkerWidget = Cast<UMissionMarkerWidget>(WidgetInstance);
 			if (MissionMarkerWidget)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Mission Marker Mission Reference Set"))
 				MissionMarkerWidget->MissionReference = this;
 				PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 				if (PlayerController)
 				{
 					if (ABasePhysicsVehiclePawn* PlayerVehicle = Cast<ABasePhysicsVehiclePawn>(PlayerController->GetPawn()))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Mission Marker Player Reference Set"))
 						MissionMarkerWidget->PlayerReference = PlayerVehicle;
 
 						MissionMarkerWidget->MarkerImage->SetBrushTintColor(MarkerColor);
