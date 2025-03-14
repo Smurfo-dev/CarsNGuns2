@@ -45,15 +45,21 @@ void ADefaultGameState::PopulateEnemies() const
 	}
 }
 
-void ADefaultGameState::InitializeMissionManager()
+void ADefaultGameState::InitializeMissionManager(ABasePhysicsVehiclePawn* PlayerVehicleReference)
 {
-	if (AActor* FoundManager = UGameplayStatics::GetActorOfClass(GetWorld(), AMissionManager::StaticClass()))
+	if (!MissionManager)
 	{
-		MissionManager = Cast<AMissionManager>(FoundManager);
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		MissionManager = GetWorld()->SpawnActor<AMissionManager>(AMissionManager::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+		MissionManager->SetPlayerVehicleReference(PlayerVehicleReference);
 		TArray<AActor*> FoundMissions;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseMission::StaticClass(), FoundMissions);
 		
-		UE_LOG(LogTemp, Warning, TEXT("MissionManager Found and Bound"));
+		UE_LOG(LogTemp, Warning, TEXT("MissionManager Spawned and Bound"));
+		UE_LOG(LogTemp, Warning, TEXT("Amount Of Found Missions: %d"), FoundMissions.Num());
 		for (const auto Mission : FoundMissions)
 		{
 			if (ABaseMission* MissionToAdd = Cast<ABaseMission>(Mission))
@@ -69,7 +75,7 @@ void ADefaultGameState::InitializeMissionManager()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MissionManager Doesn't Exist in world"));
+		UE_LOG(LogTemp, Warning, TEXT("MissionManager Already Exists in world"));
 	}
 }
 

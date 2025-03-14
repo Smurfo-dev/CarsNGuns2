@@ -23,6 +23,8 @@ public:
 
 	void AddMission(ABaseMission* Mission);
 
+	void SetPlayerVehicleReference(class ABasePhysicsVehiclePawn* PlayerVehicle);
+
 	UFUNCTION(BlueprintCallable)
 	TArray<ABaseMission*> GetMissions()
 	{
@@ -38,5 +40,8 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<ABaseMission*> Missions;
+
+	UPROPERTY()
+	ABasePhysicsVehiclePawn* PlayerVehicleReference;
 
 };

@@ -37,6 +37,7 @@ void AMissionManager::StartEvent(ABaseMission* Mission)
 
 void AMissionManager::EndEvent(ABaseMission* Mission, bool bSuccess)
 {
+	//GrantRewards(Mission->GetRewards(), PlayerVehicleReference)
 	Mission->EndEvent(bSuccess);
 	for (auto M : Missions)
 	{
@@ -53,4 +54,14 @@ void AMissionManager::AddMission(ABaseMission* Mission)
 		Mission->SetMissionState(EMissionState::Active);
 	}
 }
+
+void AMissionManager::SetPlayerVehicleReference(ABasePhysicsVehiclePawn* PlayerVehicle)
+{
+	if (PlayerVehicle)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Vehicle Reference Set"));
+		PlayerVehicleReference = PlayerVehicle;
+	}
+}
+
 

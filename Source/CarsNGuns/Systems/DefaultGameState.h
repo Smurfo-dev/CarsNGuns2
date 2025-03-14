@@ -25,7 +25,7 @@ public:
 
 	void PopulateEnemies() const;
 
-	void InitializeMissionManager();
+	void InitializeMissionManager(class ABasePhysicsVehiclePawn* PlayerVehicleReference);
 
 	void SetPlayerController(class AMyPlayerController* Controller)
 	{
