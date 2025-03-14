@@ -59,7 +59,7 @@ void AMissionManager::SetPlayerVehicleReference(ABasePhysicsVehiclePawn* PlayerV
 {
 	if (PlayerVehicle)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Vehicle Reference Set"));
+		UE_LOG(LogTemp, Warning, TEXT("Mission Manager Player Vehicle Reference Set"));
 		PlayerVehicleReference = PlayerVehicle;
 	}
 }

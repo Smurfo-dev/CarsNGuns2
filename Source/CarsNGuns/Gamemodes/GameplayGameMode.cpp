@@ -24,15 +24,12 @@ void AGameplayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetupPlayer();
+	GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::SetupPlayer);
 	
-	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
-
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AGameplayGameMode::SetupInputAfterDelay, 0.1f, false);
-
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 	DefaultGameInstance->StartTimer();
+	
+	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 }
 
 void AGameplayGameMode::SetupPlayer()
@@ -69,10 +66,17 @@ void AGameplayGameMode::SetupPlayer()
 				}
 			}
 		}
+		if (PlayerController)
+		{
+			PlayerController->SetInputMode(FInputModeGameOnly());
+			PlayerController->bShowMouseCursor = false;  // or true depending on your needs
+		}
+		
 		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+		ABasePhysicsVehiclePawn* PlayerVehicleReference = Cast<ABasePhysicsVehiclePawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 		DefaultGameState->SetPlayerController(PlayerController);
 		DefaultGameState->PopulateEnemies();
-		DefaultGameState->InitializeMissionManager();
+		DefaultGameState->InitializeMissionManager(PlayerVehicleReference);
 	}
 }
 
@@ -129,14 +133,4 @@ void AGameplayGameMode::OnWeaponSelectionMenuClosed()
 		UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 		DefaultGameInstance->ResumeTimer();
 	}
-}
-
-void AGameplayGameMode::SetupInputAfterDelay()
-{
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-    if (PlayerController)
-    {
-        PlayerController->SetInputMode(FInputModeGameOnly());
-        PlayerController->bShowMouseCursor = false;  // or true depending on your needs
-    }
 }

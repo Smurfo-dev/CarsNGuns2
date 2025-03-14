@@ -18,8 +18,7 @@ void ADefaultGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Create and initialize the EnemyManager.
-	EnemyManager = NewObject<UEnemyManager>(this);
+	
 }
 
 void ADefaultGameState::Tick(float DeltaTime)
@@ -27,8 +26,14 @@ void ADefaultGameState::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ADefaultGameState::PopulateEnemies() const
+void ADefaultGameState::PopulateEnemies()
 {
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	// Create and initialize the EnemyManager.
+	EnemyManager = GetWorld()->SpawnActor<AEnemyManager>(AEnemyManager::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	
 	if(EnemyManager)
 	{
 		//Clear enemy list initially

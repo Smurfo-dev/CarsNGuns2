@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class CARSNGUNS_API UEnemyManager : public UObject
+class CARSNGUNS_API AEnemyManager : public AActor
 {
 	GENERATED_BODY()
 

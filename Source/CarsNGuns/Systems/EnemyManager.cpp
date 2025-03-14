@@ -3,7 +3,7 @@
 
 #include "EnemyManager.h"
 
-void UEnemyManager::AddEnemy(AActor* NewEnemy)
+void AEnemyManager::AddEnemy(AActor* NewEnemy)
 {
 	if (NewEnemy && !Enemies.Contains(NewEnemy))
 	{
@@ -12,13 +12,13 @@ void UEnemyManager::AddEnemy(AActor* NewEnemy)
 	}
 }
 
-void UEnemyManager::RemoveEnemy(AActor* EnemyToRemove)
+void AEnemyManager::RemoveEnemy(AActor* EnemyToRemove)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Removing Enemy"));
 	Enemies.Remove(EnemyToRemove);
 }
 
-void UEnemyManager::ClearEnemies()
+void AEnemyManager::ClearEnemies()
 {
 	if(!Enemies.IsEmpty())
 	{

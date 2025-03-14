@@ -25,27 +25,7 @@ void AMyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (CrosshairWidgetClass)
-	{
-		CurrentCrosshairWidget = CreateWidget<UCrosshairWidget>(this, CrosshairWidgetClass);
-		if (CurrentCrosshairWidget)
-		{
-			CurrentCrosshairWidget->AddToViewport();
-			CurrentCrosshairWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
-		}
-	}
-
-	if (HUDWidgetClass)
-	{
-		CurrentHUDWidget = CreateWidget<UHUDWidget>(this, HUDWidgetClass);
-		if (CurrentHUDWidget)
-		{
-			UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
-			CurrentHUDWidget->AddToViewport();
-			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
-			CurrentHUDWidget->DefaultGameInstance = DefaultGameInstance;
-		}
-	}
+	GetWorldTimerManager().SetTimerForNextTick(this, &AMyPlayerController::SetupWidgets);
 }
 
 void AMyPlayerController::ToggleDebugMenu()
@@ -74,6 +54,31 @@ void AMyPlayerController::ToggleDebugMenu()
 			SetShowMouseCursor(true);
 			FInputModeGameAndUI InputMode;
 			SetInputMode(InputMode);
+		}
+	}
+}
+
+void AMyPlayerController::SetupWidgets()
+{
+	if (CrosshairWidgetClass)
+	{
+		CurrentCrosshairWidget = CreateWidget<UCrosshairWidget>(this, CrosshairWidgetClass);
+		if (CurrentCrosshairWidget)
+		{
+			CurrentCrosshairWidget->AddToViewport();
+			CurrentCrosshairWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+		}
+	}
+
+	if (HUDWidgetClass)
+	{
+		CurrentHUDWidget = CreateWidget<UHUDWidget>(this, HUDWidgetClass);
+		if (CurrentHUDWidget)
+		{
+			UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
+			CurrentHUDWidget->AddToViewport();
+			CurrentHUDWidget->PlayerReference = Cast<ABasePhysicsVehiclePawn>(GetPawn());
+			CurrentHUDWidget->DefaultGameInstance = DefaultGameInstance;
 		}
 	}
 }

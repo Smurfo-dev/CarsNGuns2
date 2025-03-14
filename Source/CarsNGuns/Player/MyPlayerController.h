@@ -27,6 +27,8 @@ public:
 	UFUNCTION()
 	void ToggleDebugMenu();
 
+	void SetupWidgets();
+
 protected:
 	virtual void BeginPlay() override;
 

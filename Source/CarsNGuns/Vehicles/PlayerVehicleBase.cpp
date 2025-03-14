@@ -284,7 +284,7 @@ void APlayerVehicleBase::UpdateTarget()
 		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
 		if(DefaultGameState)
 		{
-			if(DefaultGameState->GetEnemyManager()->GetEnemies().Num() == 0)
+			if(DefaultGameState->GetEnemyManager() && DefaultGameState->GetEnemyManager()->GetEnemies().Num() == 0)
 			{
 				CurrentTarget = nullptr;
 				return;
@@ -296,22 +296,25 @@ void APlayerVehicleBase::UpdateTarget()
 				AActor* NearestTarget = nullptr;
 				float MinScreenDistanceSquared = FLT_MAX;
 
-				for(AActor* Enemy : DefaultGameState->GetEnemyManager()->GetEnemies())
+				if (DefaultGameState->GetEnemyManager())
 				{
-					if(!Enemy || !IsInView(Enemy->GetActorLocation())) continue;
-					FVector2D EnemyScreenPosition;
-					if(PlayerController->ProjectWorldLocationToScreen(Enemy->GetActorLocation(), EnemyScreenPosition))
+					for(AActor* Enemy : DefaultGameState->GetEnemyManager()->GetEnemies())
 					{
-						float ScreenDistanceSquared = FVector2D::DistSquared(MousePosition, EnemyScreenPosition);
-						
-						if(ScreenDistanceSquared < MinScreenDistanceSquared)
+						if(!Enemy || !IsInView(Enemy->GetActorLocation())) continue;
+						FVector2D EnemyScreenPosition;
+						if(PlayerController->ProjectWorldLocationToScreen(Enemy->GetActorLocation(), EnemyScreenPosition))
 						{
-							MinScreenDistanceSquared = ScreenDistanceSquared;
-							NearestTarget = Enemy;
+							float ScreenDistanceSquared = FVector2D::DistSquared(MousePosition, EnemyScreenPosition);
+						
+							if(ScreenDistanceSquared < MinScreenDistanceSquared)
+							{
+								MinScreenDistanceSquared = ScreenDistanceSquared;
+								NearestTarget = Enemy;
+							}
 						}
 					}
-					
 				}
+				
 				CurrentTarget = NearestTarget;
 			}
 			

@@ -18,12 +18,12 @@ public:
 	ADefaultGameState();
 	
 	UFUNCTION(BlueprintCallable)
-	class UEnemyManager* GetEnemyManager() const { return EnemyManager; }
+	class AEnemyManager* GetEnemyManager() const { return EnemyManager; }
 	
 	UFUNCTION(BlueprintCallable)
 	class AMissionManager* GetMissionManager() const { return MissionManager; }
 
-	void PopulateEnemies() const;
+	void PopulateEnemies();
 
 	void InitializeMissionManager(class ABasePhysicsVehiclePawn* PlayerVehicleReference);
 
@@ -39,7 +39,7 @@ protected:
 
 private:
 	UPROPERTY()
-	UEnemyManager* EnemyManager;
+	AEnemyManager* EnemyManager;
 
 	UPROPERTY()
 	AMissionManager* MissionManager;
