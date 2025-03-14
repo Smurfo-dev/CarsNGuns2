@@ -163,6 +163,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 	if (bSuccess)
 	{
 		SetMissionState(EMissionState::Completed);
+		//Grant Rewards somehow
 	}
 	else SetMissionState(EMissionState::Failed);
 
