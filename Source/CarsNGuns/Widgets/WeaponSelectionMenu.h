@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "BaseWeapon.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "WeaponSelectionMenu.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMenuClosedSignature);

@@ -3,11 +3,10 @@
 
 #include "MyPlayerController.h"
 
-#include "BasePhysicsVehiclePawn.h"
-#include "HUDWidget.h"
-#include "CrosshairWidget.h"
-#include "MissionInfoWidget.h"
-#include "DebugMenuWidget.h"
+#include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
+#include "CarsNGuns/Widgets/HUDWidget.h"
+#include "CarsNGuns/Widgets/CrosshairWidget.h"
+#include "CarsNGuns/Widgets/DebugMenuWidget.h"
 #include "Blueprint/UserWidget.h"
 
 AMyPlayerController::AMyPlayerController()

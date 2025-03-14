@@ -2,8 +2,8 @@
 
 
 #include "BaseEnemyAIController.h"
-#include "EnemyVehicleBase.h"
-#include "PlayerVehicleBase.h"
+#include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
+#include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Kismet/GameplayStatics.h"
 
 ABaseEnemyAIController::ABaseEnemyAIController()

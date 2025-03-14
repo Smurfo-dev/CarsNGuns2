@@ -3,9 +3,9 @@
 
 #include "BasePhysicsVehiclePawn.h"
 
-#include "BaseWeapon.h"
-#include "HealthComponent.h"
-#include "MyPlayerController.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Components/HealthComponent.h"
+#include "CarsNGuns/Player/MyPlayerController.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 

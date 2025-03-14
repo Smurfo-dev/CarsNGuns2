@@ -3,8 +3,8 @@
 
 #include "GunnerAIController.h"
 
-#include "BaseWeapon.h"
-#include "EnemyVehicleBase.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 
 void AGunnerAIController::BeginPlay()
 {

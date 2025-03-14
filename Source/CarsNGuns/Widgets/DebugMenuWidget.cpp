@@ -2,8 +2,8 @@
 
 
 #include "DebugMenuWidget.h"
-#include "BaseWeapon.h"
-#include "DefaultGameInstance.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Systems/DefaultGameInstance.h"
 #include "Components/ComboBoxString.h"
 
 void UDebugMenuWidget::NativeConstruct()

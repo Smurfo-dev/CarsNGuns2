@@ -3,10 +3,10 @@
 
 #include "DefaultGameState.h"
 
-#include "BaseMission.h"
-#include "EnemyVehicleBase.h"
+#include "CarsNGuns/Missions/BaseMission.h"
+#include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 #include "EnemyManager.h"
-#include "MissionManager.h"
+#include "CarsNGuns/Missions/MissionManager.h"
 #include "Kismet/GameplayStatics.h"
 
 ADefaultGameState::ADefaultGameState()

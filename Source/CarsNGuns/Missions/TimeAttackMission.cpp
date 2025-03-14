@@ -4,7 +4,7 @@
 #include "TimeAttackMission.h"
 
 #include "Checkpoint.h"
-#include "DefaultGameState.h"
+#include "CarsNGuns/Systems/DefaultGameState.h"
 #include "MissionManager.h"
 
 ATimeAttackMission::ATimeAttackMission()

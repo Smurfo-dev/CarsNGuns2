@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HealthComponent.h"
+#include "CarsNGuns/Components/HealthComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/PoseableMeshComponent.h"
 #include "GameFramework/Pawn.h"

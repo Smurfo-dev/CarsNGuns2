@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
-#include "DefaultGameInstance.h"
+#include "CarsNGuns/Systems/DefaultGameInstance.h"
 #include "HUDWidget.generated.h"
 
 class ABasePhysicsVehiclePawn;

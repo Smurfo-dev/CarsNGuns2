@@ -2,10 +2,10 @@
 
 
 #include "EnemyVehicleBase.h"
-#include "BaseWeapon.h"
-#include "DefaultGameState.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Systems/DefaultGameState.h"
 #include "Kismet/GameplayStatics.h"
-#include "EnemyManager.h"
+#include "CarsNGuns/Systems/EnemyManager.h"
 
 AEnemyVehicleBase::AEnemyVehicleBase()
 {

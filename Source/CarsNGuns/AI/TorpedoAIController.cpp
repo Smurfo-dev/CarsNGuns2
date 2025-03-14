@@ -2,7 +2,7 @@
 
 
 #include "TorpedoAIController.h"
-#include "EnemyVehicleBase.h"
+#include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 
 void ATorpedoAIController::BeginPlay()
 {

@@ -2,8 +2,8 @@
 
 
 #include "HUDWidget.h"
-#include "BaseWeapon.h"
-#include "BasePhysicsVehiclePawn.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 

@@ -7,7 +7,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
-#include "PlayerVehicleBase.h"
+#include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Kismet/GameplayStatics.h"

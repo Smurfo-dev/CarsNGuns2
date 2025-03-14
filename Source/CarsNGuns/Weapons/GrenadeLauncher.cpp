@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "BaseProjectile.h"
 #include "GrenadeProjectile.h"
-#include "PlayerVehicleBase.h"
+#include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Components/AudioComponent.h"
 #include "Components/PoseableMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"

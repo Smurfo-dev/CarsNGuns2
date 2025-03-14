@@ -3,7 +3,7 @@
 
 #include "WeaponSelectionMenu.h"
 
-#include "PlayerVehicleBase.h"
+#include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"

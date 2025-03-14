@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyVehicleBase.h"
-#include "UObject/NoExportTypes.h"
 #include "EnemyManager.generated.h"
 
 /**

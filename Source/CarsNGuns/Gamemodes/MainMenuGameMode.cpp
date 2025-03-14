@@ -3,8 +3,8 @@
 
 #include "MainMenuGameMode.h"
 
-#include "DefaultGameInstance.h"
-#include "DefaultGameState.h"
+#include "CarsNGuns/Systems/DefaultGameInstance.h"
+#include "CarsNGuns/Systems/DefaultGameState.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"

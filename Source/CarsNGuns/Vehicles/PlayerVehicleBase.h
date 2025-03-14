@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseMission.h"
+#include "CarsNGuns/Missions/BaseMission.h"
 #include "BasePhysicsVehiclePawn.h"
 #include "PlayerVehicleBase.generated.h"
 

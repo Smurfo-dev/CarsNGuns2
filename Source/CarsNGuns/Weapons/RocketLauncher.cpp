@@ -5,7 +5,7 @@
 
 #include "AIController.h"
 #include "BaseProjectile.h"
-#include "PlayerVehicleBase.h"
+#include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Components/AudioComponent.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Kismet/GameplayStatics.h"

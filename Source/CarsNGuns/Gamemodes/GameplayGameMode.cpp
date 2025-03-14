@@ -3,14 +3,14 @@
 
 #include "GameplayGameMode.h"
 
-#include "BasePhysicsVehiclePawn.h"
-#include "DefaultGameInstance.h"
-#include "DefaultGameState.h"
+#include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
+#include "CarsNGuns/Systems/DefaultGameInstance.h"
+#include "CarsNGuns/Systems/DefaultGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
-#include "WeaponSelectionMenu.h"
+#include "CarsNGuns/Widgets/WeaponSelectionMenu.h"
 #include "EnhancedInputSubsystems.h"
-#include "MyPlayerController.h"
+#include "CarsNGuns/Player/MyPlayerController.h"
 #include "GameFramework/PlayerStart.h"
 
 class UEnhancedInputLocalPlayerSubsystem;

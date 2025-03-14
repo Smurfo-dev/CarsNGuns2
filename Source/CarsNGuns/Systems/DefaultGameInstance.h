@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "BaseWeapon.h"
-#include "BasePhysicsVehiclePawn.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
 #include "DefaultGameInstance.generated.h"
 
 /**
