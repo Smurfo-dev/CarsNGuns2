@@ -37,7 +37,7 @@ void AMissionManager::StartEvent(ABaseMission* Mission)
 
 void AMissionManager::EndEvent(ABaseMission* Mission, bool bSuccess)
 {
-	//GrantRewards(Mission->GetRewards(), PlayerVehicleReference)
+	//if(bSuccess) GrantRewards(Mission->GetRewards(), PlayerVehicleReference)
 	Mission->EndEvent(bSuccess);
 	for (auto M : Missions)
 	{
