@@ -10,9 +10,8 @@ UENUM(BlueprintType)
 enum class EUpgradeType : uint8
 {
 	WeaponAugment      UMETA(DisplayName="Weapon Augment"), // New weapon abilities
-	VehicleAugment     UMETA(DisplayName="Vehicle Augment"), // New vehicle abilities
 	WeaponEnhancment    UMETA(DisplayName="Weapon Enhancement"), // Weapon stat increases
-	VehicleEnhancement   UMETA(DisplayName="Vehicle Enhancement") // Vehicle stat increases
+	VehicleModification   UMETA(DisplayName="Vehicle Modification") // Vehicle stat increases
 };
 
 USTRUCT(BlueprintType)
