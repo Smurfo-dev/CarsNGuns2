@@ -44,4 +44,7 @@ private:
 	UPROPERTY()
 	ABasePhysicsVehiclePawn* PlayerVehicleReference;
 
+	UFUNCTION()
+	void GrantRewards();
+
 };
