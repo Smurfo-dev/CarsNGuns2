@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 #include "BaseMission.generated.h"
 
 UENUM(BlueprintType)
@@ -28,6 +29,9 @@ public:
 	virtual void EndEvent(bool bSuccess);
 
 	virtual void ActivateCheckpoint();
+
+	UPROPERTY(EditAnywhere, Category="Mission Reward")
+	UMissionUpgradeComponent* MissionUpgradeComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Marker")
 	FLinearColor MarkerColor = FLinearColor::White;

@@ -40,6 +40,8 @@ ABaseMission::ABaseMission()
 	MissionMarkerWidgetComponent->SetupAttachment(RootComponent);
 
 	MissionMarkerWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+	MissionUpgradeComponent = CreateDefaultSubobject<UMissionUpgradeComponent>(TEXT("MissionUpgradeComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -161,7 +163,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 	if (bSuccess)
 	{
 		SetMissionState(EMissionState::Completed);
-		//Grant Rewards somehow
+		MissionUpgradeComponent->InitializeUpgrades(); //SETS 3 FUpgrade Structs in the Upgrades Array.
 	}
 	else SetMissionState(EMissionState::Failed);
 

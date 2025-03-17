@@ -2,7 +2,6 @@
 
 
 #include "MissionManager.h"
-
 #include "BaseMission.h"
 
 // Sets default values
@@ -37,21 +36,11 @@ void AMissionManager::StartEvent(ABaseMission* Mission)
 
 void AMissionManager::EndEvent(ABaseMission* Mission, bool bSuccess)
 {
-	/* ~~~~~~PSUEDOKOD~~~~~~
-	if(bSuccess) GrantRewards(Mission->GetRewards(), PlayerVehicleReference);
-	else GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Mission Failed. Granting no rewards")));
-	*/
-	
 	Mission->EndEvent(bSuccess);
 	for (auto M : Missions)
 	{
 		if (M->GetMissionState() == EMissionState::Inactive) M->SetMissionState(EMissionState::Active);
 	}
-}
-
-void AMissionManager::GrantRewards()
-{
-	
 }
 
 void AMissionManager::AddMission(ABaseMission* Mission)

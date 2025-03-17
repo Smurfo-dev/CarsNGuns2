@@ -42,9 +42,6 @@ private:
 	TArray<ABaseMission*> Missions;
 
 	UPROPERTY()
-	ABasePhysicsVehiclePawn* PlayerVehicleReference;
-
-	UFUNCTION()
-	void GrantRewards();
+	ABasePhysicsVehiclePawn* PlayerVehicleReference = nullptr;
 
 };
