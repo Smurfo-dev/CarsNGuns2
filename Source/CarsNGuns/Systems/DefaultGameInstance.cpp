@@ -78,7 +78,7 @@ void UDefaultGameInstance::InitializeUpgrades()
 			FString AugmentedWeaponClassPath = UpgradeObject->GetStringField(TEXT("AugmentedWeaponClass"));
 			UClass* LoadedClass = LoadClass<ABaseWeapon>(nullptr, *AugmentedWeaponClassPath);
 			if (LoadedClass) NewUpgrade.AugmentedWeaponClass = LoadedClass;
-			else UE_LOG(LogTemp, Warning, TEXT("Failed to load AugmentedWeaponClass: %s"), *AugmentedWeaponClassPath);
+			else UE_LOG(LogTemp, Error, TEXT("Failed to load AugmentedWeaponClass: %s"), *AugmentedWeaponClassPath);
 		}
 
 		//Add Upgrade to AvailableUpgrades Map
