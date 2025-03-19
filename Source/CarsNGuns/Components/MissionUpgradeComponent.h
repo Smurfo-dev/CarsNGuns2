@@ -6,12 +6,23 @@
 #include "Components/ActorComponent.h"
 #include "MissionUpgradeComponent.generated.h"
 
+enum class EWeaponType : uint8;
+
 UENUM(BlueprintType)
 enum class EUpgradeType : uint8
 {
-	WeaponAugment      UMETA(DisplayName="Weapon Augment"), // New weapon abilities
-	WeaponEnhancment    UMETA(DisplayName="Weapon Enhancement"), // Weapon stat increases
-	VehicleModification   UMETA(DisplayName="Vehicle Modification") // Vehicle Modifications
+	WeaponAugment      UMETA(DisplayName="Weapon Augment"), // New Weapon Mechanics
+	WeaponEnhancement    UMETA(DisplayName="Weapon Enhancement"), // Weapon stat boosts
+	VehicleModification   UMETA(DisplayName="Vehicle Modification") // Vehicle Modifications (stats and perhaps mechanics, visual modifications possibly)
+};
+
+UENUM(BlueprintType)
+enum class EStatEnhancementType : uint8
+{
+	Damage UMETA(DisplayName = "Damage"),
+	FireRate UMETA(DisplayName = "Fire Rate"),
+	ReloadSpeed UMETA(DisplayName = "Reload Speed"),
+	// mer typer perhabs
 };
 
 USTRUCT(BlueprintType)
@@ -36,21 +47,29 @@ struct FUpgrade
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade Preview") 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) 
 	EUpgradeType UpgradeType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Upgrade", meta=(EditCondition="UpgradeType == EUpgradeType::WeaponEnhancement || UpgradeType == EUpgradeType::VehicleEnhancement", EditConditionHides))
-	float StatBoost = 0.0f;
+	// Only applicable for WeaponEnhancement & WeaponAugment
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<EWeaponType> CompatibleWeaponTypes;
+
+	// Only applicable for WeaponAugment, references the new weapon class
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<class ABaseWeapon> AugmentedWeaponClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Upgrade", meta=(EditCondition="UpgradeType == EUpgradeType::WeaponAugment || UpgradeType == EUpgradeType::VehicleAugment", EditConditionHides))
-	TSubclassOf<UObject> ModifierClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EStatEnhancementType StatEnhancementType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StatEnhancementValue = 0.0f;
 
 	FUpgrade()
-		: UpgradeType(EUpgradeType::WeaponAugment) {}
+		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage) {}
 
 	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const float Boost, const TSubclassOf<UObject>& ModClass)
-		: UpgradeType(Type), StatBoost(Boost), ModifierClass(ModClass) {}
+	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue)
+		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType),  StatEnhancementValue(EnhancementValue) {}
 	
 };
 
@@ -63,7 +82,8 @@ public:
 	// Sets default values for this component's properties
 	UMissionUpgradeComponent();
 
-	void InitializeUpgrades();
+	//Funktion som ska fylla upgrade choice widgeten med "lagliga" val från AvailableUpgrades mapen.
+	void GetUpgrades();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
 	FUpgradePreview UpgradePreview;
@@ -72,7 +92,7 @@ public:
 	FUpgrade Upgrade;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
-	EUpgradeType UpgradeType = EUpgradeType::VehicleAugment;
+	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;
 
 	TArray<FUpgrade> Upgrades;
 

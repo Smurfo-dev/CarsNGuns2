@@ -6,8 +6,11 @@
 #include "Engine/GameInstance.h"
 #include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "CarsNGuns/Vehicles/BasePhysicsVehiclePawn.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 #include "DefaultGameInstance.generated.h"
 
+struct FUpgrade;
+enum class EUpgradeType : uint8;
 /**
  * 
  */
@@ -44,6 +47,10 @@ public:
 	
 	float GetElapsedTime() const;
 
+	TMap<EUpgradeType, TArray<FUpgrade>> GetAvailableUpgrades() const
+	{
+		return AvailableUpgrades;
+	}
 
 protected:
 	virtual void Init() override;
@@ -52,6 +59,10 @@ private:
 	float StartTime = 0.0f;
 	float PausedElapsedTime = 0.0f;
 	bool bIsPaused = true;
+	
+	TMap<EUpgradeType, TArray<FUpgrade>> AvailableUpgrades;
+
+	void InitializeUpgrades();
 	
 };
 

@@ -9,7 +9,7 @@
 
 ATimeAttackMission::ATimeAttackMission()
 {
-	MissionUpgradeComponent->UpgradeType = EUpgradeType::VehicleEnhancement;
+	MissionUpgradeComponent->UpgradeType = EUpgradeType::VehicleModification;
 	MissionUpgradeComponent->UpgradePreview = FUpgradePreview(MissionUpgradeComponent->UpgradeType, "You will get vehicle Enhancement");
 }
 

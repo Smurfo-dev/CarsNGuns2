@@ -14,6 +14,7 @@
 
 ALaserRifle::ALaserRifle()
 {
+	WeaponType = EWeaponType::LaserRifle;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 

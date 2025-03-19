@@ -163,7 +163,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 	if (bSuccess)
 	{
 		SetMissionState(EMissionState::Completed);
-		MissionUpgradeComponent->InitializeUpgrades(); //SETS 3 FUpgrade Structs in the Upgrades Array.
+		MissionUpgradeComponent->GetUpgrades(); 
 	}
 	else SetMissionState(EMissionState::Failed);
 

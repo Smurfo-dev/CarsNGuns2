@@ -28,6 +28,8 @@ void AGameplayGameMode::BeginPlay()
 	
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 	DefaultGameInstance->StartTimer();
+
+	UE_LOG(LogTemp, Warning, TEXT("Available Upgrades count: %d"), DefaultGameInstance->GetAvailableUpgrades().Num());
 	
 	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 }

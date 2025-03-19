@@ -13,6 +13,7 @@
 
 ARocketLauncher::ARocketLauncher()
 {
+	WeaponType = EWeaponType::RocketLauncher;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }

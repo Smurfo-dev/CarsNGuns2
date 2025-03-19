@@ -2,11 +2,89 @@
 
 
 #include "DefaultGameInstance.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 
 void UDefaultGameInstance::Init()
 {
 	Super::Init();
+
+	InitializeUpgrades();
 	
+}
+
+void UDefaultGameInstance::InitializeUpgrades()
+{
+	FString FilePath = FPaths::ProjectContentDir() + "Upgrades/upgrades.json";
+	FString JsonString;
+
+	if (!FFileHelper::LoadFileToString(JsonString, *FilePath))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load JSON file!"));
+		return;
+	}
+	
+	TArray<TSharedPtr<FJsonValue>> JsonArray;
+	TSharedRef<TJsonReader<TCHAR>> Reader = TJsonReaderFactory<TCHAR>::Create(JsonString);
+	
+	if (!FJsonSerializer::Deserialize(Reader, JsonArray))
+	{
+		UE_LOG(LogTemp, Error, TEXT("JSON Deserialization Failed"));
+		return;
+	}
+	
+	for (const auto Item : JsonArray)
+	{
+		const TSharedPtr<FJsonObject> UpgradeObject = Item->AsObject();
+		FUpgrade NewUpgrade;
+
+		//Parse UpgradeType
+		FString UpgradeTypeStr = UpgradeObject->GetStringField(TEXT("UpgradeType"));
+		if (UpgradeTypeStr == "WeaponEnhancement") NewUpgrade.UpgradeType = EUpgradeType::WeaponEnhancement;
+		else if (UpgradeTypeStr == "WeaponAugment") NewUpgrade.UpgradeType = EUpgradeType::WeaponAugment;
+		else if (UpgradeTypeStr == "VehicleModification") NewUpgrade.UpgradeType = EUpgradeType::VehicleModification;
+
+		//Parse Compatible Weapon Types
+		if (UpgradeObject->HasField(TEXT("CompatibleWeaponTypes")))
+		{
+			TArray<TSharedPtr<FJsonValue>> CompatibleWeapons = UpgradeObject->GetArrayField(TEXT("CompatibleWeaponTypes"));
+			for (const auto Weapon : CompatibleWeapons)
+			{
+				FString WeaponStr = Weapon->AsString();
+				if (WeaponStr == "MachineGun") NewUpgrade.CompatibleWeaponTypes.Add(EWeaponType::MachineGun);
+				else if (WeaponStr == "LaserRifle") NewUpgrade.CompatibleWeaponTypes.Add(EWeaponType::LaserRifle);
+				else if (WeaponStr == "RocketLauncher") NewUpgrade.CompatibleWeaponTypes.Add(EWeaponType::RocketLauncher);
+				else if (WeaponStr == "GrenadeLauncher") NewUpgrade.CompatibleWeaponTypes.Add(EWeaponType::GrenadeLauncher);
+			}
+		}
+
+		//Parse Stat Enhancement Type
+		if (UpgradeObject->HasField(TEXT("StatEnhancementType")))
+		{
+			FString StatEnhancementType = UpgradeObject->GetStringField(TEXT("StatEnhancementType"));
+			if (StatEnhancementType == "FireRate") NewUpgrade.StatEnhancementType = EStatEnhancementType::FireRate;
+			else if (StatEnhancementType == "Damage") NewUpgrade.StatEnhancementType = EStatEnhancementType::Damage;
+			else if (StatEnhancementType == "ReloadSpeed") NewUpgrade.StatEnhancementType = EStatEnhancementType::ReloadSpeed;
+		}
+
+		//Parse State Enhancement Value
+		if (UpgradeObject->HasField(TEXT("StatEnhancementValue")))
+		{
+			NewUpgrade.StatEnhancementValue = UpgradeObject->GetNumberField(TEXT("StatEnhancementValue"));
+		}
+
+		//Parse Augmented Weapon Class
+		if (NewUpgrade.UpgradeType == EUpgradeType::WeaponAugment && UpgradeObject->HasField(TEXT("AugmentedWeaponClass")))
+		{
+			FString AugmentedWeaponClassPath = UpgradeObject->GetStringField(TEXT("AugmentedWeaponClass"));
+			UClass* LoadedClass = LoadClass<ABaseWeapon>(nullptr, *AugmentedWeaponClassPath);
+			if (LoadedClass) NewUpgrade.AugmentedWeaponClass = LoadedClass;
+			else UE_LOG(LogTemp, Warning, TEXT("Failed to load AugmentedWeaponClass: %s"), *AugmentedWeaponClassPath);
+		}
+
+		//Add Upgrade to AvailableUpgrades Map
+		AvailableUpgrades.FindOrAdd(NewUpgrade.UpgradeType).Add(NewUpgrade);
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Upgrades Initialized Successfully"));
 }
 
 void UDefaultGameInstance::StartTimer()

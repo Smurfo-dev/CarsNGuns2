@@ -15,6 +15,7 @@
 
 AGrenadeLauncher::AGrenadeLauncher()
 {
+	WeaponType = EWeaponType::GrenadeLauncher;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }

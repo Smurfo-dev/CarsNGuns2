@@ -6,6 +6,15 @@
 #include "GameFramework/Actor.h"
 #include "BaseWeapon.generated.h"
 
+UENUM(BlueprintType)
+enum class EWeaponType : uint8
+{
+	MachineGun,
+	LaserRifle,
+	RocketLauncher,
+	GrenadeLauncher,
+};
+
 UCLASS()
 class CARSNGUNS_API ABaseWeapon : public AActor
 {
@@ -37,6 +46,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	EWeaponType WeaponType;
 
 	UPROPERTY(EditDefaultsOnly, Category=UI)
 	UTexture2D* WeaponIcon;

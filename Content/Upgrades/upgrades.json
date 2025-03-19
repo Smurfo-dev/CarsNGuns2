@@ -1,0 +1,13 @@
+[
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "FireRate",
+    "StatEnhancementValue": 20.0
+  },
+  {
+    "UpgradeType": "WeaponAugment",
+    "CompatibleWeaponTypes": ["MachineGun"],
+    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_MachineGunUpgradeTest.BP_MachineGunUpgradeTest_C"
+  }
+]
