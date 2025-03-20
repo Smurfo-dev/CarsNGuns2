@@ -64,12 +64,23 @@ struct FUpgrade
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float StatEnhancementValue = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString UpgradeIconFilePath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString DisplayName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString UpgradeDescription;
+
 	FUpgrade()
 		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage) {}
 
 	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue)
-		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType),  StatEnhancementValue(EnhancementValue) {}
+	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue,
+		const FString& IconFilePath, const FString& DisplayName, const FString& UpgradeDescription)
+		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType),  StatEnhancementValue(EnhancementValue),
+			UpgradeIconFilePath(IconFilePath), DisplayName(DisplayName), UpgradeDescription(UpgradeDescription) {}
 	
 };
 
@@ -89,12 +100,9 @@ public:
 	FUpgradePreview UpgradePreview;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
-	FUpgrade Upgrade;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
 	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;
 
-	TArray<FUpgrade> Upgrades;
+	TArray<FUpgrade, TFixedAllocator<3>> Upgrades;
 
 protected:
 	// Called when the game starts

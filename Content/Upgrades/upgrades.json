@@ -3,11 +3,17 @@
     "UpgradeType": "WeaponEnhancement",
     "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
     "StatEnhancementType": "FireRate",
-    "StatEnhancementValue": 20.0
+    "StatEnhancementValue": 20.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Fire Rate Booster",
+    "UpgradeDescription": "20% Fire Rate Increase"
   },
   {
     "UpgradeType": "WeaponAugment",
     "CompatibleWeaponTypes": ["MachineGun"],
-    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_MachineGunUpgradeTest.BP_MachineGunUpgradeTest_C"
+    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_MachineGunUpgradeTest.BP_MachineGunUpgradeTest_C",
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Blue Machine Gun",
+    "UpgradeDescription": "Makes Your Machine Gun Blue"
   }
 ]

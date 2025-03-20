@@ -16,6 +16,7 @@ UMissionUpgradeComponent::UMissionUpgradeComponent()
 void UMissionUpgradeComponent::GetUpgrades()
 {
 	//Här skapar vi 3 upgrades som är lagliga att appliceras utifrån EUpgradeType Och vad spelaren redan har för upgrades/equippade vapen
+	
 }
 
 

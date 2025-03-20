@@ -76,9 +76,26 @@ void UDefaultGameInstance::InitializeUpgrades()
 		if (NewUpgrade.UpgradeType == EUpgradeType::WeaponAugment && UpgradeObject->HasField(TEXT("AugmentedWeaponClass")))
 		{
 			FString AugmentedWeaponClassPath = UpgradeObject->GetStringField(TEXT("AugmentedWeaponClass"));
-			UClass* LoadedClass = LoadClass<ABaseWeapon>(nullptr, *AugmentedWeaponClassPath);
-			if (LoadedClass) NewUpgrade.AugmentedWeaponClass = LoadedClass;
+			if (UClass* LoadedClass = LoadClass<ABaseWeapon>(nullptr, *AugmentedWeaponClassPath)) NewUpgrade.AugmentedWeaponClass = LoadedClass;
 			else UE_LOG(LogTemp, Error, TEXT("Failed to load AugmentedWeaponClass: %s"), *AugmentedWeaponClassPath);
+		}
+		
+		//Parse Icon File Path
+		if (UpgradeObject->HasField(TEXT("IconFilePath")))
+		{
+			NewUpgrade.UpgradeIconFilePath = UpgradeObject->GetStringField(TEXT("IconFilePath"));
+		}
+
+		//Parse Display Name
+		if (UpgradeObject->HasField(TEXT("DisplayName")))
+		{
+			NewUpgrade.DisplayName = UpgradeObject->GetStringField(TEXT("DisplayName"));
+		}
+
+		//Parse Upgrade Description
+		if (UpgradeObject->HasField(TEXT("UpgradeDescription")))
+		{
+			NewUpgrade.UpgradeDescription = UpgradeObject->GetStringField(TEXT("UpgradeDescription"));
 		}
 
 		//Add Upgrade to AvailableUpgrades Map
