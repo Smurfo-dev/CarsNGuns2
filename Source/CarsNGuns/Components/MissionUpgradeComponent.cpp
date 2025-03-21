@@ -48,12 +48,12 @@ void UMissionUpgradeComponent::GetUpgrades()
 				const FUpgrade& Upgrade = UpgradePair.Value;
 				bool bIsCompatible = false;
 
-				if (PlayerReference->GetPrimaryWeapon() && Upgrade.CompatibleWeaponTypes.Contains(PlayerReference->GetPrimaryWeapon()->GetWeaponType()) && !IsUpgradeAlreadyAdded(Upgrade))
+				if (PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
 				{
 					bIsCompatible = true;
 				}
 
-				if (!bIsCompatible && PlayerReference->GetSecondaryWeapon() && Upgrade.CompatibleWeaponTypes.Contains(PlayerReference->GetSecondaryWeapon()->GetWeaponType()) && !IsUpgradeAlreadyAdded(Upgrade))
+				if (!bIsCompatible && PlayerReference->GetSecondaryWeapon() && UpgradePair.Key == PlayerReference->GetSecondaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
 				{
 					bIsCompatible = true;
 				}
