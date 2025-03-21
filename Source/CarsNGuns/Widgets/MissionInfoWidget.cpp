@@ -3,3 +3,7 @@
 
 #include "MissionInfoWidget.h"
 
+void UMissionInfoWidget::InitializeValues()
+{
+	//Expand this when creating real mission info widget prompt thing
+}

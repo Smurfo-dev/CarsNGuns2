@@ -26,7 +26,7 @@ enum class EStatEnhancementType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FUpgradePreview
+struct FMissionInfo
 {
 	GENERATED_BODY()
 
@@ -37,9 +37,9 @@ struct FUpgradePreview
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade Preview")
 	FString UpgradeDescription; // Example: "This mission rewards a Weapon Augment!"
 
-	FUpgradePreview() : UpgradeType(EUpgradeType::WeaponAugment), UpgradeDescription(TEXT("Default Description")) {}
+	FMissionInfo() : UpgradeType(EUpgradeType::WeaponAugment), UpgradeDescription(TEXT("Default Description")) {}
 	
-	FUpgradePreview(const EUpgradeType Type, const FString& Desc) : UpgradeType(Type), UpgradeDescription(Desc) {}
+	FMissionInfo(const EUpgradeType Type, const FString& Desc) : UpgradeType(Type), UpgradeDescription(Desc) {}
 };
 
 USTRUCT(BlueprintType)
@@ -100,7 +100,7 @@ public:
 	void GetUpgrades();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
-	FUpgradePreview UpgradePreview;
+	FMissionInfo MissionInfo;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
 	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;

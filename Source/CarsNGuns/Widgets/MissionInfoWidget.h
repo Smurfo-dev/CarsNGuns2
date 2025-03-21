@@ -13,5 +13,9 @@ UCLASS()
 class CARSNGUNS_API UMissionInfoWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	void InitializeValues();
 	
 };

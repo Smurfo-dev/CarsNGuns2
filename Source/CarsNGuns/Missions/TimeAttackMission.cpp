@@ -11,7 +11,7 @@ ATimeAttackMission::ATimeAttackMission()
 {
 	//Det här kanske ska göras mer FLEXIBELT, den här bestämmer helt vilken sorts upgrade spelare kan få
 	MissionUpgradeComponent->UpgradeType = EUpgradeType::WeaponEnhancement;
-	MissionUpgradeComponent->UpgradePreview = FUpgradePreview(MissionUpgradeComponent->UpgradeType, "You will get Weapon Enhancement");
+	MissionUpgradeComponent->MissionInfo = FMissionInfo(MissionUpgradeComponent->UpgradeType, "You will get Weapon Enhancement");
 }
 
 void ATimeAttackMission::BeginPlay()

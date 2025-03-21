@@ -187,6 +187,7 @@ void ABaseMission::ShowMissionInfo()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Adding Mission Info Menu To Viewport"))
 		CurrentMissionInfoWidget->AddToViewport();
+		CurrentMissionInfoWidget->InitializeValues();
 	}
 }
 
