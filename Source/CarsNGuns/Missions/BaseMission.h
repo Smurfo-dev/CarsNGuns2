@@ -62,6 +62,12 @@ public:
 	UPROPERTY()
 	UMissionInfoWidget* CurrentMissionInfoWidget;
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UUpgradeSelectionWidget> UpgradeSelectionWidgetClass;
+
+	UPROPERTY()
+	UUpgradeSelectionWidget* UpgradeSelectionWidget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Info")
 	FString MissionID = "Default Name";
 
@@ -125,6 +131,9 @@ private:
 
 	UFUNCTION()
 	void HideMissionInfo();
+
+	UFUNCTION()
+	void ShowMissionRewards(const TArray<FUpgrade>& Upgrades);
 
 	UFUNCTION()
 	void DisableMission();

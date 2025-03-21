@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
+#include "CarsNGuns/Player/MyPlayerController.h"
 #include "UpgradeSelectionWidget.generated.h"
 
 /**
@@ -14,7 +16,7 @@ class CARSNGUNS_API UUpgradeSelectionWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Option1Image;
 
@@ -50,5 +52,29 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* Option3Button;
+
+	void InitializeValues(const TArray<FUpgrade>& Upgrades, AMyPlayerController* PlayerControllerRef);
+	
+protected:
+	UFUNCTION()
+	void OnOption1Clicked();
+
+	UFUNCTION()
+	void OnOption2Clicked();
+
+	UFUNCTION()
+	void OnOption3Clicked();
+
+	virtual void NativeConstruct() override;
+
+	UPROPERTY()
+	AMyPlayerController* PlayerController;
+
+private:
+	void SetImageFromFile(const FString& FilePath, UImage* Image);
+
+	UTexture2D* LoadTextureFromFile(const FString& FilePath);
+
+	void DisableWidget();
 	
 };

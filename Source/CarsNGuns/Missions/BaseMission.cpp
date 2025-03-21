@@ -9,6 +9,7 @@
 #include "CarsNGuns/Systems/DefaultGameInstance.h"
 #include "CarsNGuns/Widgets/MissionMarkerWidget.h"
 #include "CarsNGuns/Widgets/MissionInfoWidget.h"
+#include "CarsNGuns/Widgets/UpgradeSelectionWidget.h"
 #include "CarsNGuns/Systems/DefaultGameState.h"
 #include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
 #include "Components/Image.h"
@@ -169,6 +170,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array Upgrade: %s"), *Upgrade.DisplayName)
 		}
+		ShowMissionRewards(MissionUpgradeComponent->Upgrades);
 	}
 	else SetMissionState(EMissionState::Failed);
 
@@ -180,7 +182,6 @@ void ABaseMission::ShowMissionInfo()
 	if (!CurrentMissionInfoWidget && MissionInfoMenuWidgetClass)
 	{
 		CurrentMissionInfoWidget = CreateWidget<UMissionInfoWidget>(GetWorld(), MissionInfoMenuWidgetClass);
-		UE_LOG(LogTemp, Warning, TEXT("Creating Widget"))
 	}
 	if (CurrentMissionInfoWidget && !CurrentMissionInfoWidget->IsInViewport())
 	{
@@ -198,6 +199,20 @@ void ABaseMission::HideMissionInfo()
 			UE_LOG(LogTemp, Warning, TEXT("Removing Mission Info Menu From Viewport"))
 			CurrentMissionInfoWidget->RemoveFromParent();
 		}
+	}
+}
+
+void ABaseMission::ShowMissionRewards(const TArray<FUpgrade>& Upgrades)
+{
+	if (!UpgradeSelectionWidget && UpgradeSelectionWidgetClass)
+	{
+		UpgradeSelectionWidget = CreateWidget<UUpgradeSelectionWidget>(GetWorld(), UpgradeSelectionWidgetClass);
+	}
+	if (UpgradeSelectionWidget && !UpgradeSelectionWidget->IsInViewport())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Mission Reward Menu To Viewport"))
+		UpgradeSelectionWidget->AddToViewport();
+		UpgradeSelectionWidget->InitializeValues(Upgrades, PlayerController);
 	}
 }
 
