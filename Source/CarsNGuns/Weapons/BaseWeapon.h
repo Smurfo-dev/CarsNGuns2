@@ -41,7 +41,13 @@ public:
 	class ABasePhysicsVehiclePawn* OwnerReference;
 
 	UFUNCTION(BlueprintCallable, Category="UI")
-	UTexture2D* GetWeaponIcon() const {return WeaponIcon;};
+	UTexture2D* GetWeaponIcon() const {return WeaponIcon;}
+
+	UFUNCTION(Blueprintable)
+	EWeaponType GetWeaponType() const
+	{
+		return WeaponType;
+	}
 
 protected:
 	// Called when the game starts or when spawned

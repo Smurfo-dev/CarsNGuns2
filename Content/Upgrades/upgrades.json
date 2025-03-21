@@ -5,8 +5,53 @@
     "StatEnhancementType": "FireRate",
     "StatEnhancementValue": 20.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
-    "DisplayName": "Fire Rate Booster",
+    "DisplayName": "Small Fire Rate Booster",
     "UpgradeDescription": "20% Fire Rate Increase"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "FireRate",
+    "StatEnhancementValue": 60.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Massive Fire Rate Booster",
+    "UpgradeDescription": "60% Fire Rate Increase"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "Damage",
+    "StatEnhancementValue": 20.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Small Damage Booster",
+    "UpgradeDescription": "20% Damage Increase"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "Damage",
+    "StatEnhancementValue": 30.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Medium Damage Booster",
+    "UpgradeDescription": "30% Damage Increase"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "Damage",
+    "StatEnhancementValue": 60.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Massive Damage Booster",
+    "UpgradeDescription": "60% Damage Increase"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "StatEnhancementType": "Damage",
+    "StatEnhancementValue": 50.0,
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.png",
+    "DisplayName": "Large Damage Booster",
+    "UpgradeDescription": "50% Damage Increase"
   },
   {
     "UpgradeType": "WeaponAugment",

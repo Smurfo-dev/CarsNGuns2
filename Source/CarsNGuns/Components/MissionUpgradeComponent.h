@@ -89,6 +89,9 @@ class CARSNGUNS_API UMissionUpgradeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	class UDefaultGameInstance* DefaultGameInstance;
+
 public:	
 	// Sets default values for this component's properties
 	UMissionUpgradeComponent();
@@ -102,7 +105,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
 	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;
 
-	TArray<FUpgrade, TFixedAllocator<3>> Upgrades;
+	TArray<FUpgrade> Upgrades;
 
 protected:
 	// Called when the game starts

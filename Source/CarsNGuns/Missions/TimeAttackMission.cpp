@@ -9,8 +9,9 @@
 
 ATimeAttackMission::ATimeAttackMission()
 {
-	MissionUpgradeComponent->UpgradeType = EUpgradeType::VehicleModification;
-	MissionUpgradeComponent->UpgradePreview = FUpgradePreview(MissionUpgradeComponent->UpgradeType, "You will get vehicle Enhancement");
+	//Det här kanske ska göras mer FLEXIBELT, den här bestämmer helt vilken sorts upgrade spelare kan få
+	MissionUpgradeComponent->UpgradeType = EUpgradeType::WeaponEnhancement;
+	MissionUpgradeComponent->UpgradePreview = FUpgradePreview(MissionUpgradeComponent->UpgradeType, "You will get Weapon Enhancement");
 }
 
 void ATimeAttackMission::BeginPlay()

@@ -99,7 +99,15 @@ void UDefaultGameInstance::InitializeUpgrades()
 		}
 
 		//Add Upgrade to AvailableUpgrades Map
-		AvailableUpgrades.FindOrAdd(NewUpgrade.UpgradeType).Add(NewUpgrade);
+		EUpgradeType UpgradeType = NewUpgrade.UpgradeType;  // The type of the upgrade (EUpgradeType)
+		TArray<EWeaponType> CompatibleWeaponTypes = NewUpgrade.CompatibleWeaponTypes;  // Array of compatible weapon types
+
+		// First, find the entry for the UpgradeType and add it if not already present
+		TMultiMap<EWeaponType, FUpgrade>& WeaponTypeMap = AvailableUpgrades.FindOrAdd(UpgradeType);
+		for (const EWeaponType& WeaponType : CompatibleWeaponTypes)
+		{
+			WeaponTypeMap.Add(WeaponType, NewUpgrade);
+		}
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Upgrades Initialized Successfully"));
 }

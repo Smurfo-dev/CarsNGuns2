@@ -162,8 +162,13 @@ void ABaseMission::EndEvent(bool bSuccess)
 {
 	if (bSuccess)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Mission Success, trying to fill upgrades array in mission upgrade component!!"))
 		SetMissionState(EMissionState::Completed);
-		MissionUpgradeComponent->GetUpgrades(); 
+		MissionUpgradeComponent->GetUpgrades();
+		for (auto Upgrade : MissionUpgradeComponent->Upgrades)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array Upgrade: %s"), *Upgrade.DisplayName)
+		}
 	}
 	else SetMissionState(EMissionState::Failed);
 

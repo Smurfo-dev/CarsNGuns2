@@ -7,6 +7,8 @@
 #include "CarsNGuns/Systems/DefaultGameInstance.h"
 #include "CarsNGuns/Systems/DefaultGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "Blueprint/UserWidget.h"
 #include "CarsNGuns/Widgets/WeaponSelectionMenu.h"
 #include "EnhancedInputSubsystems.h"
@@ -29,7 +31,17 @@ void AGameplayGameMode::BeginPlay()
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 	DefaultGameInstance->StartTimer();
 
-	UE_LOG(LogTemp, Warning, TEXT("Available Upgrades count: %d"), DefaultGameInstance->GetAvailableUpgrades().Num());
+	//Använd den här som exempel på hur du kan läsa från the cursed map
+	const TMultiMap<EWeaponType, FUpgrade>* WeaponEnhancementUpgrades = DefaultGameInstance->GetAvailableUpgrades().Find(EUpgradeType::WeaponEnhancement);
+
+	if (WeaponEnhancementUpgrades)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Available Weapon Enhancement upgrades: %d"), WeaponEnhancementUpgrades->Num());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Weapon Enhancement upgrades available."));
+	}
 	
 	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 }
