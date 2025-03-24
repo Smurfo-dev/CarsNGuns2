@@ -17,5 +17,9 @@ class CARSNGUNS_API UMissionInfoWidget : public UUserWidget
 public:
 	UFUNCTION()
 	void InitializeValues();
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* RaceDescription;
 	
 };

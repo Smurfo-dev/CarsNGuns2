@@ -17,6 +17,12 @@ enum class EUpgradeType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EMissionType : uint8
+{
+	TimeAttack UMETA(DisplayName = "Time Attack")
+};
+
+UENUM(BlueprintType)
 enum class EStatEnhancementType : uint8
 {
 	Damage UMETA(DisplayName = "Damage"),
@@ -30,47 +36,41 @@ struct FMissionInfo
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview")
+	EMissionType MissionType;
 	//Should be set by the mission type / mission class
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade Preview") 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview") 
 	EUpgradeType UpgradeType;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade Preview")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview")
 	FString UpgradeDescription; // Example: "This mission rewards a Weapon Augment!"
 
-	FMissionInfo() : UpgradeType(EUpgradeType::WeaponAugment), UpgradeDescription(TEXT("Default Description")) {}
+	FMissionInfo() : MissionType(EMissionType::TimeAttack), UpgradeType(EUpgradeType::WeaponAugment), UpgradeDescription(TEXT("Default Description")) {}
 	
-	FMissionInfo(const EUpgradeType Type, const FString& Desc) : UpgradeType(Type), UpgradeDescription(Desc) {}
+	FMissionInfo(const EMissionType MissionType, const EUpgradeType Type, const FString& Desc) : MissionType(MissionType), UpgradeType(Type), UpgradeDescription(Desc) {}
 };
 
 USTRUCT(BlueprintType)
 struct FUpgrade
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) 
+	
 	EUpgradeType UpgradeType;
 
 	// Only applicable for WeaponEnhancement & WeaponAugment
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<EWeaponType> CompatibleWeaponTypes;
 
 	// Only applicable for WeaponAugment, references the new weapon class
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ABaseWeapon> AugmentedWeaponClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EStatEnhancementType StatEnhancementType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	
 	float StatEnhancementValue = 0.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	
 	FString UpgradeIconFilePath;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	
 	FString DisplayName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	
 	FString UpgradeDescription;
 
 	FUpgrade()
@@ -99,10 +99,10 @@ public:
 	//Funktion som ska fylla upgrade choice widgeten med "lagliga" val från AvailableUpgrades mapen.
 	void GetUpgrades();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Info")
 	FMissionInfo MissionInfo;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Upgrade")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Reward")
 	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;
 
 	TArray<FUpgrade> Upgrades;
