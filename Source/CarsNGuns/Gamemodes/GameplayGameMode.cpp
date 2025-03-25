@@ -36,12 +36,10 @@ void AGameplayGameMode::BeginPlay()
 
 	if (WeaponEnhancementUpgrades && WeaponEnhancementUpgrades->Num() > 0)
 	{
-		// If upgrades are found, log how many there are
 		UE_LOG(LogTemp, Warning, TEXT("Available Weapon Enhancement upgrades: %d"), WeaponEnhancementUpgrades->Num());
 	}
 	else
 	{
-		// If no upgrades found, log a message
 		UE_LOG(LogTemp, Warning, TEXT("No Weapon Enhancement upgrades available."));
 	}
 

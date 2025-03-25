@@ -10,24 +10,21 @@ void UDefaultGameInstance::Init()
 
 	InitializeUpgrades();
 
+	//Log all upgrades available
 	for (const auto& UpgradePair : AvailableUpgrades)
 	{
 		EUpgradeType UpgradeType = UpgradePair.Key;
 		const TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>& WeaponUpgrades = UpgradePair.Value; // Note the TSharedPtr<FUpgrade>
-
-		// Print the UpgradeType
+		
 		UE_LOG(LogTemp, Log, TEXT("Upgrade Type: %s"), *UEnum::GetDisplayValueAsText(UpgradeType).ToString());
-
-		// Iterate through the inner TMultiMap
+		
 		for (const auto& WeaponUpgradePair : WeaponUpgrades)
 		{
 			EWeaponType WeaponType = WeaponUpgradePair.Key;
 			TSharedPtr<FUpgrade> Upgrade = WeaponUpgradePair.Value; // TSharedPtr<FUpgrade> here
-
-			// Check if Upgrade is valid (ensure it is not a nullptr)
+			
 			if (Upgrade.IsValid())
 			{
-				// Print the WeaponType and Upgrade details
 				UE_LOG(LogTemp, Log, TEXT("  Weapon Type: %s | Upgrade: %s"), 
 					*UEnum::GetDisplayValueAsText(WeaponType).ToString(),
 					*Upgrade->DisplayName); // Dereference the shared pointer using '->' to access DisplayName
@@ -129,18 +126,17 @@ void UDefaultGameInstance::InitializeUpgrades()
 			NewUpgrade.UpgradeDescription = UpgradeObject->GetStringField(TEXT("UpgradeDescription"));
 		}
 		
-		// Add Upgrade to AvailableUpgrades Map
+		//Lägg till upgrades till map
 		EUpgradeType UpgradeType = NewUpgrade.UpgradeType;  // The type of the upgrade (EUpgradeType)
 		TArray<EWeaponType> CompatibleWeaponTypes = NewUpgrade.CompatibleWeaponTypes;  // Array of compatible weapon types
 
-		// Create a TSharedPtr<FUpgrade> from NewUpgrade
+		//Skapa TSharedPtr<FUpgrade> from NewUpgrade
 		TSharedPtr<FUpgrade> SharedUpgrade = MakeShared<FUpgrade>(NewUpgrade); // Construct the TSharedPtr
-
-		// First, find the entry for the UpgradeType and add it if not already present
+		
 		TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>& WeaponTypeMap = AvailableUpgrades.FindOrAdd(UpgradeType);
 		for (const EWeaponType& WeaponType : CompatibleWeaponTypes)
 		{
-			WeaponTypeMap.Add(WeaponType, SharedUpgrade);  // Add the shared pointer to the map
+			WeaponTypeMap.Add(WeaponType, SharedUpgrade);
 		}
 
 	}

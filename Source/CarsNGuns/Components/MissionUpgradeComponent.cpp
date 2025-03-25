@@ -18,7 +18,7 @@ UMissionUpgradeComponent::UMissionUpgradeComponent()
 
 void UMissionUpgradeComponent::GetUpgrades()
 {
-    // Create 3 upgrades that are eligible to be applied based on EUpgradeType and the player's current upgrades/equipped weapons
+    //Här tar vi 3 upgrades som är "Lämpliga/Lagliga" att appliceras på spelaren från Game Instance Available Upgrades
     if (APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0))
     {
         ABasePhysicsVehiclePawn* PlayerReference = Cast<ABasePhysicsVehiclePawn>(PlayerPawn);
@@ -46,14 +46,12 @@ void UMissionUpgradeComponent::GetUpgrades()
                     return ExistingUpgrade->DisplayName == Upgrade->DisplayName; // Display name has to be unique right now
                 });
             };
-
-            // Iterate through the UpgradeMap
+            
             for (const TPair<EWeaponType, TSharedPtr<FUpgrade>>& UpgradePair : UpgradeMap)
             {
-                TSharedPtr<FUpgrade> Upgrade = UpgradePair.Value; // Now using TSharedPtr<FUpgrade>
+                TSharedPtr<FUpgrade> Upgrade = UpgradePair.Value;
                 bool bIsCompatible = false;
-
-                // Check if the upgrade is compatible with the player's primary or secondary weapon
+                
                 if (PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
                 {
                     bIsCompatible = true;
@@ -66,20 +64,18 @@ void UMissionUpgradeComponent::GetUpgrades()
 
                 if (bIsCompatible)
                 {
-                    FilteredUpgrades.Add(Upgrade); // Add the shared pointer to the list of filtered upgrades
+                    FilteredUpgrades.Add(Upgrade);
                 }
             }
 
             int32 NumToSelect = FMath::Min(3, FilteredUpgrades.Num());
             if (NumToSelect > 0)
             {
-                // Sort the filtered upgrades randomly
                 FilteredUpgrades.Sort([](const TSharedPtr<FUpgrade>& A, const TSharedPtr<FUpgrade>& B)
                 {
                     return FMath::RandBool();
                 });
-
-                // Append the selected upgrades to the Upgrades array
+                
                 for (int32 i = 0; i < NumToSelect; ++i)
                 {
                     Upgrades.Add(*FilteredUpgrades[i]);
