@@ -68,9 +68,6 @@ public:
 	UPROPERTY()
 	UUpgradeSelectionWidget* UpgradeSelectionWidget;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Info")
-	FString MissionID = "Default Name";
-
 	FString GetMissionStateAsString(EMissionState State) const
 	{
 		switch (State)

@@ -9,6 +9,29 @@ void UDefaultGameInstance::Init()
 	Super::Init();
 
 	InitializeUpgrades();
+
+	for (const auto& UpgradePair : AvailableUpgrades)
+	{
+		EUpgradeType UpgradeType = UpgradePair.Key;
+		const TMultiMap<EWeaponType, FUpgrade>& WeaponUpgrades = UpgradePair.Value;
+
+		// Print the UpgradeType
+		UE_LOG(LogTemp, Log, TEXT("Upgrade Type: %s"), *UEnum::GetDisplayValueAsText(UpgradeType).ToString());
+
+		// Iterate through the inner TMultiMap
+		for (const auto& WeaponUpgradePair : WeaponUpgrades)
+		{
+			EWeaponType WeaponType = WeaponUpgradePair.Key;
+			const FUpgrade& Upgrade = WeaponUpgradePair.Value;
+
+			// Print the WeaponType and Upgrade details (assuming FUpgrade has a ToString() function)
+			UE_LOG(LogTemp, Log, TEXT("  Weapon Type: %s | Upgrade: %s"), 
+			*UEnum::GetDisplayValueAsText(WeaponType).ToString(),
+			*Upgrade.DisplayName);
+			// Ensure FUpgrade has a ToString() method
+		}
+	}
+
 	
 }
 

@@ -1,7 +1,7 @@
 [
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "FireRate",
     "StatEnhancementValue": 20.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
@@ -10,7 +10,7 @@
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "FireRate",
     "StatEnhancementValue": 60.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
@@ -19,7 +19,7 @@
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "Damage",
     "StatEnhancementValue": 20.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
@@ -28,7 +28,7 @@
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "Damage",
     "StatEnhancementValue": 30.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
@@ -37,7 +37,7 @@
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "Damage",
     "StatEnhancementValue": 60.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
@@ -46,7 +46,7 @@
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher, GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "Damage",
     "StatEnhancementValue": 50.0,
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",

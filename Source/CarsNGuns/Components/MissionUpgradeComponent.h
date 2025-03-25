@@ -37,6 +37,9 @@ struct FMissionInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview")
+	FString MissionName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview")
 	EMissionType MissionType;
 	//Should be set by the mission type / mission class
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Preview") 
@@ -101,9 +104,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Info")
 	FMissionInfo MissionInfo;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mission Reward")
-	EUpgradeType UpgradeType = EUpgradeType::WeaponAugment;
 
 	TArray<FUpgrade> Upgrades;
 

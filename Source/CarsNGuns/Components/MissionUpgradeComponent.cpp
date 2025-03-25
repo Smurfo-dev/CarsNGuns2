@@ -25,12 +25,14 @@ void UMissionUpgradeComponent::GetUpgrades()
 		if (DefaultGameInstance && PlayerReference)
 		{
 			Upgrades.Empty();
-			if (!DefaultGameInstance->GetAvailableUpgrades().Contains(UpgradeType))
+			UE_LOG(LogTemp, Error, TEXT("Trying to find upgrades of type: %s"), *UEnum::GetDisplayValueAsText(MissionInfo.UpgradeType).ToString());
+
+			if (!DefaultGameInstance->GetAvailableUpgrades().Contains(MissionInfo.UpgradeType))
 			{
-				UE_LOG(LogTemp, Error, TEXT("No upgrades found for given upgrade type: %d"), UpgradeType)
+				UE_LOG(LogTemp, Error, TEXT("No upgrades found for given upgrade type: %d"), MissionInfo.UpgradeType)
 				return;
 			}
-			const TMultiMap<EWeaponType, FUpgrade>& UpgradeMap = DefaultGameInstance->GetAvailableUpgrades()[UpgradeType];
+			const TMultiMap<EWeaponType, FUpgrade>& UpgradeMap = DefaultGameInstance->GetAvailableUpgrades()[MissionInfo.UpgradeType];
 
 			// Array to hold filtered upgrades
 			TArray<FUpgrade> FilteredUpgrades;

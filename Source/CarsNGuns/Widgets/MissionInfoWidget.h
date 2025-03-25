@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 #include "MissionInfoWidget.generated.h"
 
 /**
@@ -16,10 +17,22 @@ class CARSNGUNS_API UMissionInfoWidget : public UUserWidget
 
 public:
 	UFUNCTION()
-	void InitializeValues();
+	void InitializeValues(const FMissionInfo& MissionInfo);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* RaceDescription;
+	class UTextBlock* MissionName;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MissionType;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* UpgradeType;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* UpgradeDescription;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PressToStart;
 	
 };

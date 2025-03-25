@@ -10,8 +10,6 @@
 ATimeAttackMission::ATimeAttackMission()
 {
 	//Det här kanske ska göras mer FLEXIBELT, den här bestämmer helt vilken sorts upgrade spelare kan få
-	MissionUpgradeComponent->UpgradeType = EUpgradeType::WeaponEnhancement;
-	MissionUpgradeComponent->MissionInfo = FMissionInfo(EMissionType::TimeAttack, MissionUpgradeComponent->UpgradeType, "You will get Weapon Enhancement");
 }
 
 void ATimeAttackMission::BeginPlay()
@@ -34,7 +32,7 @@ void ATimeAttackMission::StartEvent()
 	{
 		Checkpoint->SetMissionReference(this);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Starting Mission: %s & Enabling Checkpoint: %d/%d"), *MissionID, CurrentCheckpointIndex + 1, Checkpoints.Num()));	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Starting Mission: %s & Enabling Checkpoint: %d/%d"), *MissionUpgradeComponent->MissionInfo.MissionName, CurrentCheckpointIndex + 1, Checkpoints.Num()));	
 	Checkpoints[CurrentCheckpointIndex]->EnableCheckpoint();
 }
 

@@ -187,7 +187,7 @@ void ABaseMission::ShowMissionInfo()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Adding Mission Info Menu To Viewport"))
 		CurrentMissionInfoWidget->AddToViewport();
-		CurrentMissionInfoWidget->InitializeValues();
+		CurrentMissionInfoWidget->InitializeValues(MissionUpgradeComponent->MissionInfo);
 	}
 }
 
@@ -219,7 +219,7 @@ void ABaseMission::ShowMissionRewards(const TArray<FUpgrade>& Upgrades)
 
 void ABaseMission::DisableMission()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Disabling Mission: "))+ MissionID);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Disabling Mission: "))+ MissionUpgradeComponent->MissionInfo.MissionName);
 	MissionTriggerZone->SetVisibility(false);
 	MissionTriggerZone->SetGenerateOverlapEvents(false);
 	MissionTriggerMesh->SetVisibility(false);
@@ -228,7 +228,7 @@ void ABaseMission::DisableMission()
 
 void ABaseMission::EnableMission()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Enabling Mission: "))+ MissionID);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Enabling Mission: "))+ MissionUpgradeComponent->MissionInfo.MissionName);
 	MissionTriggerZone->SetVisibility(true);
 	MissionTriggerZone->SetGenerateOverlapEvents(true);
 	MissionTriggerMesh->SetVisibility(true);
@@ -237,7 +237,7 @@ void ABaseMission::EnableMission()
 
 void ABaseMission::PrintMissionInfo()
 {
-	FString MissionText = FString::Printf(TEXT("%s: %s"), *MissionID, *GetMissionStateAsString(MissionState));
+	FString MissionText = FString::Printf(TEXT("%s: %s"), *MissionUpgradeComponent->MissionInfo.MissionName, *GetMissionStateAsString(MissionState));
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, MissionText);
 }
 
