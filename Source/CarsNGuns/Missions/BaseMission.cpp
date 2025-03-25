@@ -168,7 +168,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 		MissionUpgradeComponent->GetUpgrades();
 		for (auto Upgrade : MissionUpgradeComponent->Upgrades)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array Upgrade: %s"), *Upgrade.DisplayName)
+			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array: %s"), *Upgrade->DisplayName)
 		}
 		ShowMissionRewards(MissionUpgradeComponent->Upgrades);
 	}
@@ -213,7 +213,7 @@ void ABaseMission::ShowMissionRewards(const TArray<FUpgrade>& Upgrades)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Adding Mission Reward Menu To Viewport"))
 		UpgradeSelectionWidget->AddToViewport();
-		UpgradeSelectionWidget->InitializeValues(Upgrades, PlayerController);
+		UpgradeSelectionWidget->InitializeValues(Upgrades, PlayerController, this);
 	}
 }
 
@@ -233,6 +233,31 @@ void ABaseMission::EnableMission()
 	MissionTriggerZone->SetGenerateOverlapEvents(true);
 	MissionTriggerMesh->SetVisibility(true);
 	MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void ABaseMission::ApplyRewards(int32 UpgradeIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Rewards!!!")));
+	if (MissionUpgradeComponent->Upgrades.IsValidIndex(UpgradeIndex))
+	{
+		const TSharedPtr<FUpgrade>& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
+		switch (Upgrade->UpgradeType)
+		{
+		case EUpgradeType::WeaponEnhancement:
+			//PlayerReference->ApplyWeaponEnhancement(Upgrade);
+				break;
+		case EUpgradeType::WeaponAugment:
+			//PlayerReference->ApplyWeaponAugment(Upgrade);
+				break;
+		case EUpgradeType::VehicleModification:
+			//PlayerReference->ApplyVehicleModification(Upgrade);
+				break;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid Upgrade Choice"))
+	}
 }
 
 void ABaseMission::PrintMissionInfo()

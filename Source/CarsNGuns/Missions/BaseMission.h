@@ -109,6 +109,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	float GetMissionTime();
+	
+	UFUNCTION()
+	void ApplyRewards(int32 UpgradeIndex);
 
 private:
 	UFUNCTION()
@@ -129,8 +132,10 @@ private:
 	UFUNCTION()
 	void HideMissionInfo();
 
+	
 	UFUNCTION()
 	void ShowMissionRewards(const TArray<FUpgrade>& Upgrades);
+	
 
 	UFUNCTION()
 	void DisableMission();

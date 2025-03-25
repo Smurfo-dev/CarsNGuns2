@@ -5,6 +5,7 @@
 #include "Engine/Texture2D.h"
 #include "Components/TextBlock.h"
 #include "Misc/FileHelper.h"
+#include "CarsNGuns/Player/MyPlayerController.h"
 #include "Misc/Paths.h"
 #include "ImageUtils.h"
 #include "Engine/Texture2D.h"
@@ -26,24 +27,37 @@ void UUpgradeSelectionWidget::NativeConstruct()
 void UUpgradeSelectionWidget::OnOption1Clicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Option 1 Chosen"));
+	if (MissionReference)
+	{
+		MissionReference->ApplyRewards(0);
+	}
 	DisableWidget();
 }
 
 void UUpgradeSelectionWidget::OnOption2Clicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Option 2 Chosen"));
+	if (MissionReference)
+	{
+		MissionReference->ApplyRewards(1);
+	}
 	DisableWidget();
 }
 
 void UUpgradeSelectionWidget::OnOption3Clicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Option 3 Chosen"));
+	if (MissionReference)
+	{
+		MissionReference->ApplyRewards(2);
+	}
 	DisableWidget();
 }
 
-void UUpgradeSelectionWidget::InitializeValues(const TArray<FUpgrade>& Upgrades, AMyPlayerController* PlayerControllerRef)
+void UUpgradeSelectionWidget::InitializeValues(const TArray<FUpgrade>& Upgrades, AMyPlayerController* PlayerControllerRef, ABaseMission* MissionRef)
 {
 	PlayerController = PlayerControllerRef;
+	MissionReference = MissionRef;
 	
 	if (Upgrades.Num() > 0)
 	{
