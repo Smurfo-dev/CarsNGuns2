@@ -111,7 +111,7 @@ public:
 	float GetMissionTime();
 	
 	UFUNCTION()
-	void ApplyRewards(int32 UpgradeIndex);
+	void ApplyUpgrades(int32 UpgradeIndex);
 
 private:
 	UFUNCTION()

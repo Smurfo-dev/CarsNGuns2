@@ -29,7 +29,7 @@ void UUpgradeSelectionWidget::OnOption1Clicked()
 	UE_LOG(LogTemp, Warning, TEXT("Option 1 Chosen"));
 	if (MissionReference)
 	{
-		MissionReference->ApplyRewards(0);
+		MissionReference->ApplyUpgrades(0);
 	}
 	DisableWidget();
 }
@@ -39,7 +39,7 @@ void UUpgradeSelectionWidget::OnOption2Clicked()
 	UE_LOG(LogTemp, Warning, TEXT("Option 2 Chosen"));
 	if (MissionReference)
 	{
-		MissionReference->ApplyRewards(1);
+		MissionReference->ApplyUpgrades(1);
 	}
 	DisableWidget();
 }
@@ -49,7 +49,7 @@ void UUpgradeSelectionWidget::OnOption3Clicked()
 	UE_LOG(LogTemp, Warning, TEXT("Option 3 Chosen"));
 	if (MissionReference)
 	{
-		MissionReference->ApplyRewards(2);
+		MissionReference->ApplyUpgrades(2);
 	}
 	DisableWidget();
 }

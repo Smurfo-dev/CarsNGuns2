@@ -235,9 +235,9 @@ void ABaseMission::EnableMission()
 	MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void ABaseMission::ApplyRewards(int32 UpgradeIndex)
+void ABaseMission::ApplyUpgrades(int32 UpgradeIndex)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Rewards!!!")));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Upgrades!!!")));
 	if (MissionUpgradeComponent->Upgrades.IsValidIndex(UpgradeIndex))
 	{
 		const FUpgrade& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
