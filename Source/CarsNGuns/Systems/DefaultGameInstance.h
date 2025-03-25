@@ -47,7 +47,7 @@ public:
 	
 	float GetElapsedTime() const;
 
-	const TMap<EUpgradeType, TMultiMap<EWeaponType, FUpgrade>>& GetAvailableUpgrades() const
+	const TMap<EUpgradeType, TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>>& GetAvailableUpgrades() const
 	{
 		return AvailableUpgrades;
 	}
@@ -60,7 +60,7 @@ private:
 	float PausedElapsedTime = 0.0f;
 	bool bIsPaused = true;
 	
-	TMap<EUpgradeType, TMultiMap<EWeaponType, FUpgrade>> AvailableUpgrades;
+	TMap<EUpgradeType, TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>> AvailableUpgrades;
 
 	void InitializeUpgrades();
 	

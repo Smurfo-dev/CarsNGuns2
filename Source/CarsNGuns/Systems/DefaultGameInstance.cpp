@@ -13,7 +13,7 @@ void UDefaultGameInstance::Init()
 	for (const auto& UpgradePair : AvailableUpgrades)
 	{
 		EUpgradeType UpgradeType = UpgradePair.Key;
-		const TMultiMap<EWeaponType, FUpgrade>& WeaponUpgrades = UpgradePair.Value;
+		const TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>& WeaponUpgrades = UpgradePair.Value; // Note the TSharedPtr<FUpgrade>
 
 		// Print the UpgradeType
 		UE_LOG(LogTemp, Log, TEXT("Upgrade Type: %s"), *UEnum::GetDisplayValueAsText(UpgradeType).ToString());
@@ -22,15 +22,23 @@ void UDefaultGameInstance::Init()
 		for (const auto& WeaponUpgradePair : WeaponUpgrades)
 		{
 			EWeaponType WeaponType = WeaponUpgradePair.Key;
-			const FUpgrade& Upgrade = WeaponUpgradePair.Value;
+			TSharedPtr<FUpgrade> Upgrade = WeaponUpgradePair.Value; // TSharedPtr<FUpgrade> here
 
-			// Print the WeaponType and Upgrade details (assuming FUpgrade has a ToString() function)
-			UE_LOG(LogTemp, Log, TEXT("  Weapon Type: %s | Upgrade: %s"), 
-			*UEnum::GetDisplayValueAsText(WeaponType).ToString(),
-			*Upgrade.DisplayName);
-			// Ensure FUpgrade has a ToString() method
+			// Check if Upgrade is valid (ensure it is not a nullptr)
+			if (Upgrade.IsValid())
+			{
+				// Print the WeaponType and Upgrade details
+				UE_LOG(LogTemp, Log, TEXT("  Weapon Type: %s | Upgrade: %s"), 
+					*UEnum::GetDisplayValueAsText(WeaponType).ToString(),
+					*Upgrade->DisplayName); // Dereference the shared pointer using '->' to access DisplayName
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Upgrade is null for Weapon Type: %s"), *UEnum::GetDisplayValueAsText(WeaponType).ToString());
+			}
 		}
 	}
+
 
 	
 }
@@ -120,17 +128,21 @@ void UDefaultGameInstance::InitializeUpgrades()
 		{
 			NewUpgrade.UpgradeDescription = UpgradeObject->GetStringField(TEXT("UpgradeDescription"));
 		}
-
-		//Add Upgrade to AvailableUpgrades Map
+		
+		// Add Upgrade to AvailableUpgrades Map
 		EUpgradeType UpgradeType = NewUpgrade.UpgradeType;  // The type of the upgrade (EUpgradeType)
 		TArray<EWeaponType> CompatibleWeaponTypes = NewUpgrade.CompatibleWeaponTypes;  // Array of compatible weapon types
 
+		// Create a TSharedPtr<FUpgrade> from NewUpgrade
+		TSharedPtr<FUpgrade> SharedUpgrade = MakeShared<FUpgrade>(NewUpgrade); // Construct the TSharedPtr
+
 		// First, find the entry for the UpgradeType and add it if not already present
-		TMultiMap<EWeaponType, FUpgrade>& WeaponTypeMap = AvailableUpgrades.FindOrAdd(UpgradeType);
+		TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>& WeaponTypeMap = AvailableUpgrades.FindOrAdd(UpgradeType);
 		for (const EWeaponType& WeaponType : CompatibleWeaponTypes)
 		{
-			WeaponTypeMap.Add(WeaponType, NewUpgrade);
+			WeaponTypeMap.Add(WeaponType, SharedUpgrade);  // Add the shared pointer to the map
 		}
+
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Upgrades Initialized Successfully"));
 }

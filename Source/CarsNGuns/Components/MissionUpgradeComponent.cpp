@@ -18,67 +18,77 @@ UMissionUpgradeComponent::UMissionUpgradeComponent()
 
 void UMissionUpgradeComponent::GetUpgrades()
 {
-	//Här skapar vi 3 upgrades som är lagliga att appliceras utifrån EUpgradeType Och vad spelaren redan har för upgrades/equippade vapen
-	if (APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0))
-	{
-		ABasePhysicsVehiclePawn* PlayerReference = Cast<ABasePhysicsVehiclePawn>(PlayerPawn);
-		if (DefaultGameInstance && PlayerReference)
-		{
-			Upgrades.Empty();
-			UE_LOG(LogTemp, Error, TEXT("Trying to find upgrades of type: %s"), *UEnum::GetDisplayValueAsText(MissionInfo.UpgradeType).ToString());
+    // Create 3 upgrades that are eligible to be applied based on EUpgradeType and the player's current upgrades/equipped weapons
+    if (APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0))
+    {
+        ABasePhysicsVehiclePawn* PlayerReference = Cast<ABasePhysicsVehiclePawn>(PlayerPawn);
+        if (DefaultGameInstance && PlayerReference)
+        {
+            Upgrades.Empty();
+            UE_LOG(LogTemp, Error, TEXT("Trying to find upgrades of type: %s"), *UEnum::GetDisplayValueAsText(MissionInfo.UpgradeType).ToString());
 
-			if (!DefaultGameInstance->GetAvailableUpgrades().Contains(MissionInfo.UpgradeType))
-			{
-				UE_LOG(LogTemp, Error, TEXT("No upgrades found for given upgrade type: %d"), MissionInfo.UpgradeType)
-				return;
-			}
-			const TMultiMap<EWeaponType, FUpgrade>& UpgradeMap = DefaultGameInstance->GetAvailableUpgrades()[MissionInfo.UpgradeType];
+            if (!DefaultGameInstance->GetAvailableUpgrades().Contains(MissionInfo.UpgradeType))
+            {
+                UE_LOG(LogTemp, Error, TEXT("No upgrades found for given upgrade type: %d"), MissionInfo.UpgradeType);
+                return;
+            }
 
-			// Array to hold filtered upgrades
-			TArray<FUpgrade> FilteredUpgrades;
+            // Get the UpgradeMap for the given UpgradeType
+            const TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>& UpgradeMap = DefaultGameInstance->GetAvailableUpgrades()[MissionInfo.UpgradeType];
 
-			auto IsUpgradeAlreadyAdded = [&](const FUpgrade& Upgrade) -> bool
-			{
-				return FilteredUpgrades.ContainsByPredicate([&](const FUpgrade& ExistingUpgrade)
-				{
-					return ExistingUpgrade.DisplayName == Upgrade.DisplayName; // Display name has to be unique right now
-				});
-			};
+            // Array to hold filtered upgrades as shared pointers
+            TArray<TSharedPtr<FUpgrade>> FilteredUpgrades;
 
-			for (const TPair<EWeaponType, FUpgrade>& UpgradePair : UpgradeMap)
-			{
-				const FUpgrade& Upgrade = UpgradePair.Value;
-				bool bIsCompatible = false;
+            auto IsUpgradeAlreadyAdded = [&](const TSharedPtr<FUpgrade>& Upgrade) -> bool
+            {
+                return FilteredUpgrades.ContainsByPredicate([&](const TSharedPtr<FUpgrade>& ExistingUpgrade)
+                {
+                    return ExistingUpgrade->DisplayName == Upgrade->DisplayName; // Display name has to be unique right now
+                });
+            };
 
-				if (PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
-				{
-					bIsCompatible = true;
-				}
+            // Iterate through the UpgradeMap
+            for (const TPair<EWeaponType, TSharedPtr<FUpgrade>>& UpgradePair : UpgradeMap)
+            {
+                TSharedPtr<FUpgrade> Upgrade = UpgradePair.Value; // Now using TSharedPtr<FUpgrade>
+                bool bIsCompatible = false;
 
-				if (!bIsCompatible && PlayerReference->GetSecondaryWeapon() && UpgradePair.Key == PlayerReference->GetSecondaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
-				{
-					bIsCompatible = true;
-				}
-				
-				if (bIsCompatible) FilteredUpgrades.Add(Upgrade);
-			}
-			
-			int32 NumToSelect = FMath::Min(3, FilteredUpgrades.Num());
-			if (NumToSelect > 0)
-			{
-				FilteredUpgrades.Sort([](const FUpgrade& A, const FUpgrade& B)
-				{
-					return FMath::RandBool();
-				});
+                // Check if the upgrade is compatible with the player's primary or secondary weapon
+                if (PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
+                {
+                    bIsCompatible = true;
+                }
 
-				Upgrades.Append(FilteredUpgrades.GetData(), NumToSelect);
-			}
-		}
-		
-	}
-	
-	
+                if (!bIsCompatible && PlayerReference->GetSecondaryWeapon() && UpgradePair.Key == PlayerReference->GetSecondaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
+                {
+                    bIsCompatible = true;
+                }
+
+                if (bIsCompatible)
+                {
+                    FilteredUpgrades.Add(Upgrade); // Add the shared pointer to the list of filtered upgrades
+                }
+            }
+
+            int32 NumToSelect = FMath::Min(3, FilteredUpgrades.Num());
+            if (NumToSelect > 0)
+            {
+                // Sort the filtered upgrades randomly
+                FilteredUpgrades.Sort([](const TSharedPtr<FUpgrade>& A, const TSharedPtr<FUpgrade>& B)
+                {
+                    return FMath::RandBool();
+                });
+
+                // Append the selected upgrades to the Upgrades array
+                for (int32 i = 0; i < NumToSelect; ++i)
+                {
+                    Upgrades.Add(*FilteredUpgrades[i]);
+                }
+            }
+        }
+    }
 }
+
 
 
 // Called when the game starts

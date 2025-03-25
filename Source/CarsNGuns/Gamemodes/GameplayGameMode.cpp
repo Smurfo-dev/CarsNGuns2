@@ -31,17 +31,20 @@ void AGameplayGameMode::BeginPlay()
 	UDefaultGameInstance* DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 	DefaultGameInstance->StartTimer();
 
-	//Använd den här som exempel på hur du kan läsa från the cursed map
-	const TMultiMap<EWeaponType, FUpgrade>* WeaponEnhancementUpgrades = DefaultGameInstance->GetAvailableUpgrades().Find(EUpgradeType::WeaponEnhancement);
+	//Använd den här som exempel på hur du kan läsa från the cursed map!!
+	const TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>* WeaponEnhancementUpgrades = DefaultGameInstance->GetAvailableUpgrades().Find(EUpgradeType::WeaponEnhancement);
 
-	if (WeaponEnhancementUpgrades)
+	if (WeaponEnhancementUpgrades && WeaponEnhancementUpgrades->Num() > 0)
 	{
+		// If upgrades are found, log how many there are
 		UE_LOG(LogTemp, Warning, TEXT("Available Weapon Enhancement upgrades: %d"), WeaponEnhancementUpgrades->Num());
 	}
 	else
 	{
+		// If no upgrades found, log a message
 		UE_LOG(LogTemp, Warning, TEXT("No Weapon Enhancement upgrades available."));
 	}
+
 	
 	if (WeaponSelectionMenuClass) GetWorldTimerManager().SetTimerForNextTick(this, &AGameplayGameMode::ShowWeaponSelectionMenu);
 }
