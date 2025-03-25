@@ -168,7 +168,7 @@ void ABaseMission::EndEvent(bool bSuccess)
 		MissionUpgradeComponent->GetUpgrades();
 		for (auto Upgrade : MissionUpgradeComponent->Upgrades)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array: %s"), *Upgrade->DisplayName)
+			UE_LOG(LogTemp, Warning, TEXT("Upgrade Array: %s"), *Upgrade.DisplayName)
 		}
 		ShowMissionRewards(MissionUpgradeComponent->Upgrades);
 	}
@@ -240,8 +240,8 @@ void ABaseMission::ApplyRewards(int32 UpgradeIndex)
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Rewards!!!")));
 	if (MissionUpgradeComponent->Upgrades.IsValidIndex(UpgradeIndex))
 	{
-		const TSharedPtr<FUpgrade>& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
-		switch (Upgrade->UpgradeType)
+		const FUpgrade& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
+		switch (Upgrade.UpgradeType)
 		{
 		case EUpgradeType::WeaponEnhancement:
 			//PlayerReference->ApplyWeaponEnhancement(Upgrade);
