@@ -6,19 +6,19 @@
 #include "CarsNGuns/Missions/BaseMission.h"
 #include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 #include "EnemyManager.h"
+#include "RoadGenerator.h"
+#include "RoadManager.h"
 #include "CarsNGuns/Missions/MissionManager.h"
 #include "Kismet/GameplayStatics.h"
 
 ADefaultGameState::ADefaultGameState()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void ADefaultGameState::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 void ADefaultGameState::Tick(float DeltaTime)
@@ -26,13 +26,19 @@ void ADefaultGameState::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ADefaultGameState::PopulateEnemies()
+void ADefaultGameState::InitializeEnemyManager()
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
 	// Create and initialize the EnemyManager.
 	EnemyManager = GetWorld()->SpawnActor<AEnemyManager>(AEnemyManager::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	
+	if (RoadManager)
+	{
+		EnemyManager->SetRoadManager(RoadManager);
+		//If the road manager has been created give the enemy manager a reference to it.
+	}
 	
 	if(EnemyManager)
 	{
@@ -46,6 +52,29 @@ void ADefaultGameState::PopulateEnemies()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Found enemy: %s, Class: %s"), *Enemy->GetName(), *Enemy->GetClass()->GetName());
 			EnemyManager->AddEnemy(Enemy);
+		}
+	}
+}
+
+void ADefaultGameState::InitializeRoadManager()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	// Create and initialize the EnemyManager.
+	RoadManager = GetWorld()->SpawnActor<ARoadManager>(ARoadManager::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	
+	if (RoadManager)
+	{
+		RoadManager->ClearRoadArray();
+		
+		UE_LOG(LogTemp, Warning, TEXT("RoadManager Created"));
+		TArray<AActor*> FoundRoads;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARoadGenerator::StaticClass(), FoundRoads);
+		for(AActor* Road : FoundRoads)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found Road: %s, Class: %s"), *Road->GetName(), *Road->GetClass()->GetName());
+			RoadManager->AddRoad(Road);
 		}
 	}
 }

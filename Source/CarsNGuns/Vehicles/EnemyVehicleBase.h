@@ -16,6 +16,11 @@ class CARSNGUNS_API AEnemyVehicleBase : public ABasePhysicsVehiclePawn
 public:
 	AEnemyVehicleBase();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")
+	float SpawnDistance = 10000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")
+	float SpawnRadius = 5000.0f;
+
 private:
 	UFUNCTION()
 	void OnDeath();

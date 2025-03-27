@@ -3,6 +3,10 @@
 
 #include "EnemyManager.h"
 
+#include "RoadGenerator.h"
+#include "CarsNGuns/Player/MyPlayerController.h"
+#include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
+
 void AEnemyManager::AddEnemy(AActor* NewEnemy)
 {
 	if (NewEnemy && !Enemies.Contains(NewEnemy))
@@ -26,4 +30,28 @@ void AEnemyManager::ClearEnemies()
 		Enemies.Empty();
 	}
 	
+}
+
+void AEnemyManager::SpawnEnemy(AMyPlayerController* PlayerController, TSubclassOf<AEnemyVehicleBase> EnemyClass)
+{
+	if (PlayerController && EnemyClass)
+	{
+		
+		if (APawn* PlayerPawn = PlayerController->GetPawn())
+		{
+			FVector PlayerLocation = PlayerPawn->GetActorLocation();
+			FVector PlayerForward = PlayerPawn->GetActorForwardVector();
+			AEnemyVehicleBase* DefaultEnemyClass = EnemyClass.GetDefaultObject();
+
+			if (RoadManager)
+			{
+				
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("No Road Manager Found!"));
+			}
+			
+		}
+	}
 }

@@ -23,7 +23,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class AMissionManager* GetMissionManager() const { return MissionManager; }
 
-	void PopulateEnemies();
+	UFUNCTION(BlueprintCallable)
+	class ARoadManager* GetRoadManager() const { return RoadManager; }
+
+	void InitializeEnemyManager();
+
+	void InitializeRoadManager();
 
 	void InitializeMissionManager(class ABasePhysicsVehiclePawn* PlayerVehicleReference);
 
@@ -43,6 +48,9 @@ private:
 
 	UPROPERTY()
 	AMissionManager* MissionManager;
+
+	UPROPERTY()
+	ARoadManager* RoadManager;
 
 	UPROPERTY()
 	AMyPlayerController* PlayerController;

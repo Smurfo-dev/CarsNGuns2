@@ -20,14 +20,25 @@ public:
 	// Remove an enemy from the list.
 	void RemoveEnemy(AActor* EnemyToRemove);
 
+	void SetRoadManager(class ARoadManager* NewRoadManager)
+	{
+		RoadManager = NewRoadManager;
+	}
+
 	// Clear list of enemies
 	void ClearEnemies();
 
 	// Get the list of enemies.
 	const TArray<AActor*>& GetEnemies() const { return Enemies; }
 
+	void SpawnEnemy(class AMyPlayerController* PlayerController, TSubclassOf<class AEnemyVehicleBase> EnemyClass);
+
+
 private:
 	UPROPERTY()
 	TArray<AActor*> Enemies;
+
+	UPROPERTY()
+	ARoadManager* RoadManager;
 	
 };

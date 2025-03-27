@@ -90,8 +90,10 @@ void AGameplayGameMode::SetupPlayer()
 		ADefaultGameState* DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
 		ABasePhysicsVehiclePawn* PlayerVehicleReference = Cast<ABasePhysicsVehiclePawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 		DefaultGameState->SetPlayerController(PlayerController);
-		DefaultGameState->PopulateEnemies();
 		DefaultGameState->InitializeMissionManager(PlayerVehicleReference);
+		DefaultGameState->InitializeRoadManager();
+		//INITIALIZE ROAD BEFORE ENEMY MANAGER POR FAVOR
+		DefaultGameState->InitializeEnemyManager();
 	}
 }
 
