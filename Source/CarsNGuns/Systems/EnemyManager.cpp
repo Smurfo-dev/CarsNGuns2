@@ -3,7 +3,7 @@
 
 #include "EnemyManager.h"
 
-#include "RoadGenerator.h"
+#include "RoadManager.h"
 #include "CarsNGuns/Player/MyPlayerController.h"
 #include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 
@@ -43,15 +43,53 @@ void AEnemyManager::SpawnEnemy(AMyPlayerController* PlayerController, TSubclassO
 			FVector PlayerForward = PlayerPawn->GetActorForwardVector();
 			AEnemyVehicleBase* DefaultEnemyClass = EnemyClass.GetDefaultObject();
 
-			if (RoadManager)
+			
+
+			// Pick a random distance behind the player
+			float SpawnDistance = FMath::RandRange(DefaultEnemyClass->MinSpawnDistance, DefaultEnemyClass->MaxSpawnDistance);
+			FVector SpawnPoint = PlayerLocation - PlayerForward * SpawnDistance;
+
+			FVector ClosestRoadPoint;
+			if (RoadManager->FindClosestPointOnSpline(SpawnPoint, ClosestRoadPoint))
 			{
-				
+				if (!IsPointInPlayerView(PlayerController, ClosestRoadPoint))
+				{
+					FRotator SpawnRotation = RoadManager->GetRoadDirectionAtPoint(ClosestRoadPoint);
+
+					if (AEnemyVehicleBase* Enemy = GetWorld()->SpawnActor<AEnemyVehicleBase>(EnemyClass, ClosestRoadPoint, SpawnRotation))
+					{
+						AddEnemy(Enemy);
+					}
+					UE_LOG(LogTemp, Warning, TEXT("Spawned enemy at: %s"), *ClosestRoadPoint.ToString());
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("Spawn point was in view, retrying..."));
+				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("No Road Manager Found!"));
+				UE_LOG(LogTemp, Error, TEXT("Couldn't find a valid road point for spawning."));
 			}
 			
 		}
 	}
+}
+
+bool AEnemyManager::IsPointInPlayerView(AMyPlayerController* PlayerController, const FVector& Point)
+{
+	if (PlayerController)
+	{
+		FVector PlayerLocation;
+		FRotator PlayerRotation;
+		PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
+
+		FVector DirectionToPoint = (Point-PlayerLocation).GetSafeNormal();
+		FVector PlayerForward = PlayerRotation.Vector();
+		float DotProduct = FVector::DotProduct(PlayerForward, DirectionToPoint);
+		
+		return DotProduct > 0.3f;
+	}
+	
+	return false;
 }

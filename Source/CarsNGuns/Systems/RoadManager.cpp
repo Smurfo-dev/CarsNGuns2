@@ -2,6 +2,7 @@
 
 
 #include "CarsNGuns/Systems/RoadManager.h"
+#include "RoadGenerator.h"
 
 // Sets default values
 ARoadManager::ARoadManager()
@@ -13,10 +14,11 @@ ARoadManager::ARoadManager()
 
 void ARoadManager::AddRoad(AActor* NewRoad)
 {
-	if (NewRoad && !Roads.Contains(NewRoad))
+	ARoadGenerator* Road = Cast<ARoadGenerator>(NewRoad);
+	if (Road && !Roads.Contains(Road))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Adding Road"));
-		Roads.Add(NewRoad);
+		Roads.Add(Road);
 	}
 }
 
@@ -27,6 +29,43 @@ void ARoadManager::ClearRoadArray()
 		UE_LOG(LogTemp, Warning, TEXT("Clearing Road Array"));
 		Roads.Empty();
 	}
+}
+
+bool ARoadManager::FindClosestPointOnSpline(const FVector& TargetLocation, FVector& OutClosestPoint)
+{
+	float ClosestDistance = FLT_MAX;
+	FVector BestPoint;
+	for (const auto Road : Roads)
+	{
+		const float SplineKey = Road->GetSplineComponent()->FindInputKeyClosestToWorldLocation(TargetLocation);
+		FVector SplinePoint = Road->GetSplineComponent()->GetLocationAtSplineInputKey(SplineKey, ESplineCoordinateSpace::World);
+
+		float Distance = FVector::Dist(TargetLocation, SplinePoint);
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			BestPoint = SplinePoint;
+		}
+	}
+
+	if (ClosestDistance < 500.0f)
+	{
+		OutClosestPoint = BestPoint;
+		return true;
+	}
+	return false;
+}
+
+FRotator ARoadManager::GetRoadDirectionAtPoint(const FVector& Point)
+{
+	for (auto Road : Roads)
+	{
+		float SplineKey = Road->GetSplineComponent()->FindInputKeyClosestToWorldLocation(Point);
+		
+		return Road->GetSplineComponent()->GetRotationAtSplineInputKey(SplineKey, ESplineCoordinateSpace::World);
+	}
+	
+	return FRotator::ZeroRotator;
 }
 
 // Called when the game starts or when spawned

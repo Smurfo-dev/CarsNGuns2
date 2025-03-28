@@ -25,6 +25,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Road")
 	float MeshSpacing = 500.0f; //Justera enligt mesh längd
 
+	USplineComponent* GetSplineComponent() const { return SplineComponent; }
+
 	void GenerateRoad();
 
 protected:

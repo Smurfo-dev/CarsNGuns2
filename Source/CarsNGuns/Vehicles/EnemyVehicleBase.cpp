@@ -56,3 +56,4 @@ void AEnemyVehicleBase::DestroyActor()
 		
 	Destroy();
 }
+

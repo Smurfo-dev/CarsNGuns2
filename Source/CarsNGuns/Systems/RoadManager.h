@@ -20,7 +20,11 @@ public:
 	void ClearRoadArray();
 	
 	// Get the list of enemies.
-	const TArray<AActor*>& GetRoads() const { return Roads; }
+	const TArray<class ARoadGenerator*>& GetRoads() const { return Roads; }
+
+	bool FindClosestPointOnSpline(const FVector& TargetLocation, FVector& OutClosestPoint);
+
+	FRotator GetRoadDirectionAtPoint(const FVector& Point);
 	
 
 protected:
@@ -33,6 +37,6 @@ public:
 
 private:
 	UPROPERTY()
-	TArray<AActor*> Roads;
+	TArray<ARoadGenerator*> Roads;
 
 };

@@ -31,6 +31,7 @@ public:
 	// Get the list of enemies.
 	const TArray<AActor*>& GetEnemies() const { return Enemies; }
 
+	UFUNCTION(BlueprintCallable)
 	void SpawnEnemy(class AMyPlayerController* PlayerController, TSubclassOf<class AEnemyVehicleBase> EnemyClass);
 
 
@@ -40,5 +41,7 @@ private:
 
 	UPROPERTY()
 	ARoadManager* RoadManager;
+
+	bool IsPointInPlayerView(AMyPlayerController* PlayerController, const FVector& Point);
 	
 };
