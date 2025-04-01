@@ -2,8 +2,13 @@
 
 
 #include "BaseEnemyAIController.h"
+
+#include "CarsNGuns/Systems/DefaultGameState.h"
+#include "CarsNGuns/Systems/RoadGenerator.h"
+#include "CarsNGuns/Systems/RoadManager.h"
 #include "CarsNGuns/Vehicles/EnemyVehicleBase.h"
 #include "CarsNGuns/Vehicles/PlayerVehicleBase.h"
+#include "Components/SplineComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ABaseEnemyAIController::ABaseEnemyAIController()
@@ -22,24 +27,12 @@ void ABaseEnemyAIController::InitializeReferences()
 {
 	// Ensure player and enemy vehicle are set
 	PlayerReference = Cast<APlayerVehicleBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	if (PlayerReference)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Reference correctly found"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Player Reference not found!"));
-	}
 
 	EnemyVehicleReference = Cast<AEnemyVehicleBase>(GetPawn());
-	if (EnemyVehicleReference)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Enemy Vehicle correctly found"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Enemy Vehicle not found!"));
-	}
+	
+	DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
+
+	PhysicsComponent = Cast<UPrimitiveComponent>(GetPawn()->GetRootComponent());
 }
 
 void ABaseEnemyAIController::Tick(float DeltaSeconds)
@@ -73,12 +66,14 @@ void ABaseEnemyAIController::Tick(float DeltaSeconds)
 	{
 	case EAIState::Follow:
 		Follow();
+		/*
 		FollowStateTimeElapsed += DeltaSeconds;
 
 		if (FollowStateTimeElapsed >= FollowStateDuration)
 		{
 			TransitionFromFollow();
 		}
+		*/
 		break;
 	case EAIState::Chase:
 		Chase();
@@ -111,55 +106,66 @@ void ABaseEnemyAIController::SetState(EAIState NewState)
 
 void ABaseEnemyAIController::Follow()
 {
-	if(PlayerReference)
+	if(PlayerReference && DefaultGameState->GetRoadManager())
 	{
 		FVector EnemyLocation = GetPawn()->GetActorLocation();
 		FVector PlayerLocation = PlayerReference->GetActorLocation();
 
-		FVector DirectionToPlayer = (PlayerLocation - EnemyLocation).GetSafeNormal();
-		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
-		//UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
+		USplineComponent* BestSpline = nullptr;
+		float ClosestSplineDistance = FLT_MAX;
+		float SplineKey = 0.0f;
 
-		UPrimitiveComponent* PhysicsComponent = Cast<UPrimitiveComponent>(GetPawn()->GetRootComponent());
+		for (auto Road : DefaultGameState->GetRoadManager()->GetRoads())
+		{
+			if (!Road || !Road->GetSplineComponent()) continue;
+			
+			FVector ClosestPoint = Road->GetSplineComponent()->FindLocationClosestToWorldLocation(EnemyLocation, ESplineCoordinateSpace::World);
+			float TempDistance = FVector::Dist(EnemyLocation, ClosestPoint);
+			if (TempDistance < ClosestSplineDistance)
+			{
+				ClosestSplineDistance = TempDistance;
+				BestSpline = Road->GetSplineComponent();
+				SplineKey = BestSpline->FindInputKeyClosestToWorldLocation(EnemyLocation);
+			}
+		}
+
+		if (!BestSpline)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Best Spline Found, Returning..."));
+			return;
+		}
+
+		float CurrentDistanceOnSpline = BestSpline->GetDistanceAlongSplineAtSplineInputKey(SplineKey);
+		
+		float LookAheadDistance = FMath::Clamp(EnemyVehicleReference->GetVelocity().Size() * 1.5f, 500.0f, 2000.0f);
+		
+		FVector TargetSplinePoint = BestSpline->GetLocationAtDistanceAlongSpline(CurrentDistanceOnSpline + LookAheadDistance, ESplineCoordinateSpace::World);
+		
+		FVector DirectionToSpline = (TargetSplinePoint - EnemyLocation).GetSafeNormal();
 		
 		if(PhysicsComponent)
 		{
 			FVector ForwardVector = GetPawn()->GetActorForwardVector();
+			float AngleToSpline = FMath::Acos(FVector::DotProduct(ForwardVector, DirectionToSpline));
 
-			float AngleToPLayer = FMath::Acos(FVector::DotProduct(ForwardVector, DirectionToPlayer));
-
-			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToPlayer);
+			
+			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToSpline);
 			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
 
-			if(DistanceToPlayer < BrakingRadius)
-			{
-				EnemyVehicleReference->SetThrottleInput(0);
-				EnemyVehicleReference->SetBrakingInput(1);
+			float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
 
-				//UE_LOG(LogTemp, Warning, TEXT("Braking"));
-			}
-			else if(DistanceToPlayer > BrakingRadius && DistanceToPlayer < FollowRadius)
-			{
-				float NormalizedDistance = FMath::Clamp(DistanceToPlayer / FollowRadius, 0.0f, 1.0f);
-				float ClampedThrottleInput = FMath::Lerp(0.25f, 1.0f, NormalizedDistance);
-				EnemyVehicleReference->SetThrottleInput(ClampedThrottleInput);
-				EnemyVehicleReference->SetBrakingInput(0);
-
-				//UE_LOG(LogTemp, Warning, TEXT("following"));
-			}
-			else if (DistanceToPlayer > FollowRadius)
-			{
-				SetState(EAIState::Chase);
-			}
+			float NormalizedThrottleInput = FMath::Clamp(DistanceToPlayer / FollowRadius, 0.2f, 1.0f);
+			EnemyVehicleReference->SetThrottleInput(NormalizedThrottleInput);
+			EnemyVehicleReference->SetBrakingInput(0);
 
 			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
-			if (AngleToPLayer < DeadZoneThreshold)
+			if (AngleToSpline < DeadZoneThreshold)
 			{
 				EnemyVehicleReference->SetSteeringInput(0);
 				return;
 			}
 			
-			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
+			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToSpline) * SteeringDirection * 0.5, -1.0f, 1.0f);
 
 			static float PreviousSteeringInput = 0.0f;
 			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
@@ -167,10 +173,16 @@ void ABaseEnemyAIController::Follow()
 			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
 			PreviousSteeringInput = SmoothedSteeringInput;
 
-			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SmoothedSteeringInput);
+			//UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SmoothedSteeringInput);
 			
 			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
+
+			DrawDebugSphere(GetWorld(), TargetSplinePoint, 50.0f, 12, FColor::Green, false, 0.1f);
 			
+			DrawDebugLine(GetWorld(), EnemyLocation, TargetSplinePoint, FColor::Yellow, false, 0.1f, 0, 5.0f);
+			
+			FVector SteeringVector = ForwardVector.RotateAngleAxis(SteeringStrength * 45.0f, FVector(0, 0, 1)); // Simulated steering effect
+			DrawDebugLine(GetWorld(), EnemyLocation, EnemyLocation + (SteeringVector * 300.0f), FColor::Red, false, 0.1f, 0, 5.0f);
 		}
 	}
 }
@@ -185,8 +197,6 @@ void ABaseEnemyAIController::Chase()
 		FVector DirectionToPlayer = (PlayerLocation - EnemyLocation).GetSafeNormal();
 		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
 		//UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
-
-		UPrimitiveComponent* PhysicsComponent = Cast<UPrimitiveComponent>(GetPawn()->GetRootComponent());
 		
 		if(PhysicsComponent)
 		{

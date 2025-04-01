@@ -142,8 +142,9 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 	if(CollisionBoxPrimitive)
 	{
 		int Counter = 0;
-		for(const FVector& TraceStart : WheelPositions)
+		for(FVector& TraceStart : WheelPositions)
 		{
+			TraceStart.Z = TraceStart.Z - WheelRadius;
 			FVector TraceEnd = TraceStart + FVector(0.0f, 0.0f, -MaxSuspensionExtent);
 			FHitResult HitResult;
 
@@ -708,7 +709,7 @@ void ABasePhysicsVehiclePawn::UpdateWheelAnimations(float DeltaTime)
 		{
 			for (auto BoneName : WheelBoneNames)
 			{
-				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -SuspensionHeights[WheelBoneNames.Find(BoneName)] + WheelRadius), EBoneSpaces::WorldSpace);
+				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -SuspensionHeights[WheelBoneNames.Find(BoneName)]), EBoneSpaces::WorldSpace);
 			}
 		}
 		else
@@ -716,7 +717,7 @@ void ABasePhysicsVehiclePawn::UpdateWheelAnimations(float DeltaTime)
 			for (auto BoneName : WheelBoneNames)
 			{
 			
-				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -MaxSuspensionExtent + WheelRadius), EBoneSpaces::WorldSpace);
+				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -MaxSuspensionExtent), EBoneSpaces::WorldSpace);
 			}
 		}
 

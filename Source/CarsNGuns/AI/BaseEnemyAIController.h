@@ -63,6 +63,12 @@ private:
 	UPROPERTY()
 	class APlayerVehicleBase* PlayerReference = nullptr;
 
+	UPROPERTY()
+	class ADefaultGameState* DefaultGameState;
+
+	UPROPERTY()
+	UPrimitiveComponent* PhysicsComponent;
+
 	float FollowStateTimeElapsed = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = AI)
