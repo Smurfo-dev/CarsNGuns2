@@ -94,10 +94,10 @@ void ABasePhysicsVehiclePawn::Tick(float DeltaTime)
 
 		//Record Wheel Positions
 		WheelPositions.Empty();
-		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Front_Left_Locator")));
-		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Front_Right_Locator")));
-		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Rear_Left_Locator")));
-		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Rear_Right_Locator")));
+		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Front_Left_Locator")) + FVector(0, 0, -25));
+		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Front_Right_Locator")) + FVector(0, 0, -25));
+		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Rear_Left_Locator")) + FVector(0, 0, -25));
+		WheelPositions.Add(VehicleMeshComponent->GetSocketLocation(TEXT("Wheel_Rear_Right_Locator")) + FVector(0, 0, -25));
 		
 		//Updates engine data
 		UpdateEngine();
@@ -144,8 +144,8 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 		int Counter = 0;
 		for(FVector& TraceStart : WheelPositions)
 		{
-			TraceStart.Z = TraceStart.Z - WheelRadius;
-			FVector TraceEnd = TraceStart + FVector(0.0f, 0.0f, -MaxSuspensionExtent);
+			TraceStart.Y = TraceStart.Y + WheelRadius;
+			FVector TraceEnd = TraceStart + FVector(0.0f, 0.0f, -MaxSuspensionExtent - WheelRadius*2);
 			FHitResult HitResult;
 
 			FCollisionQueryParams Params;
@@ -158,7 +158,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 
 			if(bHit)
 			{
-				const float CompressionRatio = 1 - HitResult.Distance / MaxSuspensionExtent;
+				const float CompressionRatio = 1 - (HitResult.Distance - WheelRadius*2) / (MaxSuspensionExtent);
 				
 				FString CompressionText = FString::Printf(TEXT("Compression Ratio: %.2f"), CompressionRatio);
 				if(bDebugForces) DrawDebugString(GetWorld(), TraceStart+FVector(0.0f, 0.0f, -10.0f), CompressionText, nullptr, FColor::White, 0.0f, true);
@@ -170,7 +170,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 
 				RoadNormal = HitResult.Normal;
 
-				SuspensionHeights[Counter] = MaxSuspensionExtent - MaxSuspensionExtent * CompressionRatio;
+				SuspensionHeights[Counter] = MaxSuspensionExtent + WheelRadius - (MaxSuspensionExtent+WheelRadius) * CompressionRatio;
 
 				if(HitResult.PhysMaterial.IsValid()) CurrentSurfaceMaterials[WheelPositions.Find(TraceStart)] = HitResult.PhysMaterial.Get();
 			}
@@ -707,17 +707,21 @@ void ABasePhysicsVehiclePawn::UpdateWheelAnimations(float DeltaTime)
 		//Suspension animations
 		if(IsGrounded())
 		{
+			int Counter = 0;
 			for (auto BoneName : WheelBoneNames)
 			{
-				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -SuspensionHeights[WheelBoneNames.Find(BoneName)]), EBoneSpaces::WorldSpace);
+				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), WheelPositions[Counter] + FVector(0, 0, -SuspensionHeights[WheelBoneNames.Find(BoneName)] + WheelRadius), EBoneSpaces::WorldSpace);
+				Counter++;
 			}
 		}
 		else
 		{
+			int Counter = 0;
 			for (auto BoneName : WheelBoneNames)
 			{
 			
-				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), VehicleMeshComponent->GetSocketLocation(FName(*(BoneName + "_Locator"))) + FVector(0, 0, -MaxSuspensionExtent), EBoneSpaces::WorldSpace);
+				VehicleMeshComponent->SetBoneLocationByName(FName(*BoneName), WheelPositions[Counter] + FVector(0, 0, -MaxSuspensionExtent + WheelRadius), EBoneSpaces::WorldSpace);
+				Counter++;
 			}
 		}
 
