@@ -16,6 +16,8 @@ class CARSNGUNS_API AEnemyVehicleBase : public ABasePhysicsVehiclePawn
 public:
 	AEnemyVehicleBase();
 
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")
 	float MaxSpawnDistance = 10000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")

@@ -66,14 +66,14 @@ void ABaseEnemyAIController::Tick(float DeltaSeconds)
 	{
 	case EAIState::Follow:
 		Follow();
-		/*
+		
 		FollowStateTimeElapsed += DeltaSeconds;
 
 		if (FollowStateTimeElapsed >= FollowStateDuration)
 		{
 			TransitionFromFollow();
 		}
-		*/
+		
 		break;
 	case EAIState::Chase:
 		Chase();
@@ -110,6 +110,7 @@ void ABaseEnemyAIController::Follow()
 	{
 		FVector EnemyLocation = GetPawn()->GetActorLocation();
 		FVector PlayerLocation = PlayerReference->GetActorLocation();
+		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
 
 		USplineComponent* BestSpline = nullptr;
 		float ClosestSplineDistance = FLT_MAX;
@@ -147,35 +148,60 @@ void ABaseEnemyAIController::Follow()
 		{
 			FVector ForwardVector = GetPawn()->GetActorForwardVector();
 			float AngleToSpline = FMath::Acos(FVector::DotProduct(ForwardVector, DirectionToSpline));
+			float MaxSpeed = 150.0f;
+			float MinSpeed = 20.0f;
+			float SpeedMultiplier = 1.0f - FMath::Clamp(AngleToSpline, 0.1, 1.f);
+			float TargetSpeed = MinSpeed + (MaxSpeed - MinSpeed) * SpeedMultiplier;
 
+			UE_LOG(LogTemp, Warning, TEXT("Angle(Radians) To Spline: %f"), AngleToSpline);
+			UE_LOG(LogTemp, Warning, TEXT("Speed Multiplier: %f"), SpeedMultiplier);
+			UE_LOG(LogTemp, Warning, TEXT("TargetSpeed: %f"), TargetSpeed);
+
+			float CurrentSpeed = EnemyVehicleReference->GetCurrentSpeed();
+			float SpeedDifference = TargetSpeed - CurrentSpeed;
+
+			float ThrottleInput = 0;
+			float BrakeInput = 0;
+
+			if (SpeedDifference > 50.0f)
+			{
+				ThrottleInput = FMath::Clamp(SpeedDifference / 150.0f, 0.1, 1.0f);
+				BrakeInput = 0;
+			}
+			else if (SpeedDifference < -50.0f)
+			{
+				ThrottleInput = 0;
+				BrakeInput = FMath::Clamp(FMath::Abs(SpeedDifference) / 100.0f, 0.f, 1.0f);
+			}
 			
+			
+			EnemyVehicleReference->SetThrottleInput(ThrottleInput);
+			EnemyVehicleReference->SetBrakingInput(BrakeInput);
+
+			UE_LOG(LogTemp, Warning, TEXT("Throttle Input: %f"), ThrottleInput);
+			UE_LOG(LogTemp, Warning, TEXT("Braking Input: %f"), BrakeInput);
+
+			//STEERING HANDLING
+
 			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToSpline);
 			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
 
-			float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
-
-			float NormalizedThrottleInput = FMath::Clamp(DistanceToPlayer / FollowRadius, 0.2f, 1.0f);
-			EnemyVehicleReference->SetThrottleInput(NormalizedThrottleInput);
-			EnemyVehicleReference->SetBrakingInput(0);
-
+			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToSpline) * SteeringDirection * 0.5, -1.0f, 1.0f);
+			
 			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
 			if (AngleToSpline < DeadZoneThreshold)
 			{
-				EnemyVehicleReference->SetSteeringInput(0);
-				return;
+				const float SnapBackTorque = 20000000.0f * EnemyVehicleReference->SnapBackTorqueFactor; // Adjust this value as needed for how quickly you want to snap back
+				FVector AngularVelocity = PhysicsComponent->GetPhysicsAngularVelocityInRadians();
+				const FVector NewSnapBackTorque = -AngularVelocity * SnapBackTorque;
+				PhysicsComponent->AddTorqueInRadians(NewSnapBackTorque);
 			}
-			
-			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToSpline) * SteeringDirection * 0.5, -1.0f, 1.0f);
 
-			static float PreviousSteeringInput = 0.0f;
-			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
+			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SteeringStrength);
 			
-			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
-			PreviousSteeringInput = SmoothedSteeringInput;
+			EnemyVehicleReference->SetSteeringInput(SteeringStrength);
 
-			//UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SmoothedSteeringInput);
-			
-			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
+			if (DistanceToPlayer > FollowRadius) SetState(EAIState::Chase);
 
 			DrawDebugSphere(GetWorld(), TargetSplinePoint, 50.0f, 12, FColor::Green, false, 0.1f);
 			
@@ -187,47 +213,111 @@ void ABaseEnemyAIController::Follow()
 	}
 }
 
+
 void ABaseEnemyAIController::Chase()
 {
-	if(PlayerReference)
+	if(PlayerReference && DefaultGameState->GetRoadManager())
 	{
 		FVector EnemyLocation = GetPawn()->GetActorLocation();
 		FVector PlayerLocation = PlayerReference->GetActorLocation();
-
-		FVector DirectionToPlayer = (PlayerLocation - EnemyLocation).GetSafeNormal();
 		float DistanceToPlayer = FVector::Dist(EnemyLocation, PlayerLocation);
-		//UE_LOG(LogTemp, Warning, TEXT("Distance to Player: %f"), DistanceToPlayer);
+
+		USplineComponent* BestSpline = nullptr;
+		float ClosestSplineDistance = FLT_MAX;
+		float SplineKey = 0.0f;
+
+		for (auto Road : DefaultGameState->GetRoadManager()->GetRoads())
+		{
+			if (!Road || !Road->GetSplineComponent()) continue;
+			
+			FVector ClosestPoint = Road->GetSplineComponent()->FindLocationClosestToWorldLocation(EnemyLocation, ESplineCoordinateSpace::World);
+			float TempDistance = FVector::Dist(EnemyLocation, ClosestPoint);
+			if (TempDistance < ClosestSplineDistance)
+			{
+				ClosestSplineDistance = TempDistance;
+				BestSpline = Road->GetSplineComponent();
+				SplineKey = BestSpline->FindInputKeyClosestToWorldLocation(EnemyLocation);
+			}
+		}
+
+		if (!BestSpline)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Best Spline Found, Returning..."));
+			return;
+		}
+
+		float CurrentDistanceOnSpline = BestSpline->GetDistanceAlongSplineAtSplineInputKey(SplineKey);
+		
+		float LookAheadDistance = FMath::Clamp(EnemyVehicleReference->GetVelocity().Size() * 1.5f, 500.0f, 2000.0f);
+		
+		FVector TargetSplinePoint = BestSpline->GetLocationAtDistanceAlongSpline(CurrentDistanceOnSpline + LookAheadDistance, ESplineCoordinateSpace::World);
+		
+		FVector DirectionToSpline = (TargetSplinePoint - EnemyLocation).GetSafeNormal();
 		
 		if(PhysicsComponent)
 		{
 			FVector ForwardVector = GetPawn()->GetActorForwardVector();
+			float AngleToSpline = FMath::Acos(FVector::DotProduct(ForwardVector, DirectionToSpline));
+			float MaxSpeed = 200.0f;
+			float MinSpeed = 20.0f;
+			float SpeedMultiplier = 1.0f - FMath::Clamp(AngleToSpline, 0.1, 1.f);
+			float TargetSpeed = MinSpeed + (MaxSpeed - MinSpeed) * SpeedMultiplier;
 
-			float AngleToPLayer = FMath::Acos(FVector::DotProduct(ForwardVector, DirectionToPlayer));
+			UE_LOG(LogTemp, Warning, TEXT("Angle(Radians) To Spline: %f"), AngleToSpline);
+			UE_LOG(LogTemp, Warning, TEXT("Speed Multiplier: %f"), SpeedMultiplier);
+			UE_LOG(LogTemp, Warning, TEXT("TargetSpeed: %f"), TargetSpeed);
 
-			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToPlayer);
-			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
+			float CurrentSpeed = EnemyVehicleReference->GetCurrentSpeed();
+			float SpeedDifference = TargetSpeed - CurrentSpeed;
 
-			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
-			if (AngleToPLayer < DeadZoneThreshold)
+			float ThrottleInput = 0;
+			float BrakeInput = 0;
+
+			if (SpeedDifference > 50.0f)
 			{
-				EnemyVehicleReference->SetSteeringInput(0);
-				return;
+				ThrottleInput = FMath::Clamp(SpeedDifference / 150.0f, 0.1, 1.0f);
+				BrakeInput = 0;
+			}
+			else if (SpeedDifference < -50.0f)
+			{
+				ThrottleInput = 0;
+				BrakeInput = FMath::Clamp(FMath::Abs(SpeedDifference) / 150.0f, 0.3f, 1.0f);
 			}
 			
-			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToPLayer) * SteeringDirection * 0.5, -1.0f, 1.0f);
-
-			static float PreviousSteeringInput = 0.0f;
-			float DampingFactor = 0.9f; //Adjust for stability (0.8-0.95 recommended)
 			
-			float SmoothedSteeringInput = FMath::Lerp(PreviousSteeringInput, SteeringStrength, 1.0f - DampingFactor);
-			PreviousSteeringInput = SmoothedSteeringInput;
-			
-			EnemyVehicleReference->SetSteeringInput(SmoothedSteeringInput);
+			EnemyVehicleReference->SetThrottleInput(ThrottleInput);
+			EnemyVehicleReference->SetBrakingInput(BrakeInput);
+			UE_LOG(LogTemp, Warning, TEXT("Throttle Input: %f"), ThrottleInput);
+			UE_LOG(LogTemp, Warning, TEXT("Braking Input: %f"), BrakeInput);
 
+			//STEERING HANDLING
+
+			FVector CrossProduct = FVector::CrossProduct(ForwardVector, DirectionToSpline);
+			float SteeringDirection = (CrossProduct.Z > 0) ? 1.0f : -1.0f;
+
+			float SteeringStrength = FMath::Clamp(FMath::Sin(AngleToSpline) * SteeringDirection * 0.5, -1.0f, 1.0f);
+			
+			const float DeadZoneThreshold = FMath::DegreesToRadians(10.0f);
+			if (AngleToSpline < DeadZoneThreshold)
+			{
+				const float SnapBackTorque = 20000000.0f * EnemyVehicleReference->SnapBackTorqueFactor; // Adjust this value as needed for how quickly you want to snap back
+				FVector AngularVelocity = PhysicsComponent->GetPhysicsAngularVelocityInRadians();
+				const FVector NewSnapBackTorque = -AngularVelocity * SnapBackTorque;
+				PhysicsComponent->AddTorqueInRadians(NewSnapBackTorque);
+			}
+
+			UE_LOG(LogTemp, Warning, TEXT("Final Steering Input: %f"), SteeringStrength);
+			
+			EnemyVehicleReference->SetSteeringInput(SteeringStrength);
+			
 			if (DistanceToPlayer < FollowRadius) SetState(EAIState::Follow);
 
-			EnemyVehicleReference->SetThrottleInput(5);
-			EnemyVehicleReference->SetBrakingInput(0);
+			DrawDebugSphere(GetWorld(), TargetSplinePoint, 50.0f, 12, FColor::Green, false, 0.1f);
+			
+			DrawDebugLine(GetWorld(), EnemyLocation, TargetSplinePoint, FColor::Yellow, false, 0.1f, 0, 5.0f);
+			
+			FVector SteeringVector = ForwardVector.RotateAngleAxis(SteeringStrength * 45.0f, FVector(0, 0, 1)); // Simulated steering effect
+			DrawDebugLine(GetWorld(), EnemyLocation, EnemyLocation + (SteeringVector * 300.0f), FColor::Red, false, 0.1f, 0, 5.0f);
 		}
 	}
 }

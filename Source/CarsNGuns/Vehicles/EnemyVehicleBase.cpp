@@ -22,6 +22,13 @@ AEnemyVehicleBase::AEnemyVehicleBase()
 	}
 }
 
+void AEnemyVehicleBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI Speed: %.f"), CurrentSpeed));
+}
+
 void AEnemyVehicleBase::OnDeath()
 {
 	UE_LOG(LogTemp, Error, TEXT("Enemy just fucking died"));

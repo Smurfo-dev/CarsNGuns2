@@ -294,6 +294,18 @@ public:
 	TArray<FVector> GetWheelPositions();
 
 	UFUNCTION()
+	float GetSteeringInput() const
+	{
+		return CurrentSteeringInput;
+	}
+
+	UFUNCTION()
+	float GetCurrentSpeed() const
+	{
+		return CurrentSpeed;
+	}
+
+	UFUNCTION()
 	void SetSteeringInput(float NewInput);
 
 	UFUNCTION()
