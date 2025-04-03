@@ -295,9 +295,6 @@ public:
 	TArray<FVector> GetWheelPositions();
 
 	UFUNCTION()
-	void ApplyUpgrade(const FUpgrade& Upgrade);
-
-	UFUNCTION()
 	float GetSteeringInput() const
 	{
 		return CurrentSteeringInput;
@@ -363,6 +360,10 @@ protected:
 	//Health Component
 	UPROPERTY(EditDefaultsOnly, Category="Health")
 	class UHealthComponent* HealthComponent;
+
+	//Health Component
+	UPROPERTY(EditDefaultsOnly, Category="Upgrades")
+	class UUpgradeHandlerComponent* UpgradeHandlerComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="Armor")
 	EArmorLevel ArmorLevel;
@@ -437,6 +438,12 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	UUpgradeHandlerComponent* GetUpgradeHandlerComponent() const
+	{
+		return UpgradeHandlerComponent;
+	}
 
 	FVector2D GetCurrentTargetScreenPosition() const;
 

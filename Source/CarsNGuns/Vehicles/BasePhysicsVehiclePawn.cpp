@@ -5,6 +5,7 @@
 
 #include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "CarsNGuns/Components/HealthComponent.h"
+#include "CarsNGuns/Components/UpgradeHandlerComponent.h"
 #include "CarsNGuns/Player/MyPlayerController.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -37,6 +38,9 @@ ABasePhysicsVehiclePawn::ABasePhysicsVehiclePawn()
 	//Default Armor Level
 	ArmorLevel = EArmorLevel::None;
 
+	//Create Upgrade Handler
+	UpgradeHandlerComponent =  CreateDefaultSubobject<UUpgradeHandlerComponent>(TEXT("UpgradeHandlerComponent"));
+
 	//Create Audio Component(s)
 	EngineAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("EngineAudioComponent"));
 
@@ -67,6 +71,8 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 		if (PrimaryWeaponClass) AttachPrimaryWeaponToVehicle(PrimaryWeaponClass);
 		if (SecondaryWeaponClass) AttachSecondaryWeaponToVehicle(SecondaryWeaponClass);
 	}
+
+	UpgradeHandlerComponent->OwnerReference = this;
 
 	CurrentSteeringInput = 0.0f;
 	
@@ -889,27 +895,6 @@ void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<A
 		}
 	}
 	
-}
-
-void ABasePhysicsVehiclePawn::ApplyUpgrade(const FUpgrade& Upgrade)
-{
-	switch (Upgrade.UpgradeType)
-	{
-		case EUpgradeType::WeaponEnhancement:
-			if (PrimaryWeapon && PrimaryWeapon->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-			{
-				PrimaryWeapon->ApplyEnhancement(Upgrade.StatEnhancementType, Upgrade.StatEnhancementValue);
-			}
-			if (SecondaryWeapon && SecondaryWeapon->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-			{
-				SecondaryWeapon->ApplyEnhancement(Upgrade.StatEnhancementType, Upgrade.StatEnhancementValue);
-			}
-			break;
-		case EUpgradeType::WeaponAugment:
-			break;
-		case EUpgradeType::VehicleModification:
-			break;
-	}
 }
 
 TArray<FVector> ABasePhysicsVehiclePawn::GetWheelPositions()

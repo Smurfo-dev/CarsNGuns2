@@ -48,10 +48,10 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 
 	if(bDebugDamage)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Damage Taken: %f"), Damage);
-		UE_LOG(LogTemp, Warning, TEXT("Armor Level: %f"), ArmorMap[ActiveArmorLevel]);
+		UE_LOG(LogTemp, Warning, TEXT("Damage Taken: %.0f"), Damage);
+		UE_LOG(LogTemp, Warning, TEXT("Armor Level: %.f"), ArmorMap[ActiveArmorLevel]);
 		UE_LOG(LogTemp, Warning, TEXT("Damage Type: %s"), *DamageType->GetName());
-		UE_LOG(LogTemp, Warning, TEXT("Current Health: %f"), CurrentHealth);
+		UE_LOG(LogTemp, Warning, TEXT("Current Health: %.f"), CurrentHealth);
 	}
 	
 	

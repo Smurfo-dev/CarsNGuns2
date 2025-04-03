@@ -52,7 +52,7 @@ private:
 	UPROPERTY()
 	FVector TargetPosition;
 
-	float ElapsedTimeSinceLastShot = 1.0f; // Time that has passed since the last shot
+	float ElapsedTimeSinceLastShot; // Time that has passed since the last shot
 	
 	float CurrentProgressBarValue = 1.0f; 
 	

@@ -60,9 +60,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="UI")
 	UTexture2D* GetWeaponIcon() const {return WeaponIcon;}
 
-	UFUNCTION()
-	void ApplyEnhancement(EStatEnhancementType TypeToEnhance, float EnhancementValue);
-
 	void SetDamage(const float Value)
 	{
 		Damage *= 1.0f + Value / 100.0f;

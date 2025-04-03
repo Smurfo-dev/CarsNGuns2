@@ -25,6 +25,8 @@ void ARocketLauncher::BeginPlay()
 
 	InitVFX();
 	InitAudio();
+
+	ElapsedTimeSinceLastShot = ReloadTime;
 }
 
 void ARocketLauncher::Tick(float DeltaTime)

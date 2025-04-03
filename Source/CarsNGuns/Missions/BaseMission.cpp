@@ -244,7 +244,7 @@ void ABaseMission::ApplyUpgrade(int32 UpgradeIndex)
 	if (MissionUpgradeComponent->Upgrades.IsValidIndex(UpgradeIndex))
 	{
 		const FUpgrade& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
-		if (PlayerReference) PlayerReference->ApplyUpgrade(Upgrade);
+		if (PlayerReference) PlayerReference->GetUpgradeHandlerComponent()->AddUpgrade(Upgrade);
 		else UE_LOG(LogTemp, Error, TEXT("Player Reference not found when applying upgrade."))
 	}
 	else

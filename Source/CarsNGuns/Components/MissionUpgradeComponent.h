@@ -4,18 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CarsNGuns/Weapons/BaseWeapon.h"
+#include "CarsNGuns/Components/UpgradeHandlerComponent.h"
 #include "MissionUpgradeComponent.generated.h"
 
 enum class EWeaponType : uint8;
-
-UENUM(BlueprintType)
-enum class EUpgradeType : uint8
-{
-	WeaponAugment      UMETA(DisplayName="Weapon Augment"), // New Weapon Mechanics
-	WeaponEnhancement    UMETA(DisplayName="Weapon Enhancement"), // Weapon stat boosts
-	VehicleModification   UMETA(DisplayName="Vehicle Modification") // Vehicle Modifications (stats and perhaps mechanics, visual modifications possibly)
-};
 
 UENUM(BlueprintType)
 enum class EMissionType : uint8
@@ -43,42 +35,6 @@ struct FMissionInfo
 	FMissionInfo() : MissionType(EMissionType::TimeAttack), UpgradeType(EUpgradeType::WeaponAugment), UpgradeDescription(TEXT("Default Description")) {}
 	
 	FMissionInfo(const EMissionType MissionType, const EUpgradeType Type, const FString& Desc) : MissionType(MissionType), UpgradeType(Type), UpgradeDescription(Desc) {}
-};
-
-USTRUCT(BlueprintType)
-struct FUpgrade
-{
-	GENERATED_BODY()
-	
-	EUpgradeType UpgradeType;
-
-	// Only applicable for WeaponEnhancement & WeaponAugment
-	TArray<EWeaponType> CompatibleWeaponTypes;
-
-	// Only applicable for WeaponAugment, references the new weapon class
-	TSubclassOf<ABaseWeapon> AugmentedWeaponClass;
-	
-	EStatEnhancementType StatEnhancementType;
-	
-	float StatEnhancementValue = 0.0f;
-
-	EUpgradeDamageType UpgradeDamageType;
-	
-	FString UpgradeIconFilePath;
-	
-	FString DisplayName;
-	
-	FString UpgradeDescription;
-
-	FUpgrade()
-		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage), UpgradeDamageType(EUpgradeDamageType::Bullet) {}
-
-	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EUpgradeDamageType UpgradeDamageType,
-		const FString& IconFilePath, const FString& DisplayName, const FString& UpgradeDescription)
-		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), UpgradeDamageType(UpgradeDamageType),
-			UpgradeIconFilePath(IconFilePath), DisplayName(DisplayName), UpgradeDescription(UpgradeDescription) {}
-	
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

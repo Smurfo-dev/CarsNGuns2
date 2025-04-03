@@ -2,6 +2,7 @@
 
 
 #include "BaseWeapon.h"
+
 #include "Components/PoseableMeshComponent.h"
 #include "GameFramework/Actor.h"
 
@@ -24,11 +25,11 @@ void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FireRate = BaseFireRate;
-	ReloadTime = BaseReloadTime;
-	Damage = BaseDamage;
-
 	bCanFire = true;
+	
+	ReloadTime = BaseReloadTime;
+	FireRate = BaseFireRate;
+	Damage = BaseDamage;	
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ABaseWeapon::InitializePlayerController);
 }
@@ -58,25 +59,6 @@ float ABaseWeapon::GetResourceBarValue() const
 FString ABaseWeapon::GetWeaponID()
 {
 	return WeaponName;
-}
-
-void ABaseWeapon::ApplyEnhancement(EStatEnhancementType TypeToEnhance, float EnhancementValue)
-{
-	switch (TypeToEnhance)
-	{
-		case EStatEnhancementType::Damage:
-			SetDamage(EnhancementValue);
-			UE_LOG(LogTemp, Warning, TEXT("Trying to Edit Damage Value"))
-			break;
-		case EStatEnhancementType::ReloadSpeed:
-			SetReloadSpeed(EnhancementValue);
-			UE_LOG(LogTemp, Warning, TEXT("Trying to Reload/Recharge Speed"))
-			break;
-		case EStatEnhancementType::FireRate:
-			SetFireRate(EnhancementValue);
-			UE_LOG(LogTemp, Warning, TEXT("Trying to Edit Fire Rate"))
-			break;
-	}
 }
 
 

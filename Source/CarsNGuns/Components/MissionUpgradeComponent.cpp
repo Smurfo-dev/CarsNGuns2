@@ -25,7 +25,7 @@ void UMissionUpgradeComponent::GetUpgrades()
         if (DefaultGameInstance && PlayerReference)
         {
             Upgrades.Empty();
-            UE_LOG(LogTemp, Error, TEXT("Trying to find upgrades of type: %s"), *UEnum::GetDisplayValueAsText(MissionInfo.UpgradeType).ToString());
+            UE_LOG(LogTemp, Warning, TEXT("Trying to find upgrades of type: %s"), *UEnum::GetDisplayValueAsText(MissionInfo.UpgradeType).ToString());
 
             if (!DefaultGameInstance->GetAvailableUpgrades().Contains(MissionInfo.UpgradeType))
             {

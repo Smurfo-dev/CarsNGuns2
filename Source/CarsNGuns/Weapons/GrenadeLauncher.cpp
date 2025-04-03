@@ -27,6 +27,8 @@ void AGrenadeLauncher::BeginPlay()
 
 	InitVFX();
 	InitAudio();
+
+	ElapsedTimeSinceLastShot = ReloadTime;
 }
 
 void AGrenadeLauncher::Tick(float DeltaTime)
