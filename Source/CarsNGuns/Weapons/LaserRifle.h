@@ -56,11 +56,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float CurrentHeat = 0.0f; //Current Heat Level
 
+	//Interchangable with reload time perhaps?
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float HeatCooldownRate = 5.0f; //Heat removed per tick
 
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
-	float PassiveHeatCooldownTickRate = 0.1; //Heat removed per tick
+	float PassiveHeatCooldownTickRate = 0.0167; //Heat removed per tick
 
 	bool bIsOverheated = false;
 

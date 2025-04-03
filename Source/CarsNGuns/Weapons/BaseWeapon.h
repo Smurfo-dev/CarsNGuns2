@@ -68,6 +68,16 @@ public:
 		Damage *= 1.0f + Value / 100.0f;
 	}
 
+	void SetFireRate(const float Value)
+	{
+		FireRate *= 1.0f - Value / 100.0f;
+	}
+
+	void SetReloadSpeed(const float Value)
+	{
+		ReloadTime *= 1.0f - Value / 100.0f;
+	}
+
 	UFUNCTION(Blueprintable)
 	EWeaponType GetWeaponType() const
 	{
@@ -84,7 +94,19 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	float Damage = 30.0f; //Damage amount per bullet
+	float BaseDamage = 30.0f; //Base Damage amount per bullet
+
+	float Damage; 
+
+	UPROPERTY(EditAnywhere, Category ="Weapon Statistics", meta=(ToolTip="Calculated as 1 seconds x Fire Rate multiplier"))
+	float BaseFireRate = 1.0f; //Rate of fire multiplier (bars)
+	
+	float FireRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Statistics")
+	float BaseReloadTime = 2.0f; // Time to reload
+	
+	float ReloadTime;
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponType WeaponType;
@@ -109,9 +131,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Weapon Statistics")
 	TSubclassOf<class UDamageType> DamageType; //Damage type
-
-	UPROPERTY(EditAnywhere, Category ="Weapon Statistics", meta=(ToolTip="Calculated as 1 seconds x Fire Rate multiplier"))
-	float FireRate = 1.0f; //Rate of fire multiplier (bars)
 
 	bool bCanFire;
 

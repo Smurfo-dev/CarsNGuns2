@@ -3,11 +3,11 @@
     "UpgradeType": "WeaponEnhancement",
     "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 200.0,
+    "StatEnhancementValue": 20.0,
     "UpgradeDamageType": "Explosive",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
     "DisplayName": "Explosive Weapon Damage Boost",
-    "UpgradeDescription": "200% More Damage For Explosive Weapons"
+    "UpgradeDescription": "20% More Damage For Explosive Weapons"
   },
   {
     "UpgradeType": "WeaponEnhancement",
@@ -29,7 +29,46 @@
     "DisplayName": "Special Weapon Damage Booster",
     "UpgradeDescription": "20% Damage Increase To Special Weapon Types"
   },
-  
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["LaserRifle"],
+    "StatEnhancementType": "ReloadSpeed",
+    "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Special",
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+    "DisplayName": "Special Weapon Recharge Speed",
+    "UpgradeDescription": "20% Faster Recharge Time For Special Weapon Types"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun"],
+    "StatEnhancementType": "ReloadSpeed",
+    "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Bullet",
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+    "DisplayName": "Bullet Weapon Recharge Speed",
+    "UpgradeDescription": "20% Faster Recharge Time For Bullet Weapon Types"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
+    "StatEnhancementType": "ReloadSpeed",
+    "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Explosive",
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+    "DisplayName": "Explosive Weapon Reload Faster",
+    "UpgradeDescription": "20% Faster Reload For Explosive Weapons"
+  },
+  {
+    "UpgradeType": "WeaponEnhancement",
+    "CompatibleWeaponTypes": ["MachineGun"],
+    "StatEnhancementType": "FireRate",
+    "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Bullet",
+    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+    "DisplayName": "Fire Rate Increase",
+    "UpgradeDescription": "20% Faster Fire Rate Bullet Weapon Types"
+  },
   {
     "UpgradeType": "WeaponAugment",
     "CompatibleWeaponTypes": ["MachineGun"],

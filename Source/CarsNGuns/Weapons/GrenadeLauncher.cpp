@@ -35,13 +35,13 @@ void AGrenadeLauncher::Tick(float DeltaTime)
 
 	MoveTowardTarget(DeltaTime, 25.0f);
 
-	if (ElapsedTimeSinceLastShot < FireRate)
+	if (ElapsedTimeSinceLastShot < ReloadTime)
 	{
 		// Increment the elapsed time
 		ElapsedTimeSinceLastShot += DeltaTime;
 
 		// Update the progress bar (value from 0 to 1)
-		CurrentProgressBarValue = ElapsedTimeSinceLastShot / FireRate;
+		CurrentProgressBarValue = ElapsedTimeSinceLastShot / ReloadTime;
 
 		// Ensure the value doesn't exceed 1
 		CurrentProgressBarValue = FMath::Clamp(CurrentProgressBarValue, 0.0f, 1.0f);
@@ -62,7 +62,7 @@ void AGrenadeLauncher::Fire()
 
 		bCanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGrenadeLauncher::ResetFire, 1*FireRate, false);
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGrenadeLauncher::ResetFire, 1*ReloadTime, false);
 	}
 }
 

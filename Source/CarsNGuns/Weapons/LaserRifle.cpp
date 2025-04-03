@@ -126,7 +126,7 @@ void ALaserRifle::CooldownTick()
 {
 	if (CurrentHeat > 0)
 	{
-		CurrentHeat -= HeatCooldownRate;
+		CurrentHeat -= HeatCooldownRate / ReloadTime; //Matten här kan vara scam, mina beräkningar visade på lite scam
 		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
 	}
 

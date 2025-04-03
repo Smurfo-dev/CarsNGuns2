@@ -88,9 +88,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Statistics")
 	float AmmoPerShot = 1; // Ammo consumed per shot
 
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon Statistics")
-	float ReloadTime = 2.0f; // Time to reload
-
 	FTimerHandle ReloadTimerHandle;
 	
 	void Reload();
