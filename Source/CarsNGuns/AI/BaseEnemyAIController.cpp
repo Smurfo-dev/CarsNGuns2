@@ -55,6 +55,8 @@ void ABaseEnemyAIController::Tick(float DeltaSeconds)
 	if(EnemyVehicleReference)
 	{
 		if (EnemyVehicleReference->bIsDead) SetState(EAIState::Dead);
+
+		if (EnemyVehicleReference->bShouldIdle) SetState(EAIState::Idle);
 	}
 
 	if(!PlayerReference || PlayerReference->bIsDead)
@@ -325,7 +327,7 @@ void ABaseEnemyAIController::Chase()
 void ABaseEnemyAIController::Idle()
 {
 	//Do Nothing
-	if (PlayerReference && !PlayerReference->bIsDead) SetState(EAIState::Chase);
+	if (PlayerReference && !PlayerReference->bIsDead && !EnemyVehicleReference->bShouldIdle) SetState(EAIState::Chase);
 }
 
 void ABaseEnemyAIController::Dead()

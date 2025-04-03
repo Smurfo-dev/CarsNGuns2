@@ -48,7 +48,7 @@ bool ARoadManager::FindClosestPointOnSpline(const FVector& TargetLocation, FVect
 		}
 	}
 
-	if (ClosestDistance < 500.0f)
+	if (ClosestDistance < 10000.0f)
 	{
 		OutClosestPoint = BestPoint;
 		return true;

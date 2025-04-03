@@ -891,6 +891,27 @@ void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<A
 	
 }
 
+void ABasePhysicsVehiclePawn::ApplyUpgrade(const FUpgrade& Upgrade)
+{
+	switch (Upgrade.UpgradeType)
+	{
+		case EUpgradeType::WeaponEnhancement:
+			if (PrimaryWeapon && PrimaryWeapon->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
+			{
+				PrimaryWeapon->ApplyEnhancement(Upgrade.StatEnhancementType, Upgrade.StatEnhancementValue);
+			}
+			if (SecondaryWeapon && SecondaryWeapon->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
+			{
+				SecondaryWeapon->ApplyEnhancement(Upgrade.StatEnhancementType, Upgrade.StatEnhancementValue);
+			}
+			break;
+		case EUpgradeType::WeaponAugment:
+			break;
+		case EUpgradeType::VehicleModification:
+			break;
+	}
+}
+
 TArray<FVector> ABasePhysicsVehiclePawn::GetWheelPositions()
 {
 	return WheelPositions;

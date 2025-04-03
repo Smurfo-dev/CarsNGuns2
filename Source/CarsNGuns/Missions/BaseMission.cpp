@@ -56,6 +56,10 @@ void ABaseMission::BeginPlay()
 	DefaultGameState = GetWorld()->GetGameState<ADefaultGameState>();
 	DefaultGameInstance = GetWorld()->GetGameInstance<UDefaultGameInstance>();
 
+	PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	
+	if (PlayerController) PlayerReference = Cast<ABasePhysicsVehiclePawn>(PlayerController->GetPawn());
+
 	if (MissionMarkerWidgetComponent)
 	{
 		if (UUserWidget* WidgetInstance = MissionMarkerWidgetComponent->GetWidget())
@@ -64,7 +68,6 @@ void ABaseMission::BeginPlay()
 			if (MissionMarkerWidget)
 			{
 				MissionMarkerWidget->MissionReference = this;
-				PlayerController = Cast<AMyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 				if (PlayerController)
 				{
 					if (ABasePhysicsVehiclePawn* PlayerVehicle = Cast<ABasePhysicsVehiclePawn>(PlayerController->GetPawn()))
@@ -235,24 +238,14 @@ void ABaseMission::EnableMission()
 	MissionMarkerWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void ABaseMission::ApplyUpgrades(int32 UpgradeIndex)
+void ABaseMission::ApplyUpgrade(int32 UpgradeIndex)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Upgrades!!!")));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Applying Upgrade!!!")));
 	if (MissionUpgradeComponent->Upgrades.IsValidIndex(UpgradeIndex))
 	{
 		const FUpgrade& Upgrade = MissionUpgradeComponent->Upgrades[UpgradeIndex];
-		switch (Upgrade.UpgradeType)
-		{
-		case EUpgradeType::WeaponEnhancement:
-			//PlayerReference->ApplyWeaponEnhancement(Upgrade);
-				break;
-		case EUpgradeType::WeaponAugment:
-			//PlayerReference->ApplyWeaponAugment(Upgrade);
-				break;
-		case EUpgradeType::VehicleModification:
-			//PlayerReference->ApplyVehicleModification(Upgrade);
-				break;
-		}
+		if (PlayerReference) PlayerReference->ApplyUpgrade(Upgrade);
+		else UE_LOG(LogTemp, Error, TEXT("Player Reference not found when applying upgrade."))
 	}
 	else
 	{

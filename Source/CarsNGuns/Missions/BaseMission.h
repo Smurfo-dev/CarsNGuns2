@@ -111,7 +111,7 @@ public:
 	float GetMissionTime();
 	
 	UFUNCTION()
-	void ApplyUpgrades(int32 UpgradeIndex);
+	void ApplyUpgrade(int32 UpgradeIndex);
 
 private:
 	UFUNCTION()
@@ -131,12 +131,13 @@ private:
 
 	UFUNCTION()
 	void HideMissionInfo();
-
+	
+	UPROPERTY()
+	class ABasePhysicsVehiclePawn* PlayerReference;
 	
 	UFUNCTION()
 	void ShowMissionRewards(const TArray<FUpgrade>& Upgrades);
 	
-
 	UFUNCTION()
 	void DisableMission();
 

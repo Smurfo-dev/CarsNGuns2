@@ -15,6 +15,23 @@ enum class EWeaponType : uint8
 	GrenadeLauncher,
 };
 
+UENUM(BlueprintType)
+enum class EUpgradeDamageType : uint8
+{
+	Bullet,
+	Explosive,
+	Special,
+};
+
+UENUM(BlueprintType)
+enum class EStatEnhancementType : uint8
+{
+	Damage UMETA(DisplayName = "Damage"),
+	FireRate UMETA(DisplayName = "Fire Rate"),
+	ReloadSpeed UMETA(DisplayName = "Reload Speed"),
+	// mer typer perhabs
+};
+
 UCLASS()
 class CARSNGUNS_API ABaseWeapon : public AActor
 {
@@ -43,19 +60,38 @@ public:
 	UFUNCTION(BlueprintCallable, Category="UI")
 	UTexture2D* GetWeaponIcon() const {return WeaponIcon;}
 
+	UFUNCTION()
+	void ApplyEnhancement(EStatEnhancementType TypeToEnhance, float EnhancementValue);
+
+	void SetDamage(const float Value)
+	{
+		Damage *= 1.0f + Value / 100.0f;
+	}
+
 	UFUNCTION(Blueprintable)
 	EWeaponType GetWeaponType() const
 	{
 		return WeaponType;
+	}
+	UFUNCTION(Blueprintable)
+	EUpgradeDamageType GetUpgradeDamageType() const
+	{
+		return UpgradeDamageType;
 	}
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
+	float Damage = 30.0f; //Damage amount per bullet
+
 	UPROPERTY(VisibleAnywhere)
 	EWeaponType WeaponType;
 
+	UPROPERTY(VisibleAnywhere)
+	EUpgradeDamageType UpgradeDamageType;
+	
 	UPROPERTY(EditDefaultsOnly, Category=UI)
 	UTexture2D* WeaponIcon;
 

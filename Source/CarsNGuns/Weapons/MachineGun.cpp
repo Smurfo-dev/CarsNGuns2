@@ -19,6 +19,7 @@
 AMachineGun::AMachineGun()
 {
 	WeaponType = EWeaponType::MachineGun;
+	UpgradeDamageType = EUpgradeDamageType::Bullet;
 	
 	TracerNiagaraComponentLeft = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_TracerSystemLeft"));
 	TracerNiagaraComponentLeft->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("BulletSpawnPoint_L"));

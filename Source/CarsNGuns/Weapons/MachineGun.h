@@ -80,9 +80,6 @@ private:
 	float MaxRange = 10000.0f; //Max range for hitscan
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	float Damage = 30.0f; //Damage amount per bullet
-
-	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float MaxAmmo = 100;
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")

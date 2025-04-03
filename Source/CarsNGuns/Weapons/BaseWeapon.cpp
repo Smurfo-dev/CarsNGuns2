@@ -56,6 +56,21 @@ FString ABaseWeapon::GetWeaponID()
 	return WeaponName;
 }
 
+void ABaseWeapon::ApplyEnhancement(EStatEnhancementType TypeToEnhance, float EnhancementValue)
+{
+	switch (TypeToEnhance)
+	{
+		case EStatEnhancementType::Damage:
+			SetDamage(EnhancementValue);
+			UE_LOG(LogTemp, Warning, TEXT("Trying to Edit Damage Value"))
+			break;
+		case EStatEnhancementType::ReloadSpeed:
+			break;
+		case EStatEnhancementType::FireRate:
+			break;
+	}
+}
+
 
 void ABaseWeapon::ResetFire()
 {

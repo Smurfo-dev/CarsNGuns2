@@ -92,9 +92,6 @@ private:
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float MaxRange = 10000.0f; //Max range for hitscan
 
-	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	float Damage = 30.0f; //Damage Per Tick
-
 	bool bIsWindingDown = false;
 
 	float LastSpawnTime = 0.0f;

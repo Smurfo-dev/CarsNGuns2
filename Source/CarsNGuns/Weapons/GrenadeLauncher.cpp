@@ -16,6 +16,7 @@
 AGrenadeLauncher::AGrenadeLauncher()
 {
 	WeaponType = EWeaponType::GrenadeLauncher;
+	UpgradeDamageType = EUpgradeDamageType::Explosive;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
@@ -102,6 +103,7 @@ void AGrenadeLauncher::LaunchGrenade()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		AGrenadeProjectile* Grenade = GetWorld()->SpawnActor<AGrenadeProjectile>(ProjectileClass, StartLocation, StartRotation, SpawnParams);
+		Grenade->SetDamage(Damage);
 
 		if(Grenade) Grenade->GetProjectileMovementComponent()->Velocity = LaunchVelocity;
 		

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "MissionUpgradeComponent.generated.h"
 
 enum class EWeaponType : uint8;
@@ -20,15 +21,6 @@ UENUM(BlueprintType)
 enum class EMissionType : uint8
 {
 	TimeAttack UMETA(DisplayName = "Time Attack")
-};
-
-UENUM(BlueprintType)
-enum class EStatEnhancementType : uint8
-{
-	Damage UMETA(DisplayName = "Damage"),
-	FireRate UMETA(DisplayName = "Fire Rate"),
-	ReloadSpeed UMETA(DisplayName = "Reload Speed"),
-	// mer typer perhabs
 };
 
 USTRUCT(BlueprintType)
@@ -64,11 +56,13 @@ struct FUpgrade
 	TArray<EWeaponType> CompatibleWeaponTypes;
 
 	// Only applicable for WeaponAugment, references the new weapon class
-	TSubclassOf<class ABaseWeapon> AugmentedWeaponClass;
+	TSubclassOf<ABaseWeapon> AugmentedWeaponClass;
 	
 	EStatEnhancementType StatEnhancementType;
 	
 	float StatEnhancementValue = 0.0f;
+
+	EUpgradeDamageType UpgradeDamageType;
 	
 	FString UpgradeIconFilePath;
 	
@@ -77,12 +71,12 @@ struct FUpgrade
 	FString UpgradeDescription;
 
 	FUpgrade()
-		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage) {}
+		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage), UpgradeDamageType(EUpgradeDamageType::Bullet) {}
 
 	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue,
+	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EUpgradeDamageType UpgradeDamageType,
 		const FString& IconFilePath, const FString& DisplayName, const FString& UpgradeDescription)
-		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType),  StatEnhancementValue(EnhancementValue),
+		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), UpgradeDamageType(UpgradeDamageType),
 			UpgradeIconFilePath(IconFilePath), DisplayName(DisplayName), UpgradeDescription(UpgradeDescription) {}
 	
 };

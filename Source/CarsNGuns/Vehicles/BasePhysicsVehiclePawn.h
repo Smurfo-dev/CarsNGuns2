@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CarsNGuns/Components/HealthComponent.h"
 #include "Components/BoxComponent.h"
+#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 #include "Components/PoseableMeshComponent.h"
 #include "GameFramework/Pawn.h"
 #include "BasePhysicsVehiclePawn.generated.h"
@@ -292,6 +293,9 @@ public:
 
 	UFUNCTION()
 	TArray<FVector> GetWheelPositions();
+
+	UFUNCTION()
+	void ApplyUpgrade(const FUpgrade& Upgrade);
 
 	UFUNCTION()
 	float GetSteeringInput() const

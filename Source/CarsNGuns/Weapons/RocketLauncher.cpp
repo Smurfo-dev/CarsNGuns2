@@ -14,6 +14,7 @@
 ARocketLauncher::ARocketLauncher()
 {
 	WeaponType = EWeaponType::RocketLauncher;
+	UpgradeDamageType = EUpgradeDamageType::Explosive;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
@@ -74,7 +75,7 @@ void ARocketLauncher::LaunchRocket()
 		if(ABaseProjectile* Projectile = GetWorld()->SpawnActor<ABaseProjectile>(ProjectileClass, WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WeaponMesh->GetSocketRotation(TEXT("ProjectileSpawnPoint")), Params))
 		{
 			//Initialize projectile properties?
-			
+			Projectile->SetDamage(Damage);
 		}
 	}
 }

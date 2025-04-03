@@ -94,10 +94,19 @@ void UDefaultGameInstance::InitializeUpgrades()
 			else if (StatEnhancementType == "ReloadSpeed") NewUpgrade.StatEnhancementType = EStatEnhancementType::ReloadSpeed;
 		}
 
-		//Parse State Enhancement Value
+		//Parse Stat Enhancement Value
 		if (UpgradeObject->HasField(TEXT("StatEnhancementValue")))
 		{
 			NewUpgrade.StatEnhancementValue = UpgradeObject->GetNumberField(TEXT("StatEnhancementValue"));
+		}
+
+		//Parse Stat Enhancement Weapon Upgrade Type
+		if (UpgradeObject->HasField(TEXT("UpgradeDamageType")))
+		{
+			FString UpgradeDamageType = UpgradeObject->GetStringField(TEXT("UpgradeDamageType"));
+			if (UpgradeDamageType == "Bullet") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Bullet;
+			else if (UpgradeDamageType == "Explosive") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Explosive;
+			else if (UpgradeDamageType == "Special") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Special;
 		}
 
 		//Parse Augmented Weapon Class

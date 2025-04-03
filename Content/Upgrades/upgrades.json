@@ -1,58 +1,35 @@
 [
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "FireRate",
-    "StatEnhancementValue": 20.0,
+    "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
+    "StatEnhancementType": "Damage",
+    "StatEnhancementValue": 200.0,
+    "UpgradeDamageType": "Explosive",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Small Fire Rate Booster",
-    "UpgradeDescription": "20% Fire Rate Increase"
+    "DisplayName": "Explosive Weapon Damage Boost",
+    "UpgradeDescription": "200% More Damage For Explosive Weapons"
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "FireRate",
-    "StatEnhancementValue": 60.0,
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Massive Fire Rate Booster",
-    "UpgradeDescription": "60% Fire Rate Increase"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["MachineGun"],
     "StatEnhancementType": "Damage",
     "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Bullet",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Small Damage Booster",
-    "UpgradeDescription": "20% Damage Increase"
+    "DisplayName": "Bullet Weapon Damage Booster",
+    "UpgradeDescription": "20% More Damage For Bullet Weapon Types"
   },
   {
     "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
+    "CompatibleWeaponTypes": ["LaserRifle"],
     "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 30.0,
+    "StatEnhancementValue": 20.0,
+    "UpgradeDamageType": "Special",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Medium Damage Booster",
-    "UpgradeDescription": "30% Damage Increase"
+    "DisplayName": "Special Weapon Damage Booster",
+    "UpgradeDescription": "20% Damage Increase To Special Weapon Types"
   },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 60.0,
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Massive Damage Booster",
-    "UpgradeDescription": "60% Damage Increase"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun", "RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 50.0,
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Large Damage Booster",
-    "UpgradeDescription": "50% Damage Increase"
-  },
+  
   {
     "UpgradeType": "WeaponAugment",
     "CompatibleWeaponTypes": ["MachineGun"],

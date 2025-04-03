@@ -18,6 +18,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Debug")
+	bool bShouldIdle = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")
 	float MaxSpawnDistance = 10000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning Behavior")
