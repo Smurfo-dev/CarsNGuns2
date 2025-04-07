@@ -45,7 +45,7 @@ protected:
 	float MaxHeat = 100.0f; //Max heat before Overheated status
 
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
-	float HeatPerTick = 10.0f; //Heat Added Per Tick
+	float HeatPerTick = 1.0f; //Heat Added Per Tick
 
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float CooldownTime = 3.0f;
@@ -63,11 +63,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float PassiveHeatCooldownTickRate = 0.0167; //Heat removed per tick
 
+	FTimerHandle OverheatCooldownTickHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category=Overheat)
+	float OverheatCooldownDuration = 0.5f; // How long the fast cooldown should visually take
+
+	bool bIsCoolingDown = false;
+
+
 	bool bIsOverheated = false;
 
 	FTimerHandle OverheatTimerHandle;
 	FTimerHandle PassiveCooldownTimerHandle;
 	FTimerHandle CooldownDelayTimerHandle;
+	FTimerHandle FireResetTimerHandle;
 
 private:
 	void PerformHitScan();
@@ -89,6 +98,8 @@ private:
 	void StartPassiveCooldown();
 
 	void CooldownTick();
+
+	void RapidCooldownTick();
 	
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float MaxRange = 10000.0f; //Max range for hitscan

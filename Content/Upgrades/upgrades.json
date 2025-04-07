@@ -53,11 +53,11 @@
     "UpgradeType": "WeaponEnhancement",
     "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
     "StatEnhancementType": "ReloadSpeed",
-    "StatEnhancementValue": 90.0,
+    "StatEnhancementValue": 20.0,
     "UpgradeDamageType": "Explosive",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
     "DisplayName": "Explosive Weapon Reload Faster",
-    "UpgradeDescription": "90% Faster Reload For Explosive Weapons"
+    "UpgradeDescription": "20% Faster Reload For Explosive Weapons"
   },
   {
     "UpgradeType": "WeaponEnhancement",

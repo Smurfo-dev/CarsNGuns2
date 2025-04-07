@@ -106,15 +106,19 @@ float ALaserRifle::GetResourceBarValue() const
 
 void ALaserRifle::CoolDown()
 {
-	CurrentHeat = 0.0f;
-	bIsOverheated = false;
-	bCanFire = true;
+	bIsCoolingDown = true;
+	bCanFire = false;
 
-	LaserBeamNiagaraComponent->Deactivate();
-
-	// Restart passive cooling after overheat ends
-	GetWorld()->GetTimerManager().SetTimer(CooldownDelayTimerHandle, this, &ALaserRifle::StartPassiveCooldown, PassiveCooldownDelayTime, false);
+	// Start rapidly draining heat over OverheatCooldownDuration
+	GetWorld()->GetTimerManager().SetTimer(
+		OverheatCooldownTickHandle, 
+		this, 
+		&ALaserRifle::RapidCooldownTick, 
+		PassiveHeatCooldownTickRate, 
+		true
+	);
 }
+
 
 void ALaserRifle::StartPassiveCooldown()
 {
@@ -135,6 +139,27 @@ void ALaserRifle::CooldownTick()
 		GetWorld()->GetTimerManager().ClearTimer(PassiveCooldownTimerHandle); // Stop cooling when fully cooled
 	}
 }
+
+void ALaserRifle::RapidCooldownTick()
+{
+	float DrainPerTick = MaxHeat / (OverheatCooldownDuration / PassiveHeatCooldownTickRate);
+
+	CurrentHeat -= DrainPerTick;
+	CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
+
+	if (CurrentHeat <= 0.0f)
+	{
+		CurrentHeat = 0.0f;
+		bIsCoolingDown = false;
+		bIsOverheated = false;
+
+		LaserBeamNiagaraComponent->Deactivate();
+
+		GetWorld()->GetTimerManager().ClearTimer(OverheatCooldownTickHandle);
+		GetWorld()->GetTimerManager().SetTimer(FireResetTimerHandle, this, &ALaserRifle::ResetFire, 0.1, false);
+	}
+}
+
 
 void ALaserRifle::PerformHitScan()
 {

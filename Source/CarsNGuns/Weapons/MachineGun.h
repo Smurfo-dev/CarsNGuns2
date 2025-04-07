@@ -64,6 +64,17 @@ protected:
 	UPROPERTY(Category="Audio", EditDefaultsOnly, BlueprintReadOnly)
 	UAudioComponent* FiringAudioComponent;
 
+	FTimerHandle ReloadTickHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = Reload)
+	float ReloadTime = 2.0f; // Duration of reload in seconds
+
+	UPROPERTY(EditDefaultsOnly, Category = Reload)
+	float ReloadTickInterval = 0.0167f; // ~60 FPS
+
+	float ReloadedAmmoPerTick = 0.0f;
+	float ReloadProgress = 0.0f;
+
 private:
 	
 	void PerformHitScan();
@@ -75,6 +86,8 @@ private:
 	void InitAudio() const;
 
 	void MoveGunsTowardTarget(float DeltaTime, float InterpSpeed) const;
+
+	void ReloadTick();
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float MaxRange = 10000.0f; //Max range for hitscan

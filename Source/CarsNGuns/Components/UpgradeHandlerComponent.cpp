@@ -26,7 +26,7 @@ void UUpgradeHandlerComponent::BeginPlay()
 
 void UUpgradeHandlerComponent::AddUpgrade(const FUpgrade& Upgrade)
 {
-	EquippedUpgrades.Add(Upgrade);
+	EquippedUpgrades.Add(Upgrade); // Hur hanterar vi stackade upgrades? 2 Fire rate buffs?
 	switch (Upgrade.UpgradeType)
 	{
 	case EUpgradeType::WeaponEnhancement:
@@ -42,7 +42,6 @@ void UUpgradeHandlerComponent::AddUpgrade(const FUpgrade& Upgrade)
 		break;
 		
 	}
-
 }
 
 void UUpgradeHandlerComponent::ApplyEnhancement(const FUpgrade& Upgrade)

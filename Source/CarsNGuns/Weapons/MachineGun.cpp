@@ -85,12 +85,23 @@ void AMachineGun::Reload()
 	UE_LOG(LogTemp, Log, TEXT("Reloading..."));
 
 	bCanFire = false;
+	bIsReloading = true;
 	StopFire();
 
 	GetWorld()->GetTimerManager().ClearTimer(FireRateTimerHandle);
 
-	// Start the reload timer
-	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AMachineGun::FinishReload, ReloadTime, false);
+	// Set up values for tick-based reload
+	ReloadProgress = 0.0f;
+	ReloadedAmmoPerTick = MaxAmmo / (ReloadTime / ReloadTickInterval);
+	CurrentAmmo = 0.0f; // Start from empty to refill gradually
+
+	GetWorld()->GetTimerManager().SetTimer(
+		ReloadTickHandle,
+		this,
+		&AMachineGun::ReloadTick,
+		ReloadTickInterval,
+		true
+	);
 }
 
 void AMachineGun::FinishReload()
@@ -103,7 +114,22 @@ void AMachineGun::FinishReload()
 	ResetFire();
 }
 
+void AMachineGun::ReloadTick()
+{
+	CurrentAmmo += ReloadedAmmoPerTick;
+	ReloadProgress += ReloadTickInterval;
 
+	if (CurrentAmmo >= MaxAmmo || ReloadProgress >= ReloadTime)
+	{
+		CurrentAmmo = MaxAmmo;
+		bIsReloading = false;
+
+		GetWorld()->GetTimerManager().ClearTimer(ReloadTickHandle);
+
+		UE_LOG(LogTemp, Log, TEXT("Reloaded!"));
+		ResetFire();
+	}
+}
 
 void AMachineGun::StopFire()
 {
