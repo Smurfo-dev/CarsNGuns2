@@ -150,7 +150,8 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 		int Counter = 0;
 		for(FVector& TraceStart : WheelPositions)
 		{
-			FVector TraceEnd = TraceStart + FVector(0.0f, 0.0f, -MaxSuspensionExtent);
+			constexpr float FloorCoyoteRange = 5.0f;
+			FVector TraceEnd = TraceStart + FVector(0.0f, 0.0f, -MaxSuspensionExtent - FloorCoyoteRange);
 			FHitResult HitResult;
 
 			FCollisionQueryParams Params;
@@ -163,13 +164,24 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 
 			if(bHit)
 			{
-				const float CompressionRatio = 1 - HitResult.Distance / MaxSuspensionExtent;
+				FVector SuspensionAxis = -CollisionBoxPrimitive->GetUpVector();
+				float DistanceAlongAxis = FVector::DotProduct(HitResult.ImpactPoint - TraceStart, SuspensionAxis);
+				const float CompressionRatio = 1 - DistanceAlongAxis / MaxSuspensionExtent;
 				
 				FString CompressionText = FString::Printf(TEXT("Compression Ratio: %.2f"), CompressionRatio);
 				if(bDebugForces) DrawDebugString(GetWorld(), TraceStart+FVector(0.0f, 0.0f, -10.0f), CompressionText, nullptr, FColor::White, 0.0f, true);
 				
-				const float ForceToApply = CompressionRatio * (SuspensionForceFactor*1000000) - (SuspensionDampingFactor*1000) * CollisionBoxPrimitive->GetPhysicsLinearVelocityAtPoint(TraceStart).Z;
-				CollisionBoxPrimitive->AddForceAtLocation(FVector(0.0f, 0.0f, ForceToApply), TraceStart, NAME_None);
+				const float ForceToApply = CompressionRatio * (SuspensionForceFactor*1000000) - SuspensionDampingFactor*1000 * CollisionBoxPrimitive->GetPhysicsLinearVelocityAtPoint(TraceStart).Z;
+				FVector Force = ForceToApply * CollisionBoxPrimitive->GetUpVector();
+				CollisionBoxPrimitive->AddForceAtLocation(Force, TraceStart, NAME_None);
+
+				if (bDebugForces)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("UpVector: %s"), *CollisionBoxPrimitive->GetUpVector().ToString());
+
+					DrawDebugLine(GetWorld(), TraceStart, TraceStart + Force * 0.001f, FColor::Blue, false, 0.0f, 0, 2.0f);
+				}
+
 
 				WheelGroundPositions[WheelPositions.Find(TraceStart)] = true;
 
@@ -182,6 +194,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 			else
 			{
 				WheelGroundPositions[WheelPositions.Find(TraceStart)] = false;
+				UE_LOG(LogTemp, Error, TEXT("Suspension Trace is missing"));
 			}
 			Counter++;
 		}
@@ -730,8 +743,8 @@ void ABasePhysicsVehiclePawn::UpdateWheelAnimations(float DeltaTime)
 		}
 
 		//Steering Animations
-		VehicleMeshComponent->SetBoneRotationByName("Wheel_Front_Left", VehicleMeshComponent->GetSocketRotation("Wheel_Front_Left_Locator") + FRotator(0, CurrentSteeringInput * SteeringSensitivityCurve->GetFloatValue(CurrentSpeed), 0), EBoneSpaces::WorldSpace);
-		VehicleMeshComponent->SetBoneRotationByName("Wheel_Front_Right", VehicleMeshComponent->GetSocketRotation("Wheel_Front_Right_Locator") + FRotator(0, CurrentSteeringInput * SteeringSensitivityCurve->GetFloatValue(CurrentSpeed), 0), EBoneSpaces::WorldSpace);
+		VehicleMeshComponent->SetBoneRotationByName("Wheel_Front_Left", VehicleMeshComponent->GetSocketRotation("Wheel_Front_Left_Locator") + FRotator(0, CurrentSteeringInput * SteeringSensitivityCurve->GetFloatValue(CurrentSpeed) * 2, 0), EBoneSpaces::WorldSpace);
+		VehicleMeshComponent->SetBoneRotationByName("Wheel_Front_Right", VehicleMeshComponent->GetSocketRotation("Wheel_Front_Right_Locator") + FRotator(0, CurrentSteeringInput * SteeringSensitivityCurve->GetFloatValue(CurrentSpeed) * 2, 0), EBoneSpaces::WorldSpace);
 
 		VehicleMeshComponent->SetBoneRotationByName("Wheel_Rear_Left", VehicleMeshComponent->GetSocketRotation("Wheel_Rear_Left_Locator") + FRotator(0, 0, 0), EBoneSpaces::WorldSpace);
 		VehicleMeshComponent->SetBoneRotationByName("Wheel_Rear_Right", VehicleMeshComponent->GetSocketRotation("Wheel_Rear_Right_Locator") + FRotator(0, 0, 0), EBoneSpaces::WorldSpace);

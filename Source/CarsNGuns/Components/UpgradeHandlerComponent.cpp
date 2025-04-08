@@ -19,7 +19,7 @@ UUpgradeHandlerComponent::UUpgradeHandlerComponent()
 void UUpgradeHandlerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// ...
 	
 }
