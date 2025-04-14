@@ -15,7 +15,7 @@
 ALaserRifle::ALaserRifle()
 {
 	WeaponType = EWeaponType::LaserRifle;
-	UpgradeDamageType = EUpgradeDamageType::Special;
+	DamageType = EDamageType::Special;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 
@@ -79,7 +79,7 @@ void ALaserRifle::Fire()
 
 		bCanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ALaserRifle::ResetFire, 1*FireRate, false);
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ALaserRifle::ResetFire, BaseFireRate / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.FireRateMultipliers.Find(DamageType), false);
 	}
 	else if (CurrentHeat < MaxHeat && !bIsOverheated)
 	{
@@ -130,7 +130,8 @@ void ALaserRifle::CooldownTick()
 {
 	if (CurrentHeat > 0)
 	{
-		CurrentHeat -= HeatCooldownRate / ReloadTime; //Matten här kan vara scam, mina beräkningar visade på lite scam
+		float DrainPerTick = MaxHeat / (BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType) / PassiveHeatCooldownTickRate);
+		CurrentHeat -= DrainPerTick;
 		CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
 	}
 
@@ -142,7 +143,7 @@ void ALaserRifle::CooldownTick()
 
 void ALaserRifle::RapidCooldownTick()
 {
-	float DrainPerTick = MaxHeat / (OverheatCooldownDuration / PassiveHeatCooldownTickRate);
+	float DrainPerTick = MaxHeat / (BaseOverheatCooldownDuration / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType) / PassiveHeatCooldownTickRate);
 
 	CurrentHeat -= DrainPerTick;
 	CurrentHeat = FMath::Clamp(CurrentHeat, 0.0f, MaxHeat);
@@ -213,8 +214,8 @@ void ALaserRifle::PerformGunTrace(const FVector& BarrelLocation, const FRotator&
 		if(HitActor)
 		{
 			float Distance = FVector::Dist(BarrelLocation, HitResult.ImpactPoint);
-			float AppliedDamage = (1-Distance/10000)*Damage; //Damage Drop Off things
-			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageType);
+			float AppliedDamage = (1-Distance/10000)* BaseDamage * *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.DamageMultipliers.Find(DamageType); //Damage Drop Off things
+			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageTypeClass);
 		}
 		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 12, FColor::Red, false, 1.0f);
 	}

@@ -45,7 +45,7 @@ private:
 
 	void InitAudio() const;
 
-	float ElapsedTimeSinceLastShot; // Time that has passed since the last shot
+	float ElapsedTimeSinceLastShot = FLT_MAX; // Time that has passed since the last shot
 	
 	float CurrentProgressBarValue = 1.0f;  // Current value of the progress bar (0 to 1)
 };

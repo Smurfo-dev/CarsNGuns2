@@ -104,9 +104,9 @@ void UDefaultGameInstance::InitializeUpgrades()
 		if (UpgradeObject->HasField(TEXT("UpgradeDamageType")))
 		{
 			FString UpgradeDamageType = UpgradeObject->GetStringField(TEXT("UpgradeDamageType"));
-			if (UpgradeDamageType == "Bullet") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Bullet;
-			else if (UpgradeDamageType == "Explosive") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Explosive;
-			else if (UpgradeDamageType == "Special") NewUpgrade.UpgradeDamageType = EUpgradeDamageType::Special;
+			if (UpgradeDamageType == "Bullet") NewUpgrade.DamageType = EDamageType::Bullet;
+			else if (UpgradeDamageType == "Explosive") NewUpgrade.DamageType = EDamageType::Explosive;
+			else if (UpgradeDamageType == "Special") NewUpgrade.DamageType = EDamageType::Special;
 		}
 
 		//Parse Augmented Weapon Class

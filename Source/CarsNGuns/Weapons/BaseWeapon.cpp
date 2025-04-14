@@ -26,10 +26,6 @@ void ABaseWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	bCanFire = true;
-	
-	ReloadTime = BaseReloadTime;
-	FireRate = BaseFireRate;
-	Damage = BaseDamage;	
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ABaseWeapon::InitializePlayerController);
 }

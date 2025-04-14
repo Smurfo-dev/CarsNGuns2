@@ -16,7 +16,7 @@
 AGrenadeLauncher::AGrenadeLauncher()
 {
 	WeaponType = EWeaponType::GrenadeLauncher;
-	UpgradeDamageType = EUpgradeDamageType::Explosive;
+	DamageType = EDamageType::Explosive;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
@@ -27,23 +27,23 @@ void AGrenadeLauncher::BeginPlay()
 
 	InitVFX();
 	InitAudio();
-
-	ElapsedTimeSinceLastShot = ReloadTime;
 }
 
 void AGrenadeLauncher::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (OwnerReference && ElapsedTimeSinceLastShot == FLT_MAX) ElapsedTimeSinceLastShot = BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType);
+
 	MoveTowardTarget(DeltaTime, 25.0f);
 
-	if (ElapsedTimeSinceLastShot < ReloadTime)
+	if (ElapsedTimeSinceLastShot < BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType))
 	{
 		// Increment the elapsed time
 		ElapsedTimeSinceLastShot += DeltaTime;
 
 		// Update the progress bar (value from 0 to 1)
-		CurrentProgressBarValue = ElapsedTimeSinceLastShot / ReloadTime;
+		CurrentProgressBarValue = ElapsedTimeSinceLastShot / (BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType));
 
 		// Ensure the value doesn't exceed 1
 		CurrentProgressBarValue = FMath::Clamp(CurrentProgressBarValue, 0.0f, 1.0f);
@@ -64,7 +64,7 @@ void AGrenadeLauncher::Fire()
 
 		bCanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGrenadeLauncher::ResetFire, 1*ReloadTime, false);
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGrenadeLauncher::ResetFire, BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType), false);
 	}
 }
 
@@ -105,7 +105,7 @@ void AGrenadeLauncher::LaunchGrenade()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		AGrenadeProjectile* Grenade = GetWorld()->SpawnActor<AGrenadeProjectile>(ProjectileClass, StartLocation, StartRotation, SpawnParams);
-		Grenade->SetDamage(Damage);
+		Grenade->SetDamage(BaseDamage * *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.DamageMultipliers.Find(DamageType));
 
 		if(Grenade) Grenade->GetProjectileMovementComponent()->Velocity = LaunchVelocity;
 		

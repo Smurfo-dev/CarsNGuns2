@@ -38,6 +38,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void PerformGunTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection);
+
 	//VFX Systems
 	UPROPERTY(Category="VFX", EditDefaultsOnly, BlueprintReadOnly)
 	class UNiagaraComponent* TracerNiagaraComponentLeft;
@@ -67,19 +69,17 @@ protected:
 	FTimerHandle ReloadTickHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category = Reload)
-	float ReloadTime = 2.0f; // Duration of reload in seconds
-
-	UPROPERTY(EditDefaultsOnly, Category = Reload)
 	float ReloadTickInterval = 0.0167f; // ~60 FPS
 
 	float ReloadedAmmoPerTick = 0.0f;
 	float ReloadProgress = 0.0f;
 
+	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
+	float MaxRange = 10000.0f; //Max range for hitscan
+
 private:
 	
 	void PerformHitScan();
-
-	void PerformGunTrace(const FVector& BarrelLocation, const FRotator& BarrelRotation, FHitResult HitResult, const FCollisionQueryParams& Params, const FVector& HitFromDirection);
 	
 	void InitVFX() const;
 
@@ -88,9 +88,6 @@ private:
 	void MoveGunsTowardTarget(float DeltaTime, float InterpSpeed) const;
 
 	void ReloadTick();
-
-	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
-	float MaxRange = 10000.0f; //Max range for hitscan
 
 	UPROPERTY(EditAnywhere, Category ="Weapon Statistics")
 	float MaxAmmo = 100;

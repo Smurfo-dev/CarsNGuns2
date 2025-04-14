@@ -19,7 +19,7 @@
 AMachineGun::AMachineGun()
 {
 	WeaponType = EWeaponType::MachineGun;
-	UpgradeDamageType = EUpgradeDamageType::Bullet;
+	DamageType = EDamageType::Bullet;
 	
 	TracerNiagaraComponentLeft = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NS_TracerSystemLeft"));
 	TracerNiagaraComponentLeft->AttachToComponent(WeaponMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("BulletSpawnPoint_L"));
@@ -71,7 +71,7 @@ void AMachineGun::Fire()
 
 		bCanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AMachineGun::ResetFire, 1*FireRate, false);
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AMachineGun::ResetFire, BaseFireRate / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.FireRateMultipliers.Find(DamageType), false);
 	}
 	else if(CurrentAmmo <= 0 && !bIsReloading)
 	{
@@ -92,7 +92,7 @@ void AMachineGun::Reload()
 
 	// Set up values for tick-based reload
 	ReloadProgress = 0.0f;
-	ReloadedAmmoPerTick = MaxAmmo / (ReloadTime / ReloadTickInterval);
+	ReloadedAmmoPerTick = MaxAmmo / (BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType) / ReloadTickInterval);
 	CurrentAmmo = 0.0f; // Start from empty to refill gradually
 
 	GetWorld()->GetTimerManager().SetTimer(
@@ -119,7 +119,7 @@ void AMachineGun::ReloadTick()
 	CurrentAmmo += ReloadedAmmoPerTick;
 	ReloadProgress += ReloadTickInterval;
 
-	if (CurrentAmmo >= MaxAmmo || ReloadProgress >= ReloadTime)
+	if (CurrentAmmo >= MaxAmmo || ReloadProgress >= BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType))
 	{
 		CurrentAmmo = MaxAmmo;
 		bIsReloading = false;
@@ -211,9 +211,9 @@ void AMachineGun::PerformGunTrace(const FVector& BarrelLocation, const FRotator&
 
 			//Damage Dropoff
 			float Distance = FVector::Dist(BarrelLocation, HitResult.ImpactPoint);
-			float AppliedDamage = (1-Distance/10000)*Damage;
+			float AppliedDamage = (1-Distance/10000)* (BaseDamage * *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.DamageMultipliers.Find(DamageType));
 			
-			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageType);
+			UGameplayStatics::ApplyPointDamage(HitActor, AppliedDamage, HitFromDirection, HitResult, GetOwner()->GetInstigatorController(), this, DamageTypeClass);
 		}
 		if(UDecalComponent* DecalComponent = UGameplayStatics::SpawnDecalAttached(BulletHoleDecalMaterial,
 			FVector(5.0f,10.0f,10.0f),

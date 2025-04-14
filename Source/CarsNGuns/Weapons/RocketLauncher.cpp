@@ -14,7 +14,7 @@
 ARocketLauncher::ARocketLauncher()
 {
 	WeaponType = EWeaponType::RocketLauncher;
-	UpgradeDamageType = EUpgradeDamageType::Explosive;
+	DamageType = EDamageType::Explosive;
 	//Create Audio Component(s)
 	FiringAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FiringAudioComponent"));
 }
@@ -25,23 +25,23 @@ void ARocketLauncher::BeginPlay()
 
 	InitVFX();
 	InitAudio();
-
-	ElapsedTimeSinceLastShot = ReloadTime;
 }
 
 void ARocketLauncher::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (OwnerReference && ElapsedTimeSinceLastShot == FLT_MAX) ElapsedTimeSinceLastShot = BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType);
+
 	MoveTowardTarget(DeltaTime, 25.0f);
 
-	if (ElapsedTimeSinceLastShot < ReloadTime)
+	if (ElapsedTimeSinceLastShot < BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType))
 	{
 		// Increment the elapsed time
 		ElapsedTimeSinceLastShot += DeltaTime;
 
 		// Update the progress bar (value from 0 to 1)
-		CurrentProgressBarValue = ElapsedTimeSinceLastShot / ReloadTime;
+		CurrentProgressBarValue = ElapsedTimeSinceLastShot / (BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType));
 
 		// Ensure the value doesn't exceed 1
 		CurrentProgressBarValue = FMath::Clamp(CurrentProgressBarValue, 0.0f, 1.0f);
@@ -62,7 +62,7 @@ void ARocketLauncher::Fire()
 
 		bCanFire = false;
 
-		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ARocketLauncher::ResetFire, 1*ReloadTime, false);
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &ARocketLauncher::ResetFire, BaseReloadTime / *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.RechargeMultipliers.Find(DamageType), false);
 	}
 }
 
@@ -77,7 +77,7 @@ void ARocketLauncher::LaunchRocket()
 		if(ABaseProjectile* Projectile = GetWorld()->SpawnActor<ABaseProjectile>(ProjectileClass, WeaponMesh->GetSocketLocation(TEXT("ProjectileSpawnPoint")), WeaponMesh->GetSocketRotation(TEXT("ProjectileSpawnPoint")), Params))
 		{
 			//Initialize projectile properties?
-			Projectile->SetDamage(Damage);
+			Projectile->SetDamage(BaseDamage * *OwnerReference->GetUpgradeHandlerComponent()->StatConfig.DamageMultipliers.Find(DamageType));
 		}
 	}
 }

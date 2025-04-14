@@ -10,7 +10,6 @@ UUpgradeHandlerComponent::UUpgradeHandlerComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
 	// ...
 }
 
@@ -49,43 +48,31 @@ void UUpgradeHandlerComponent::ApplyEnhancement(const FUpgrade& Upgrade)
 	switch (Upgrade.StatEnhancementType)
 	{
 	case EStatEnhancementType::Damage:
-		if (OwnerReference->GetPrimaryWeapon() && OwnerReference->GetPrimaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetPrimaryWeapon()->SetDamage(Upgrade.StatEnhancementValue);
-		}
-		if (OwnerReference->GetSecondaryWeapon() && OwnerReference->GetSecondaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetSecondaryWeapon()->SetDamage(Upgrade.StatEnhancementValue);
-		}
+		*StatConfig.DamageMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 
 	case EStatEnhancementType::FireRate:
-		if (OwnerReference->GetPrimaryWeapon() && OwnerReference->GetPrimaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetPrimaryWeapon()->SetFireRate(Upgrade.StatEnhancementValue);
-		}
-		if (OwnerReference->GetSecondaryWeapon() && OwnerReference->GetSecondaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetSecondaryWeapon()->SetFireRate(Upgrade.StatEnhancementValue);
-		}
+		*StatConfig.FireRateMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 
 	case EStatEnhancementType::ReloadSpeed:
-		if (OwnerReference->GetPrimaryWeapon() && OwnerReference->GetPrimaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetPrimaryWeapon()->SetReloadSpeed(Upgrade.StatEnhancementValue);
-		}
-		if (OwnerReference->GetSecondaryWeapon() && OwnerReference->GetSecondaryWeapon()->GetUpgradeDamageType() == Upgrade.UpgradeDamageType)
-		{
-			OwnerReference->GetSecondaryWeapon()->SetReloadSpeed(Upgrade.StatEnhancementValue);
-		}
+		*StatConfig.RechargeMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 	}
 }
 
 void UUpgradeHandlerComponent::ApplyAugment(const FUpgrade& Upgrade)
 {
-	
+	if (Upgrade.AugmentedWeaponClass) UE_LOG(LogTemp, Warning, TEXT("Augment Class Valid"))
+	ABaseWeapon* DefaultUpgradeClass = Upgrade.AugmentedWeaponClass.GetDefaultObject();
+	if (OwnerReference->GetPrimaryWeapon() && OwnerReference->GetPrimaryWeapon()->GetWeaponType() == DefaultUpgradeClass->GetWeaponType())
+	{
+		OwnerReference->AttachPrimaryWeaponToVehicle(Upgrade.AugmentedWeaponClass);
+	}
+	else if (OwnerReference->GetSecondaryWeapon() && OwnerReference->GetSecondaryWeapon()->GetWeaponType() == DefaultUpgradeClass->GetWeaponType())
+	{
+		OwnerReference->AttachSecondaryWeaponToVehicle(Upgrade.AugmentedWeaponClass);
+	}
 }
 
 void UUpgradeHandlerComponent::ApplyModification(const FUpgrade& Upgrade)

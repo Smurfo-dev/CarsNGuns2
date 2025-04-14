@@ -72,9 +72,9 @@
   {
     "UpgradeType": "WeaponAugment",
     "CompatibleWeaponTypes": ["MachineGun"],
-    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_MachineGunUpgradeTest.BP_MachineGunUpgradeTest_C",
+    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_ExplosiveMachineGun.BP_ExplosiveMachineGun_C",
     "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Blue Machine Gun",
-    "UpgradeDescription": "Makes Your Machine Gun Blue"
+    "DisplayName": "Explosive Machine Gun",
+    "UpgradeDescription": "Makes Your Machine Gun Shots Explosive, Lowers Fire Rate"
   }
 ]

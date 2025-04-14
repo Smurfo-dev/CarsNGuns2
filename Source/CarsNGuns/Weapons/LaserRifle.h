@@ -56,17 +56,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float CurrentHeat = 0.0f; //Current Heat Level
 
-	//Interchangable with reload time perhaps?
-	UPROPERTY(EditDefaultsOnly, Category=Overheat)
-	float HeatCooldownRate = 5.0f; //Heat removed per tick
-
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
 	float PassiveHeatCooldownTickRate = 0.0167; //Heat removed per tick
 
 	FTimerHandle OverheatCooldownTickHandle;
 
 	UPROPERTY(EditDefaultsOnly, Category=Overheat)
-	float OverheatCooldownDuration = 0.5f; // How long the fast cooldown should visually take
+	float BaseOverheatCooldownDuration = 0.5f; // How long the fast cooldown should visually take
 
 	bool bIsCoolingDown = false;
 

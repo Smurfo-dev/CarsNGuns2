@@ -177,7 +177,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 
 				if (bDebugForces)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("UpVector: %s"), *CollisionBoxPrimitive->GetUpVector().ToString());
+					//UE_LOG(LogTemp, Warning, TEXT("UpVector: %s"), *CollisionBoxPrimitive->GetUpVector().ToString());
 
 					DrawDebugLine(GetWorld(), TraceStart, TraceStart + Force * 0.001f, FColor::Blue, false, 0.0f, 0, 2.0f);
 				}
@@ -194,7 +194,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 			else
 			{
 				WheelGroundPositions[WheelPositions.Find(TraceStart)] = false;
-				UE_LOG(LogTemp, Error, TEXT("Suspension Trace is missing"));
+				//UE_LOG(LogTemp, Error, TEXT("Suspension Trace is missing"));
 			}
 			Counter++;
 		}

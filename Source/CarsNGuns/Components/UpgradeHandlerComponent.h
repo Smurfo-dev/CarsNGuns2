@@ -16,6 +16,35 @@ enum class EUpgradeType : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FStatConfig
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	TMap<EDamageType, float> DamageMultipliers;
+
+	TMap<EDamageType, float> FireRateMultipliers;
+
+	TMap<EDamageType, float> RechargeMultipliers;
+	
+	FStatConfig()
+	{
+		DamageMultipliers.Add(EDamageType::Bullet, 1.0f);
+		DamageMultipliers.Add(EDamageType::Explosive, 1.0f);
+		DamageMultipliers.Add(EDamageType::Special, 1.0f);
+
+		FireRateMultipliers.Add(EDamageType::Bullet, 1.0f);
+		FireRateMultipliers.Add(EDamageType::Explosive, 1.0f);
+		FireRateMultipliers.Add(EDamageType::Special, 1.0f);
+
+		RechargeMultipliers.Add(EDamageType::Bullet, 1.0f);
+		RechargeMultipliers.Add(EDamageType::Explosive, 1.0f);
+		RechargeMultipliers.Add(EDamageType::Special, 1.0f);
+		
+	}
+};
+
+USTRUCT(BlueprintType)
 struct FUpgrade
 {
 	GENERATED_BODY()
@@ -32,7 +61,7 @@ struct FUpgrade
 	
 	float StatEnhancementValue = 0.0f;
 
-	EUpgradeDamageType UpgradeDamageType;
+	EDamageType DamageType;
 	
 	FString UpgradeIconFilePath;
 	
@@ -41,12 +70,12 @@ struct FUpgrade
 	FString UpgradeDescription;
 
 	FUpgrade()
-		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage), UpgradeDamageType(EUpgradeDamageType::Bullet) {}
+		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage), DamageType(EDamageType::Bullet) {}
 
 	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EUpgradeDamageType UpgradeDamageType,
+	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EDamageType DamageType,
 		const FString& IconFilePath, const FString& DisplayName, const FString& UpgradeDescription)
-		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), UpgradeDamageType(UpgradeDamageType),
+		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), DamageType(DamageType),
 			UpgradeIconFilePath(IconFilePath), DisplayName(DisplayName), UpgradeDescription(UpgradeDescription) {}
 	
 };
@@ -67,7 +96,8 @@ public:
 	UUpgradeHandlerComponent();
 
 	void AddUpgrade(const FUpgrade& Upgrade);
-	
+
+	FStatConfig StatConfig;
 
 	UPROPERTY()
 	ABasePhysicsVehiclePawn* OwnerReference;
