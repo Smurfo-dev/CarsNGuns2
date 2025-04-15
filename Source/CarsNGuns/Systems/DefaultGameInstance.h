@@ -63,6 +63,8 @@ private:
 	TMap<EUpgradeType, TMultiMap<EWeaponType, TSharedPtr<FUpgrade>>> AvailableUpgrades;
 
 	void InitializeUpgrades();
+
+	void ParseUpgradeFromJson(const TSharedPtr<FJsonObject>& UgradeObject, FUpgrade& OutUpgrade);
 	
 };
 

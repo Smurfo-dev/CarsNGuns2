@@ -39,7 +39,9 @@ void UUpgradeHandlerComponent::AddUpgrade(const FUpgrade& Upgrade)
 	case EUpgradeType::VehicleModification:
 		ApplyModification(Upgrade);
 		break;
-		
+	case EUpgradeType::WheelUpgrade:
+		ApplyWheelUpgrade(Upgrade);
+		break;
 	}
 }
 
@@ -48,15 +50,15 @@ void UUpgradeHandlerComponent::ApplyEnhancement(const FUpgrade& Upgrade)
 	switch (Upgrade.StatEnhancementType)
 	{
 	case EStatEnhancementType::Damage:
-		*StatConfig.DamageMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.DamageMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 
 	case EStatEnhancementType::FireRate:
-		*StatConfig.FireRateMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.FireRateMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 
 	case EStatEnhancementType::ReloadSpeed:
-		*StatConfig.RechargeMultipliers.Find(Upgrade.DamageType) *= 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.RechargeMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
 		break;
 	}
 }
@@ -79,5 +81,15 @@ void UUpgradeHandlerComponent::ApplyModification(const FUpgrade& Upgrade)
 {
 	
 }
+
+void UUpgradeHandlerComponent::ApplyWheelUpgrade(const FUpgrade& Upgrade)
+{
+	if (Upgrade.WheelConfigAsset.IsValid())
+	{
+		const UWheelConfigData* WheelConfig = Upgrade.WheelConfigAsset.Get();
+		OwnerReference->InitWheelConfig(WheelConfig);
+	}
+}
+
 
 

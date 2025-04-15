@@ -6,6 +6,7 @@
 #include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "CarsNGuns/Components/HealthComponent.h"
 #include "CarsNGuns/Components/UpgradeHandlerComponent.h"
+#include "Components/PoseableMeshComponent.h"
 #include "CarsNGuns/Player/MyPlayerController.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -73,6 +74,8 @@ void ABasePhysicsVehiclePawn::BeginPlay()
 	}
 
 	UpgradeHandlerComponent->OwnerReference = this;
+
+	InitWheelConfig(BaseWheelConfigData);
 
 	CurrentSteeringInput = 0.0f;
 	
@@ -166,7 +169,7 @@ void ABasePhysicsVehiclePawn::CalculateSuspensionForces()
 			{
 				FVector SuspensionAxis = -CollisionBoxPrimitive->GetUpVector();
 				float DistanceAlongAxis = FVector::DotProduct(HitResult.ImpactPoint - TraceStart, SuspensionAxis);
-				const float CompressionRatio = 1 - DistanceAlongAxis / MaxSuspensionExtent;
+				const float CompressionRatio = FMath::Clamp(1 - DistanceAlongAxis / MaxSuspensionExtent, 0.0f, 1.0f);
 				
 				FString CompressionText = FString::Printf(TEXT("Compression Ratio: %.2f"), CompressionRatio);
 				if(bDebugForces) DrawDebugString(GetWorld(), TraceStart+FVector(0.0f, 0.0f, -10.0f), CompressionText, nullptr, FColor::White, 0.0f, true);
@@ -913,6 +916,27 @@ void ABasePhysicsVehiclePawn::AttachSecondaryWeaponToVehicle(const TSubclassOf<A
 TArray<FVector> ABasePhysicsVehiclePawn::GetWheelPositions()
 {
 	return WheelPositions;
+}
+
+void ABasePhysicsVehiclePawn::InitWheelConfig(const UWheelConfigData* ConfigData)
+{
+	if (ConfigData)
+	{
+		WheelConfig.WheelType = ConfigData->WheelType;
+		WheelConfig.DisplayName = ConfigData->DisplayName;
+		WheelConfig.TarmacGripMultiplier = ConfigData->TarmacGripMultiplier;
+		WheelConfig.LightOffRoadGripMultiplier = ConfigData->LightOffRoadGripMultiplier;
+		WheelConfig.HeavyOffRoadGripMultiplier = ConfigData->HeavyOffRoadGripMultiplier;
+		WheelConfig.TarmacSlowDownFactor = ConfigData->TarmacSlowDownFactor;
+		WheelConfig.LightOffRoadSlowDownFactor = ConfigData->LightOffRoadSlowDownFactor;
+		WheelConfig.HeavyOffRoadSlowDownFactor = ConfigData->HeavyOffRoadSlowDownFactor;
+		
+		UE_LOG(LogTemp, Warning, TEXT("Wheel Config Loaded: %s"), *WheelConfig.DisplayName.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("WheelConfigData is not set!"));
+	}
 }
 
 void ABasePhysicsVehiclePawn::SetSteeringInput(float NewInput)

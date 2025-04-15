@@ -52,7 +52,7 @@ void UMissionUpgradeComponent::GetUpgrades()
                 TSharedPtr<FUpgrade> Upgrade = UpgradePair.Value;
                 bool bIsCompatible = false;
                 
-                if (PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade))
+                if ((PlayerReference->GetPrimaryWeapon() && UpgradePair.Key == PlayerReference->GetPrimaryWeapon()->GetWeaponType() && !IsUpgradeAlreadyAdded(Upgrade)) || (UpgradePair.Key == EWeaponType::None && !IsUpgradeAlreadyAdded(Upgrade)))
                 {
                     bIsCompatible = true;
                 }
@@ -61,6 +61,12 @@ void UMissionUpgradeComponent::GetUpgrades()
                 {
                     bIsCompatible = true;
                 }
+
+                if (!bIsCompatible && UpgradePair.Key == EWeaponType::None && !IsUpgradeAlreadyAdded(Upgrade))
+                {
+                    bIsCompatible = true;
+                }
+
 
                 if (bIsCompatible)
                 {

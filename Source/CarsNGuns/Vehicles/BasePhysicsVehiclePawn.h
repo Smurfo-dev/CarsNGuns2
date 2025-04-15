@@ -5,19 +5,10 @@
 #include "CoreMinimal.h"
 #include "CarsNGuns/Components/HealthComponent.h"
 #include "Components/BoxComponent.h"
-#include "CarsNGuns/Components/MissionUpgradeComponent.h"
 #include "Components/PoseableMeshComponent.h"
+#include "CarsNGuns/DataAssets/WheelConfigData.h"
 #include "GameFramework/Pawn.h"
 #include "BasePhysicsVehiclePawn.generated.h"
-
-UENUM(BlueprintType)
-enum class EWheelType : uint8
-{
-	Comfort  UMETA(DisplayName = "Comfort"),
-	OffRoad  UMETA(DisplayName = "Off-Road"),
-	Hybrid UMETA(DisplayName = "Hybrid"),
-	Track  UMETA(DisplayName = "Track")
-};
 
 USTRUCT(BlueprintType)
 struct FVehicleStatsUI
@@ -48,44 +39,6 @@ struct FVehicleStatsUI
 	FName WheelType;
 	
 	FVehicleStatsUI() : Acceleration(5.0f), TopSpeed(5.0f), Handling(5.0f), Toughness(5.0f), VehicleName(TEXT("DefaultName")), WheelType(TEXT("DefaultWheels")){}
-};
-
-USTRUCT(BlueprintType)
-struct FWheelConfig
-{
-	GENERATED_BODY()
-
-	//Wheel Type
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	EWheelType WheelType;
-
-	//Wheel Display Name
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	FName DisplayName;
-
-	//Grip Multiplier on asphalt surfaces
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float TarmacGripMultiplier;
-
-	//Grip multiplier on light off road surfaces (eg. gravel)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float LightOffRoadGripMultiplier;
-
-	//Grip multiplier on heavy off road surfaces (eg. mud)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float HeavyOffRoadGripMultiplier;
-
-	//Speed multiplier on tarmac surfaces , multiplies longitudinal friction
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float TarmacSlowDownFactor;
-
-	//Speed multiplier on light off road surfaces (eg. gravel), multiplies longitudinal friction
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float LightOffRoadSlowDownFactor;
-
-	//Slow down multiplier on heavy off road surfaces (eg. mud), multiplies longitudinal friction
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WheelConfig")
-	float HeavyOffRoadSlowDownFactor;
 };
 
 USTRUCT(BlueprintType)
@@ -237,6 +190,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Wheels")
 	float DriftSteeringSensitivityFactor = 1.0f;
 
+	UPROPERTY(EditAnywhere, Category="Wheels")
+	UWheelConfigData* BaseWheelConfigData;
+
 	//The Current Wheel Config of the vehicle
 	UPROPERTY(EditAnywhere, Category="Wheels")
 	FWheelConfig WheelConfig;
@@ -293,6 +249,9 @@ public:
 
 	UFUNCTION()
 	TArray<FVector> GetWheelPositions();
+
+	UFUNCTION()
+	void InitWheelConfig(const UWheelConfigData* ConfigData);
 
 	UFUNCTION()
 	float GetSteeringInput() const

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CarsNGuns/DataAssets/WheelConfigData.h"
 #include "CarsNGuns/Weapons/BaseWeapon.h"
 #include "UpgradeHandlerComponent.generated.h"
 
@@ -12,7 +13,8 @@ enum class EUpgradeType : uint8
 {
 	WeaponAugment      UMETA(DisplayName="Weapon Augment"), // New Weapon Mechanics
 	WeaponEnhancement    UMETA(DisplayName="Weapon Enhancement"), // Weapon stat boosts
-	VehicleModification   UMETA(DisplayName="Vehicle Modification") // Vehicle Modifications (stats and perhaps mechanics, visual modifications possibly)
+	VehicleModification   UMETA(DisplayName="Vehicle Modification"), // Vehicle Modifications (stats and perhaps mechanics, visual modifications possibly)
+	WheelUpgrade         UMETA(DisplayName="Wheel Upgrade")
 };
 
 USTRUCT(BlueprintType)
@@ -51,6 +53,8 @@ struct FUpgrade
 	
 	EUpgradeType UpgradeType;
 
+	EUpgradeRarity UpgradeRarity;
+
 	// Only applicable for WeaponEnhancement & WeaponAugment
 	TArray<EWeaponType> CompatibleWeaponTypes;
 
@@ -68,14 +72,16 @@ struct FUpgrade
 	FString DisplayName;
 	
 	FString UpgradeDescription;
+	
+	TSoftObjectPtr<UWheelConfigData> WheelConfigAsset;
 
 	FUpgrade()
-		: UpgradeType(EUpgradeType::WeaponEnhancement), StatEnhancementType(EStatEnhancementType::Damage), DamageType(EDamageType::Bullet) {}
+		: UpgradeType(EUpgradeType::WeaponEnhancement), UpgradeRarity(EUpgradeRarity::Common), StatEnhancementType(EStatEnhancementType::Damage), DamageType(EDamageType::Bullet) {}
 
 	// Parameterized constructor
-	FUpgrade(const EUpgradeType Type, const TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EDamageType DamageType,
+	FUpgrade(const EUpgradeType Type, const EUpgradeRarity UpgradeRarity, TArray<EWeaponType>& CompatibleWeaponTypes, const TSubclassOf<UObject>& ModClass, const EStatEnhancementType StatType, const float EnhancementValue, const EDamageType DamageType,
 		const FString& IconFilePath, const FString& DisplayName, const FString& UpgradeDescription)
-		: UpgradeType(Type), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), DamageType(DamageType),
+		: UpgradeType(Type), UpgradeRarity(UpgradeRarity), CompatibleWeaponTypes(CompatibleWeaponTypes), AugmentedWeaponClass(ModClass), StatEnhancementType(StatType), StatEnhancementValue(EnhancementValue), DamageType(DamageType),
 			UpgradeIconFilePath(IconFilePath), DisplayName(DisplayName), UpgradeDescription(UpgradeDescription) {}
 	
 };
@@ -90,6 +96,7 @@ class CARSNGUNS_API UUpgradeHandlerComponent : public UActorComponent
 	void ApplyEnhancement(const FUpgrade& Upgrade);
 	void ApplyAugment(const FUpgrade& Upgrade);
 	void ApplyModification(const FUpgrade& Upgrade);
+	void ApplyWheelUpgrade(const FUpgrade& Upgrade);
 
 public:	
 	// Sets default values for this component's properties

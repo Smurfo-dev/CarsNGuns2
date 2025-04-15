@@ -1,80 +1,113 @@
-[
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Explosive",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Explosive Weapon Damage Boost",
-    "UpgradeDescription": "20% More Damage For Explosive Weapons"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun"],
-    "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Bullet",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Bullet Weapon Damage Booster",
-    "UpgradeDescription": "20% More Damage For Bullet Weapon Types"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["LaserRifle"],
-    "StatEnhancementType": "Damage",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Special",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Special Weapon Damage Booster",
-    "UpgradeDescription": "20% Damage Increase To Special Weapon Types"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["LaserRifle"],
-    "StatEnhancementType": "ReloadSpeed",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Special",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Special Weapon Recharge Speed",
-    "UpgradeDescription": "20% Faster Recharge Time For Special Weapon Types"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun"],
-    "StatEnhancementType": "ReloadSpeed",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Bullet",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Bullet Weapon Recharge Speed",
-    "UpgradeDescription": "20% Faster Recharge Time For Bullet Weapon Types"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
-    "StatEnhancementType": "ReloadSpeed",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Explosive",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Explosive Weapon Reload Faster",
-    "UpgradeDescription": "20% Faster Reload For Explosive Weapons"
-  },
-  {
-    "UpgradeType": "WeaponEnhancement",
-    "CompatibleWeaponTypes": ["MachineGun"],
-    "StatEnhancementType": "FireRate",
-    "StatEnhancementValue": 20.0,
-    "UpgradeDamageType": "Bullet",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Fire Rate Increase",
-    "UpgradeDescription": "20% Faster Fire Rate Bullet Weapon Types"
-  },
-  {
-    "UpgradeType": "WeaponAugment",
-    "CompatibleWeaponTypes": ["MachineGun"],
-    "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_ExplosiveMachineGun.BP_ExplosiveMachineGun_C",
-    "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
-    "DisplayName": "Explosive Machine Gun",
-    "UpgradeDescription": "Makes Your Machine Gun Shots Explosive, Lowers Fire Rate"
-  }
-]
+{
+  "WeaponEnhancements": [
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
+      "StatEnhancementType": "Damage",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Explosive",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Explosive Weapon Damage Boost",
+      "UpgradeDescription": "20% More Damage For Explosive Weapons"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["MachineGun"],
+      "StatEnhancementType": "Damage",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Bullet",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Bullet Weapon Damage Booster",
+      "UpgradeDescription": "20% More Damage For Bullet Weapon Types"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["LaserRifle"],
+      "StatEnhancementType": "Damage",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Special",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Special Weapon Damage Booster",
+      "UpgradeDescription": "20% Damage Increase To Special Weapon Types"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["LaserRifle"],
+      "StatEnhancementType": "ReloadSpeed",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Special",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Special Weapon Recharge Speed",
+      "UpgradeDescription": "20% Faster Recharge Time For Special Weapon Types"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["MachineGun"],
+      "StatEnhancementType": "ReloadSpeed",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Bullet",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Bullet Weapon Recharge Speed",
+      "UpgradeDescription": "20% Faster Recharge Time For Bullet Weapon Types"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["RocketLauncher", "GrenadeLauncher"],
+      "StatEnhancementType": "ReloadSpeed",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Explosive",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Explosive Weapon Reload Faster",
+      "UpgradeDescription": "20% Faster Reload For Explosive Weapons"
+    },
+    {
+      "UpgradeType": "WeaponEnhancement",
+      "CompatibleWeaponTypes": ["MachineGun"],
+      "StatEnhancementType": "FireRate",
+      "StatEnhancementValue": 20.0,
+      "UpgradeDamageType": "Bullet",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Fire Rate Increase",
+      "UpgradeDescription": "20% Faster Fire Rate Bullet Weapon Types"
+    }
+  ],
+  "WeaponAugments": [
+    {
+      "UpgradeType": "WeaponAugment",
+      "CompatibleWeaponTypes": ["MachineGun"],
+      "AugmentedWeaponClass": "/Game/Blueprints/Weapons/Bullet/BP_ExplosiveMachineGun.BP_ExplosiveMachineGun_C",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Explosive Machine Gun",
+      "UpgradeDescription": "Makes Your Machine Gun Shots Explosive, Lowers Fire Rate"
+    }
+  ],
+  "VehicleMods": [
+    
+  ],
+  "WheelUpgrades": [
+    {
+      "UpgradeType": "WheelUpgrade",
+      "CompatibleWeaponTypes": ["None"],
+      "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_Hybrid_Common.DA_Hybrid_Common",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Common Hybrid Wheels",
+      "UpgradeDescription": "Versatile wheels for both road and off-road performance"
+    },
+    {
+      "UpgradeType": "WheelUpgrade",
+      "CompatibleWeaponTypes": ["None"],
+      "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_OffRoad_Common.DA_OffRoad_Common",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Common Off-Road Wheels",
+      "UpgradeDescription": "Wheels for off-road performance"
+    },
+    {
+      "UpgradeType": "WheelUpgrade",
+      "CompatibleWeaponTypes": ["None"],
+      "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_Track_Common.DA_Track_Common",
+      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "DisplayName": "Common Track Wheels",
+      "UpgradeDescription": "Wheels for road performance"
+    }
+  ]
+}
