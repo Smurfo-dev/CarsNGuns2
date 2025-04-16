@@ -64,18 +64,24 @@ void UUpgradeSelectionWidget::InitializeValues(const TArray<FUpgrade>& Upgrades,
 		SetImageFromFile(Upgrades[0].UpgradeIconFilePath, Option1Image);
 		Option1DisplayName->SetText(FText::FromString(Upgrades[0].DisplayName));
 		Option1Description->SetText(FText::FromString(Upgrades[0].UpgradeDescription));
+		Option1Rarity->SetText(UEnum::GetDisplayValueAsText(Upgrades[0].UpgradeRarity));
+		Option1Rarity->SetColorAndOpacity(FSlateColor(RarityColorMap[Upgrades[0].UpgradeRarity]));
 	}
 	if (Upgrades.Num() > 1)
 	{
 		SetImageFromFile(Upgrades[1].UpgradeIconFilePath, Option2Image);
 		Option2DisplayName->SetText(FText::FromString(Upgrades[1].DisplayName));
 		Option2Description->SetText(FText::FromString(Upgrades[1].UpgradeDescription));
+		Option2Rarity->SetText(UEnum::GetDisplayValueAsText(Upgrades[1].UpgradeRarity));
+		Option2Rarity->SetColorAndOpacity(FSlateColor(RarityColorMap[Upgrades[1].UpgradeRarity]));
 	}
 	if (Upgrades.Num() > 2)
 	{
 		SetImageFromFile(Upgrades[2].UpgradeIconFilePath, Option3Image);
 		Option3DisplayName->SetText(FText::FromString(Upgrades[2].DisplayName));
 		Option3Description->SetText(FText::FromString(Upgrades[2].UpgradeDescription));
+		Option3Rarity->SetText(UEnum::GetDisplayValueAsText(Upgrades[2].UpgradeRarity));
+		Option3Rarity->SetColorAndOpacity(FSlateColor(RarityColorMap[Upgrades[2].UpgradeRarity]));
 	}
 
 	if (PlayerController)

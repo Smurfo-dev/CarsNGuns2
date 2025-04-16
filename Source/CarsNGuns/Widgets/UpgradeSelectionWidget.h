@@ -17,6 +17,14 @@ class CARSNGUNS_API UUpgradeSelectionWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	const TMap<EUpgradeRarity, FLinearColor> RarityColorMap = {
+	{ EUpgradeRarity::Common, FLinearColor(1, 1, 1)},
+	{ EUpgradeRarity::Rare, FLinearColor(0, 0.1, 1)},
+	{ EUpgradeRarity::Epic, FLinearColor(0.5, 0, 1)},
+	{ EUpgradeRarity::Legendary, FLinearColor(1, 0.5, 0)},
+	{ EUpgradeRarity::Mythic, FLinearColor(1, 0, 0)},
+	};
+	
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Option1Image;
 
@@ -43,6 +51,15 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Option3Description;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Option1Rarity;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Option2Rarity;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Option3Rarity;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Option1Button;

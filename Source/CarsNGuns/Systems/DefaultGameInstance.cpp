@@ -168,6 +168,17 @@ void UDefaultGameInstance::ParseUpgradeFromJson(const TSharedPtr<FJsonObject>& U
 			UE_LOG(LogTemp, Error, TEXT("Failed to load WheelConfigAsset: %s"), *WheelConfigPath);
 	}
 
+	// Upgrade Rarity
+	if (UpgradeObject->HasField(TEXT("UpgradeRarity")))
+	{
+		FString RarityStr = UpgradeObject->GetStringField(TEXT("UpgradeRarity"));
+		if (RarityStr == "Common") OutUpgrade.UpgradeRarity = EUpgradeRarity::Common;
+		else if (RarityStr == "Rare") OutUpgrade.UpgradeRarity = EUpgradeRarity::Rare;
+		else if (RarityStr == "Epic") OutUpgrade.UpgradeRarity = EUpgradeRarity::Epic;
+		else if (RarityStr == "Legendary") OutUpgrade.UpgradeRarity = EUpgradeRarity::Legendary;
+		else if (RarityStr == "Mythic") OutUpgrade.UpgradeRarity = EUpgradeRarity::Mythic;
+	}
+
 	// Icon
 	if (UpgradeObject->HasField(TEXT("IconFilePath")))
 		OutUpgrade.UpgradeIconFilePath = UpgradeObject->GetStringField(TEXT("IconFilePath"));

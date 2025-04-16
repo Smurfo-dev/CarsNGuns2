@@ -50,15 +50,18 @@ void UUpgradeHandlerComponent::ApplyEnhancement(const FUpgrade& Upgrade)
 	switch (Upgrade.StatEnhancementType)
 	{
 	case EStatEnhancementType::Damage:
-		*StatConfig.DamageMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.DamageMultipliers.Find(Upgrade.DamageType) += Upgrade.StatEnhancementValue / 100.0f;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("New Damage Multiplier: %.2f"), *StatConfig.DamageMultipliers.Find(Upgrade.DamageType)));
 		break;
 
 	case EStatEnhancementType::FireRate:
-		*StatConfig.FireRateMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.FireRateMultipliers.Find(Upgrade.DamageType) += Upgrade.StatEnhancementValue / 100.0f;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("New Fire Rate Multiplier: %.2f"), *StatConfig.FireRateMultipliers.Find(Upgrade.DamageType)));
 		break;
 
 	case EStatEnhancementType::ReloadSpeed:
-		*StatConfig.RechargeMultipliers.Find(Upgrade.DamageType) += 1.0f + Upgrade.StatEnhancementValue / 100.0f;
+		*StatConfig.RechargeMultipliers.Find(Upgrade.DamageType) += Upgrade.StatEnhancementValue / 100.0f;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("New Recharge Multiplier: %.2f"), *StatConfig.RechargeMultipliers.Find(Upgrade.DamageType)));
 		break;
 	}
 }

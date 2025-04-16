@@ -84,7 +84,32 @@ void UMissionUpgradeComponent::GetUpgrades()
                 
                 for (int32 i = 0; i < NumToSelect; ++i)
                 {
-                    Upgrades.Add(*FilteredUpgrades[i]);
+                    FUpgrade UpgradeCopy = *FilteredUpgrades[i]; 
+                    if (MissionInfo.UpgradeType == EUpgradeType::WeaponEnhancement)
+                    {
+                       int32 RandomIndex = FMath::RandRange(0, 100);
+                        if (RandomIndex <= 40)
+                        {
+                            UpgradeCopy.UpgradeRarity = EUpgradeRarity::Common;
+                        }
+                        else if (RandomIndex <= 70)
+                        {
+                            UpgradeCopy.UpgradeRarity = EUpgradeRarity::Rare;
+                            UpgradeCopy.StatEnhancementValue *= 2.0f;
+                        }
+                        else if (RandomIndex <= 90)
+                        {
+                            UpgradeCopy.UpgradeRarity = EUpgradeRarity::Epic;
+                            UpgradeCopy.StatEnhancementValue *= 3.0f;
+                        }
+                        else if (RandomIndex <= 100)
+                        {
+                            UpgradeCopy.UpgradeRarity = EUpgradeRarity::Legendary;
+                            UpgradeCopy.StatEnhancementValue *= 4.0f;
+                        }
+                        UpgradeCopy.UpgradeDescription = FString::Printf(TEXT("%.0f%% %s"), UpgradeCopy.StatEnhancementValue, *UpgradeCopy.UpgradeDescription);
+                    }
+                    Upgrades.Add(UpgradeCopy);
                 }
             }
         }
