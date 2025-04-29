@@ -46,7 +46,7 @@
       "StatEnhancementType": "ReloadSpeed",
       "StatEnhancementValue": 10.0,
       "UpgradeDamageType": "Bullet",
-      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "IconFilePath": "/Game/Import/UI/Upgrades/hourglassrecolored.hourglassrecolored",
       "DisplayName": "Bullet Weapon Recharge Speed",
       "UpgradeDescription": "Faster Recharge Time For Bullet Weapon Types"
     },

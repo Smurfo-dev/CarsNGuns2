@@ -98,10 +98,28 @@ void UUpgradeSelectionWidget::SetImageFromFile(const FString& FilePath, UImage* 
 	{
 		if (LoadedTexture && Image)
 		{
-			FSlateBrush Brush;
-			Brush.SetResourceObject(LoadedTexture);
-			Image->SetDesiredSizeOverride(FVector2D(400,400)); //Make The Upgrade Icons in 400x400, This shit aint scalable though
-			Image->SetBrush(Brush);
+			UMaterialInterface* Material = Image->GetBrush().GetResourceObject() ? Cast<UMaterialInterface>(Image->GetBrush().GetResourceObject()) : nullptr;
+			if (!Material)
+			{
+				UE_LOG(LogTemp, Error, TEXT("Image does not have a valid material assigned."));
+				return;
+			}
+
+			UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
+			if (!DynMaterial)
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed to create dynamic material instance."));
+				return;
+			}
+			static FName TextureParamName = TEXT("UpgradeIconTexture"); // must match your material parameter name
+			DynMaterial->SetTextureParameterValue(TextureParamName, LoadedTexture);
+
+			FSlateBrush NewBrush;
+			NewBrush.SetResourceObject(DynMaterial);
+			NewBrush.ImageSize = FVector2D(512, 512);
+			Image->SetBrush(NewBrush);
+			
+			
 		}
 		else
 		{
