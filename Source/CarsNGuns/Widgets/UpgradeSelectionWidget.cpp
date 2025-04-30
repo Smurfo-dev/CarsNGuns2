@@ -116,7 +116,7 @@ void UUpgradeSelectionWidget::SetImageFromFile(const FString& FilePath, UImage* 
 
 			FSlateBrush NewBrush;
 			NewBrush.SetResourceObject(DynMaterial);
-			NewBrush.ImageSize = FVector2D(512, 512);
+			NewBrush.ImageSize = FVector2D(400, 400);
 			Image->SetBrush(NewBrush);
 			
 			
