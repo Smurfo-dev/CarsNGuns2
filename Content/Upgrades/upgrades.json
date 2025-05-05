@@ -90,7 +90,7 @@
       "CompatibleWeaponTypes": ["None"],
       "UpgradeRarity": "Common",
       "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_Hybrid_Common.DA_Hybrid_Common",
-      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "IconFilePath": "/Game/Import/UI/Upgrades/WheelIconBasev1.WheelIconBasev1",
       "DisplayName": "Common Hybrid Wheels",
       "UpgradeDescription": "Versatile wheels for both road and off-road performance"
     },
@@ -99,7 +99,7 @@
       "CompatibleWeaponTypes": ["None"],
       "UpgradeRarity": "Common",
       "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_OffRoad_Common.DA_OffRoad_Common",
-      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "IconFilePath": "/Game/Import/UI/Upgrades/WheelIconBasev1.WheelIconBasev1",
       "DisplayName": "Common Off-Road Wheels",
       "UpgradeDescription": "Wheels for off-road performance"
     },
@@ -108,7 +108,7 @@
       "CompatibleWeaponTypes": ["None"],
       "UpgradeRarity": "Common",
       "WheelConfigAsset": "/Game/Blueprints/Vehicles/WheelDataAssets/DA_Track_Common.DA_Track_Common",
-      "IconFilePath": "/Game/Import/UI/Upgrades/UpgradeIconExample.UpgradeIconExample",
+      "IconFilePath": "/Game/Import/UI/Upgrades/WheelIconBasev1.WheelIconBasev1",
       "DisplayName": "Common Track Wheels",
       "UpgradeDescription": "Wheels for road performance"
     }
