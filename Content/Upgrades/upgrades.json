@@ -6,7 +6,7 @@
       "StatEnhancementType": "Damage",
       "StatEnhancementValue": 10.0,
       "UpgradeDamageType": "Explosive",
-      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconV1.DamageIconV1",
+      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconResizedV1.DamageIconResizedV1",
       "DisplayName": "Explosive Weapon Damage Boost",
       "UpgradeDescription": "More Damage For Explosive Weapons"
     },
@@ -16,7 +16,7 @@
       "StatEnhancementType": "Damage",
       "StatEnhancementValue": 10.0,
       "UpgradeDamageType": "Bullet",
-      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconV1.DamageIconV1",
+      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconResizedV1.DamageIconResizedV1",
       "DisplayName": "Bullet Weapon Damage Booster",
       "UpgradeDescription": "More Damage For Bullet Weapon Types"
     },
@@ -26,7 +26,7 @@
       "StatEnhancementType": "Damage",
       "StatEnhancementValue": 10.0,
       "UpgradeDamageType": "Special",
-      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconV1.DamageIconV1",
+      "IconFilePath": "/Game/Import/UI/Upgrades/DamageIconResizedV1.DamageIconResizedV1",
       "DisplayName": "Special Weapon Damage Booster",
       "UpgradeDescription": "Damage Increase To Special Weapon Types"
     },
@@ -66,7 +66,7 @@
       "StatEnhancementType": "FireRate",
       "StatEnhancementValue": 10.0,
       "UpgradeDamageType": "Bullet",
-      "IconFilePath": "/Game/Import/UI/Upgrades/FireRateIconv1.FireRateIconv1",
+      "IconFilePath": "/Game/Import/UI/Upgrades/FireRateIconResizedV1.FireRateIconResizedV1",
       "DisplayName": "Fire Rate Increase",
       "UpgradeDescription": "Faster Fire Rate Bullet Weapon Types"
     }

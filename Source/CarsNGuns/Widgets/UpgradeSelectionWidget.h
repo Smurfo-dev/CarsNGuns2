@@ -24,6 +24,14 @@ public:
 	{ EUpgradeRarity::Legendary, FLinearColor(1, 0.5, 0)},
 	{ EUpgradeRarity::Mythic, FLinearColor(1, 0, 0)},
 	};
+
+	const TMap<EUpgradeRarity, FString> RarityMaterialMap = {
+	{ EUpgradeRarity::Common, TEXT("/Game/Materials/UI/MI_RadialSegments_Common.MI_RadialSegments_Common")},
+	{ EUpgradeRarity::Rare, TEXT("/Game/Materials/UI/MI_RadialSegments_Rare.MI_RadialSegments_Rare")},
+	{ EUpgradeRarity::Epic, TEXT("/Game/Materials/UI/MI_RadialSegments_Epic.MI_RadialSegments_Epic")},
+	{ EUpgradeRarity::Legendary, TEXT("/Game/Materials/UI/MI_RadialSegments_Legendary.MI_RadialSegments_Legendary")},
+	{ EUpgradeRarity::Mythic, TEXT("/Game/Materials/UI/MI_RadialSegments_Mythic.MI_RadialSegments_Mythic")},
+	};
 	
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Option1Image;
@@ -33,6 +41,24 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* Option3Image;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option1RarityShader;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option2RarityShader;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option3RarityShader;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option1Border;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option2Border;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Option3Border;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Option1DisplayName;
@@ -94,6 +120,8 @@ private:
 	void SetImageFromFile(const FString& FilePath, UImage* Image);
 
 	UTexture2D* LoadTextureFromFile(const FString& FilePath);
+
+	void SetMaterialFromRarity(const EUpgradeRarity Rarity, UImage* Image) const;
 
 	void DisableWidget();
 	
